@@ -7,6 +7,7 @@ Version plan: 0.1 public map live · 0.2 editing moves to Supabase · 0.3 sign-i
 - Editor sign-in: "Sign in" in the footer (desktop) and the menu (mobile) sends a one-time sign-in link by email. No passwords. Only accounts added in Supabase can sign in, and only accounts in the editors table can change the book.
 - Editors can add, edit and delete entries and links from the app. Changes save straight to Supabase and are logged in the audit log.
 - New links get the next l-number automatically (database default).
+- Country is picked from a list of the codes the book uses (World Sailing style: GBR, SUI, GER, NED). If a save is refused, the message says which field to fix.
 
 ## 0.1.10 (3 November 2026)
 

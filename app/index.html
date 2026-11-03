@@ -198,6 +198,7 @@ function norm(e){const g=LEGACY[e.type];if(g){e.legacyType=e.legacyType||e.type;
   if(!TYPES[e.type])e.type='org';e.sectors=Array.isArray(e.sectors)?e.sectors:[];e.level=e.type==='event'?(LEVELS[e.level]?e.level:'event'):'';return e}
 const ck=e=>e.type==='org'?(COLOURED.find(s=>e.sectors.includes(s))||'org'):e.type;
 const kindLabel=e=>e.type==='event'&&e.level&&e.level!=='event'?LEVELS[e.level]:TYPES[e.type];
+const COUNTRIES='ARG Argentina|ATG Antigua and Barbuda|AUS Australia|AUT Austria|BAH Bahamas|BEL Belgium|BER Bermuda|BRA Brazil|CAN Canada|CHI Chile|CHN China|CRO Croatia|CYP Cyprus|DEN Denmark|ESP Spain|EST Estonia|FIN Finland|FRA France|GBR Great Britain|GER Germany|GRE Greece|HKG Hong Kong|IRL Ireland|ISR Israel|ITA Italy|JPN Japan|KOR South Korea|KSA Saudi Arabia|MEX Mexico|MLT Malta|MON Monaco|NED Netherlands|NOR Norway|NZL New Zealand|OMA Oman|POL Poland|POR Portugal|QAT Qatar|RSA South Africa|SGP Singapore|SUI Switzerland|SVN Slovenia|SWE Sweden|THA Thailand|TUR Turkey|UAE United Arab Emirates|URU Uruguay|USA United States'.split('|').map(x=>[x.slice(0,3),x.slice(4)]);
 const CATS={own:'Ownership',spon:'Commercial',ppl:'People',str:'Structure'};
 const ROLES=['owner','co-owner','majority owner','minority owner','investor','backer','co-founder','title partner','presenting partner','main partner','partner','supplier','driver','skipper','helm','team principal','defender','challenger','wing trimmer','strategist','crew','CEO','coach','competes in','round of','set','ratified','organiser','represents','host city','stopover host','finish host','broadcast partner','production partner','commentator','journalist'];
 const LENS={all:null,money:['own','spon'],people:['ppl']};
@@ -361,7 +362,7 @@ function formEntity(){const e=editing?E.get(editing):{name:'',type:'person',leve
     <label>Level (events only)<select id="fe-level">${Object.keys(LEVELS).map(k=>opt(k,LEVELS[k],e.level||'event')).join('')}</select></label></div>
     <fieldset class="checks" style="border:0;padding:0;margin:0"><legend style="font-size:12px;color:var(--muted);margin-bottom:4px">Sectors (organisations only)</legend>${SECTORS.map(s=>`<label><input type="checkbox" name="fe-sec" value="${esc(s)}"${e.sectors.includes(s)?' checked':''}>${esc(s)}</label>`).join('')}</fieldset>
     <div class="two">
-    <label>Country code<input id="fe-country" maxlength="3" placeholder="GBR" value="${esc(e.country)}"></label></div>
+    <label>Country<select id="fe-country">${opt('','Not known',e.country)}${(e.country&&!COUNTRIES.some(c=>c[0]===e.country)?[[e.country,e.country]]:[]).concat(COUNTRIES).map(([c,n])=>opt(c,n+' ('+c+')',e.country)).join('')}</select></label></div>
     <label>Note<textarea id="fe-note" rows="3">${esc(e.note)}</textarea></label>
     <div class="acts"><button class="btn go">Save entry</button><button type="button" class="btn" data-cancel="1">Cancel</button>${editing?'<button type="button" class="btn bad" data-del="entity">Delete entry and its links</button>':''}</div></form>`}
 function formLink(){const l=editing?L.find(x=>x.id===editing):{from:sel||'',to:'',role:'',cat:'spon',context:'',start:'',end:'',source:'',note:''};
@@ -373,12 +374,14 @@ function formLink(){const l=editing?L.find(x=>x.id===editing):{from:sel||'',to:'
     <label>Kind of link<select id="fl-cat">${Object.keys(CATS).map(k=>opt(k,CATS[k],l.cat)).join('')}</select></label></div>
     <label>Of<select id="fl-to" required>${eo(l.to)}</select></label>
     <label>Applies in (optional)<select id="fl-context">${ctx}</select></label>
-    <div class="two"><label>From<input id="fl-start" placeholder="2026 or 2026-06" value="${esc(l.start)}"></label><label>Until<input id="fl-end" placeholder="blank if current" value="${esc(l.end)}"></label></div>
+    <div class="two"><label>From<input id="fl-start" placeholder="2026 or 2026-06" pattern="\\d{4}(-\\d{2})?.*" title="A year, or year and month: 2026 or 2026-06" value="${esc(l.start)}"></label><label>Until<input id="fl-end" placeholder="blank if current" pattern="\\d{4}(-\\d{2})?.*" title="A year, or year and month: 2026 or 2026-06. Leave blank if current." value="${esc(l.end)}"></label></div>
     <label>Source (a link, or where you saw it)<input id="fl-source" type="text" placeholder="https:// or e.g. team press release, 9 Oct 2026" value="${esc(l.source)}"></label>
     <label>Note<input id="fl-note" value="${esc(l.note)}"></label>
     <div class="acts"><button class="btn go">Save link</button><button type="button" class="btn" data-cancel="1">Cancel</button>${editing?'<button type="button" class="btn bad" data-del="link">Delete link</button>':''}</div></form>`}
 const val=id=>document.getElementById(id).value.trim();
-function fail(e){const t=String(e&&e.message||'');
+const CHECKS={entities_country_check:'the country must be chosen from the list or left as not known',entities_id_check:'the id can only use lowercase letters, numbers and hyphens',entities_check:'events need a level, and other kinds must not have one',entities_check1:'only organisations can have sectors',links_check:'a link needs two different entries',links_start_date_check:'the From date must start with a year, e.g. 2026 or 2026-06',links_end_date_check:'the Until date must start with a year, e.g. 2026 or 2026-06'};
+function fail(e){const t=String(e&&e.message||''),k=Object.keys(CHECKS).find(k=>new RegExp('constraint \\W*'+k+'(?!\\w)').test(t));
+  if(k){msg='That change was not saved: '+CHECKS[k]+'.';return render()}
   msg=/401|403|JWT|row-level/i.test(t)?'That change was not saved: you need to be signed in as an editor.':/duplicate key|23505/.test(t)?'That change was not saved: an entry with that id already exists.':/foreign key|23503/.test(t)?'That change was not saved: it refers to an entry that no longer exists. Reload the page and try again.':'That change was not saved. '+t.slice(0,200);render()}
 async function reload(){await start();if(sel&&!E.has(sel))sel=null}
 async function saveEntity(){const name=val('fe-name');if(!name)return;let id=editing;
