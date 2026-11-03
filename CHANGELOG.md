@@ -2,6 +2,10 @@
 
 Version plan: 0.1 public map live · 0.2 editing moves to Supabase · 0.3 sign-in, applications and claims · 0.4 paid tiers, organisation editing, contact details · 1.0 membership network opens · 1.x events and intros. Small fixes in between are 0.x.1, 0.x.2 and so on.
 
+## 0.1.3 (3 November 2026)
+
+- Overview panel: "Latest changes" (the three people and three organisations most recently linked) replaces the sponsor and multi-role lists.
+
 ## 0.1.2 (3 November 2026)
 
 - Contact links (WhatsApp, LinkedIn group, Facebook, email): a footer bar on desktop, a menu button in the header on mobile.

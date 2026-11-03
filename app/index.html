@@ -110,6 +110,7 @@ ul.rel li{padding:9px 0;border-bottom:1px solid var(--line);display:grid;grid-te
 .chip{background:var(--warn-bg);color:var(--warn);border-radius:3px;padding:0 6px;font-size:11px;font-weight:500}
 .mini{grid-column:2;grid-row:1 / span 2;align-self:start;background:none;border:1px solid var(--line);border-radius:4px;padding:2px 8px;font-size:12px;cursor:pointer;color:var(--muted)}
 .mini:hover{color:var(--ink);border-color:var(--muted)}
+.sub{font-size:12px;color:var(--muted);margin:10px 0 4px}
 .stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:0}
 .stats div{border-top:2px solid var(--ink);padding-top:6px}
 .stats dt{font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}
@@ -148,9 +149,9 @@ label input,label select,label textarea{padding:7px 9px;border:1px solid var(--l
 </style>
 
 <header class="top">
-  <div class="brand"><h1>The Dark Blue Book</h1><span>The who's who of yacht racing <small id="ver" style="opacity:.6;margin-left:6px">v0.1.2</small></span></div>
+  <div class="brand"><h1>The Dark Blue Book</h1><span>The who's who of yacht racing <small id="ver" style="opacity:.6;margin-left:6px">v0.1.3</small></span></div>
   <button type="button" class="menu-btn" id="menuBtn" aria-label="Contact and links" aria-expanded="false" aria-controls="menu"><svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="M2 4h14M2 9h14M2 14h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
-  <nav class="menu" id="menu" hidden aria-label="Contact"><a href="https://wa.me/61439790410" target="_blank" rel="noopener">WhatsApp</a><a href="https://www.linkedin.com/groups/2023604/" target="_blank" rel="noopener">LinkedIn</a><a href="https://www.facebook.com/darkbluebook" target="_blank" rel="noopener">Facebook</a><a href="mailto:editor@darkbluebook.com">Email</a><small>© The Dark Blue Book · v0.1.2</small></nav>
+  <nav class="menu" id="menu" hidden aria-label="Contact"><a href="https://wa.me/61439790410" target="_blank" rel="noopener">WhatsApp</a><a href="https://www.linkedin.com/groups/2023604/" target="_blank" rel="noopener">LinkedIn</a><a href="https://www.facebook.com/darkbluebook" target="_blank" rel="noopener">Facebook</a><a href="mailto:editor@darkbluebook.com">Email</a><small>© The Dark Blue Book · v0.1.3</small></nav>
   <div class="lens" role="group" aria-label="What to show">
     <button type="button" data-lens="all" aria-pressed="true">Everything</button>
     <button type="button" data-lens="money" aria-pressed="false">Money</button>
@@ -168,7 +169,7 @@ label input,label select,label textarea{padding:7px 9px;border:1px solid var(--l
   </section>
   <aside id="panel" aria-live="polite"></aside>
 </main>
-<footer class="foot" aria-label="Contact"><a href="https://wa.me/61439790410" target="_blank" rel="noopener">WhatsApp</a><a href="https://www.linkedin.com/groups/2023604/" target="_blank" rel="noopener">LinkedIn</a><a href="https://www.facebook.com/darkbluebook" target="_blank" rel="noopener">Facebook</a><a href="mailto:editor@darkbluebook.com">Email</a><span>© The Dark Blue Book · v0.1.2</span></footer>
+<footer class="foot" aria-label="Contact"><a href="https://wa.me/61439790410" target="_blank" rel="noopener">WhatsApp</a><a href="https://www.linkedin.com/groups/2023604/" target="_blank" rel="noopener">LinkedIn</a><a href="https://www.facebook.com/darkbluebook" target="_blank" rel="noopener">Facebook</a><a href="mailto:editor@darkbluebook.com">Email</a><span>© The Dark Blue Book · v0.1.3</span></footer>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
 <script>
@@ -255,6 +256,21 @@ function paint(){
 function pick(id,fromHash){sel=id&&E.has(id)?id:null;mode='view';editing=null;msg='';paint();render();if(!fromHash)syncHash();
   if(sel&&window.matchMedia('(max-width:860px)').matches)panel.scrollIntoView({behavior:'smooth',block:'start'})}
 
+/* ---------- latest changes ---------- */
+const ORGISH=new Set(['org','team','club']);
+const lnum=id=>{const m=/^l(\d+)$/.exec(id);return m?+m[1]:-1};
+function latest(){
+  const sorted=L.filter(l=>E.has(l.from)&&E.has(l.to)).slice().sort((a,b)=>(b.created||'').localeCompare(a.created||'')||lnum(b.id)-lnum(a.id));
+  const ppl=[],org=[],seen=new Set();
+  for(const l of sorted){for(const [me,other] of [[l.from,l.to],[l.to,l.from]]){if(seen.has(me))continue;const e=E.get(me),bucket=e.type==='person'?ppl:ORGISH.has(e.type)?org:null;
+      if(!bucket||bucket.length>=3)continue;seen.add(me);bucket.push([e,l,E.get(other)])}
+    if(ppl.length>=3&&org.length>=3)break}
+  const item=([e,l,o])=>`<li><div class="rl"><button type="button" class="ent" data-go="${esc(e.id)}">${esc(e.name)}</button></div><div class="meta"><span>${l.from===e.id?esc(l.role)+' \u00b7 '+esc(o.name):esc(o.name)+', '+esc(l.role)}</span></div></li>`;
+  if(!ppl.length&&!org.length)return'';
+  return`<section><h3><b style="border-color:var(--ink)"></b>Latest changes</h3>
+    ${ppl.length?`<p class="sub">People</p><ul class="rel">${ppl.map(item).join('')}</ul>`:''}
+    ${org.length?`<p class="sub">Organisations</p><ul class="rel">${org.map(item).join('')}</ul>`:''}</section>`}
+
 /* ---------- deep links ---------- */
 let booted=false;
 function syncHash(){const want=sel?'#'+encodeURIComponent(sel):'';if(location.hash===want)return;try{history.pushState(null,'',want||location.pathname+location.search)}catch(e){}}
@@ -294,17 +310,11 @@ function render(){
       <h2>${esc(e.name)}</h2>${e.note?`<p class="note">${esc(e.note)}</p>`:''}</div>${m}
       ${timeline(mine,sel)}${h||'<p class="note">No links recorded yet.</p>'}${tools}<div class="acts"><button type="button" class="btn" data-go="">Back to overview</button>${window.claude?'':'<button type="button" class="btn" data-copy="1">Copy link</button>'}</div>`;
     return}
-  const brands=[],hats=[];
   const vis=new Set(visibleLinks().map(l=>l.id)),A=scope?L.filter(l=>vis.has(l.id)):L.filter(active);
-  E.forEach(e=>{const out=A.filter(l=>l.from===e.id&&E.has(l.to));
-    if(e.type==='org'&&e.sectors.includes('sponsor')){const n=out.filter(l=>l.cat==='spon').length;if(n>1)brands.push([e,n])}
-    if(e.type==='person'&&out.length>1)hats.push([e,out.length])});
-  const list=(a,word)=>a.sort((x,y)=>y[1]-x[1]||x[0].name.localeCompare(y[0].name)).map(([e,n])=>`<li><div class="rl"><button type="button" class="ent" data-go="${esc(e.id)}">${esc(e.name)}</button><span class="role">${n} ${word}</span></div></li>`).join('');
   const un=A.filter(l=>!l.source).length;
   panel.innerHTML=`<p class="lede">A live, dynamic who’s who of the yacht racing business. Search or click through to see the connections.</p>
     <h3>${(scope&&E.has(scope)?E.get(scope).name+' \u00b7 ':'')+(allTime?'All time':'Year '+year)}</h3><dl class="stats"><div><dt>Entries</dt><dd>${nodes.length}</dd></div><div><dt>Links</dt><dd>${A.length}</dd></div><div><dt>Need a source</dt><dd>${un}</dd></div></dl>${m}
-    ${brands.length?`<section><h3><b style="border-color:var(--c-spon)"></b>Sponsors backing more than one property</h3><ul class="rel">${list(brands,'deals')}</ul></section>`:''}
-    ${hats.length?`<section><h3><b style="border-color:var(--c-ppl)"></b>People wearing more than one hat</h3><ul class="rel">${list(hats,'roles')}</ul></section>`:''}${tools}`;
+    ${latest()}${tools}`;
 }
 const opt=(v,t,cur)=>`<option value="${esc(v)}"${v===cur?' selected':''}>${esc(t)}</option>`;
 function formEntity(){const e=editing?E.get(editing):{name:'',type:'person',level:'',sectors:[],country:'',note:''};
@@ -390,9 +400,9 @@ async function fetchAll(table,cols){const out=[];for(let from=0;;from+=1000){
   const r=await fetch(`${SB_URL}/rest/v1/${table}?select=${cols}&order=id`,{headers:{apikey:SB_KEY,Range:`${from}-${from+999}`,'Range-Unit':'items'}});
   if(!r.ok)throw new Error(table+' '+r.status);const rows=await r.json();out.push(...rows);if(rows.length<1000)return out}}
 async function start(){
-  try{const [es,ls]=await Promise.all([fetchAll('entities','id,name,type,sectors,level,country,note'),fetchAll('links','id,from_id,to_id,role,cat,context_id,start_date,end_date,source,note')]);
+  try{const [es,ls]=await Promise.all([fetchAll('entities','id,name,type,sectors,level,country,note'),fetchAll('links','id,from_id,to_id,role,cat,context_id,start_date,end_date,source,note,created_at')]);
     db={};E=new Map(es.map(x=>[x.id,norm({id:x.id,name:x.name,type:x.type,sectors:x.sectors||[],level:x.level||'',country:x.country||'',note:x.note||''})]));
-    L=ls.map(l=>({id:l.id,from:l.from_id,to:l.to_id,role:l.role,cat:l.cat,context:l.context_id||'',start:l.start_date||'',end:l.end_date||'',source:l.source||'',note:l.note||''}));
+    L=ls.map(l=>({id:l.id,from:l.from_id,to:l.to_id,role:l.role,cat:l.cat,context:l.context_id||'',start:l.start_date||'',end:l.end_date||'',source:l.source||'',note:l.note||'',created:l.created_at||''}));
     loaded={e:true,l:true};fillScope();yrEl.min=Math.min(NOW-1,...L.map(l=>yr(l.start)||NOW));build();render()}
   catch(e){db=null;loaded={e:true,l:true};$('#blank').hidden=false;$('#blank').firstElementChild.textContent='The book could not be loaded. Please try again in a moment.'}
 }
