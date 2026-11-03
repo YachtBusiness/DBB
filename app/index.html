@@ -125,7 +125,16 @@ label input,label select,label textarea{padding:7px 9px;border:1px solid var(--l
 .two{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
 .msg{background:var(--warn-bg);color:var(--warn);padding:8px 10px;border-radius:5px;font-size:13px}
 
+.menu-btn{display:none;background:none;border:1px solid color-mix(in srgb,var(--on-navy) 35%,transparent);border-radius:6px;color:var(--on-navy);padding:6px 9px;cursor:pointer;line-height:0}
+.menu{position:absolute;z-index:10;right:16px;top:56px;background:var(--surface);color:var(--ink);border:1px solid var(--line);border-radius:8px;box-shadow:0 10px 30px rgb(0 0 0 / .25);padding:6px;display:flex;flex-direction:column;min-width:190px}
+.menu a{color:inherit;text-decoration:none;padding:10px 12px;border-radius:5px}.menu a:hover,.menu a:focus-visible{background:var(--wash)}
+.menu small{padding:8px 12px 4px;color:var(--muted);border-top:1px solid var(--line);margin-top:4px}
+.foot{background:var(--navy);color:var(--on-navy);display:flex;flex-wrap:wrap;align-items:center;gap:6px 18px;padding:8px 20px;font-size:12.5px}
+.foot a{color:inherit;opacity:.85;text-decoration:none}.foot a:hover{opacity:1;text-decoration:underline}
+.foot span{margin-left:auto;opacity:.6}
+.top{position:relative}
 @media (max-width:860px){
+  .menu-btn{display:inline-block}.foot{display:none}
   #scope{flex:1 1 100%;max-width:none}
   .when{flex:1 1 100%}.when input{flex:1}
   html,body{height:auto}
@@ -139,7 +148,9 @@ label input,label select,label textarea{padding:7px 9px;border:1px solid var(--l
 </style>
 
 <header class="top">
-  <div class="brand"><h1>The Dark Blue Book</h1><span>The who's who of yacht racing <small id="ver" style="opacity:.6;margin-left:6px">v0.1.1</small></span></div>
+  <div class="brand"><h1>The Dark Blue Book</h1><span>The who's who of yacht racing <small id="ver" style="opacity:.6;margin-left:6px">v0.1.2</small></span></div>
+  <button type="button" class="menu-btn" id="menuBtn" aria-label="Contact and links" aria-expanded="false" aria-controls="menu"><svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="M2 4h14M2 9h14M2 14h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
+  <nav class="menu" id="menu" hidden aria-label="Contact"><a href="https://wa.me/61439790410" target="_blank" rel="noopener">WhatsApp</a><a href="https://www.linkedin.com/groups/2023604/" target="_blank" rel="noopener">LinkedIn</a><a href="https://www.facebook.com/darkbluebook" target="_blank" rel="noopener">Facebook</a><a href="mailto:editor@darkbluebook.com">Email</a><small>© The Dark Blue Book · v0.1.2</small></nav>
   <div class="lens" role="group" aria-label="What to show">
     <button type="button" data-lens="all" aria-pressed="true">Everything</button>
     <button type="button" data-lens="money" aria-pressed="false">Money</button>
@@ -157,6 +168,7 @@ label input,label select,label textarea{padding:7px 9px;border:1px solid var(--l
   </section>
   <aside id="panel" aria-live="polite"></aside>
 </main>
+<footer class="foot" aria-label="Contact"><a href="https://wa.me/61439790410" target="_blank" rel="noopener">WhatsApp</a><a href="https://www.linkedin.com/groups/2023604/" target="_blank" rel="noopener">LinkedIn</a><a href="https://www.facebook.com/darkbluebook" target="_blank" rel="noopener">Facebook</a><a href="mailto:editor@darkbluebook.com">Email</a><span>© The Dark Blue Book · v0.1.2</span></footer>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
 <script>
@@ -365,7 +377,9 @@ q.addEventListener('input',()=>{const s=q.value.trim().toLowerCase();if(!s){hits
   hits.innerHTML=r.length?r.map(e=>`<li><button type="button" data-id="${esc(e.id)}">${esc(e.name)}<small>${esc(kindLabel(e))}</small></button></li>`).join(''):'<li><button type="button" disabled>No entry by that name</button></li>';hits.hidden=false});
 hits.addEventListener('click',e=>{const b=e.target.closest('button[data-id]');if(!b)return;hits.hidden=true;q.value='';
   if(!nodes.some(n=>n.id===b.dataset.id)){if(lens!=='all')document.querySelector('.lens [data-lens="all"]').click();if(!nodes.some(n=>n.id===b.dataset.id)){allTime=true;syncWhen();needFit=true;build()}}pick(b.dataset.id)});
-document.addEventListener('click',e=>{if(!e.target.closest('.find'))hits.hidden=true});
+document.addEventListener('click',e=>{if(!e.target.closest('.find'))hits.hidden=true;if(!e.target.closest('#menu,#menuBtn')){$('#menu').hidden=true;$('#menuBtn').setAttribute('aria-expanded','false')}});
+$('#menuBtn').addEventListener('click',()=>{const m=$('#menu');m.hidden=!m.hidden;$('#menuBtn').setAttribute('aria-expanded',String(!m.hidden))});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#menu').hidden){$('#menu').hidden=true;$('#menuBtn').setAttribute('aria-expanded','false');$('#menuBtn').focus()}});
 $('#legend').innerHTML=[['person','Person'],['team','Team'],['club','Yacht club'],['event','Event'],['venue','Venue'],['class','Boat class'],['record','Record'],['sponsor','Sponsor'],['supplier','Supplier'],['owner','Owner'],['media','Media'],['org','Other organisation']].map(([k,t])=>`<span><i style="background:var(--t-${k})"></i>${t}</span>`).join('')+
   Object.keys(CATS).map(c=>`<span><b style="border-color:var(--c-${c})"></b>${CATS[c]}</span>`).join('')+'<span><b class="dash"></b>Dashed line: unverified</span>';
 

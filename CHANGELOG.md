@@ -2,6 +2,10 @@
 
 Version plan: 0.1 public map live · 0.2 editing moves to Supabase · 0.3 sign-in, applications and claims · 0.4 paid tiers, organisation editing, contact details · 1.0 membership network opens · 1.x events and intros. Small fixes in between are 0.x.1, 0.x.2 and so on.
 
+## 0.1.2 (3 November 2026)
+
+- Contact links (WhatsApp, LinkedIn group, Facebook, email): a footer bar on desktop, a menu button in the header on mobile.
+
 ## 0.1.1 (3 November 2026)
 
 - "Season" renamed "Year" in the header slider and the overview heading.
