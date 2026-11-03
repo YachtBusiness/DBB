@@ -139,14 +139,14 @@ label input,label select,label textarea{padding:7px 9px;border:1px solid var(--l
 </style>
 
 <header class="top">
-  <div class="brand"><h1>The Dark Blue Book</h1><span>The who's who of yacht racing <small id="ver" style="opacity:.6;margin-left:6px">v0.1.0</small></span></div>
+  <div class="brand"><h1>The Dark Blue Book</h1><span>The who's who of yacht racing <small id="ver" style="opacity:.6;margin-left:6px">v0.1.1</small></span></div>
   <div class="lens" role="group" aria-label="What to show">
     <button type="button" data-lens="all" aria-pressed="true">Everything</button>
     <button type="button" data-lens="money" aria-pressed="false">Money</button>
     <button type="button" data-lens="people" aria-pressed="false">People</button>
   </div>
   <select id="scope" aria-label="Show one series"><option value="">All series &amp; events</option></select>
-  <div class="when"><button type="button" id="alltime" aria-pressed="false">All time</button><label for="yr">Season</label><input type="range" id="yr" min="2019" max="2026" step="1" value="2026"><output id="yrv" for="yr">2026</output></div>
+  <div class="when"><button type="button" id="alltime" aria-pressed="false">All time</button><label for="yr">Year</label><input type="range" id="yr" min="2019" max="2026" step="1" value="2026"><output id="yrv" for="yr">2026</output></div>
   <div class="find"><input id="q" type="search" placeholder="Find a sailor, team or brand" autocomplete="off" aria-label="Find an entry"><ul class="hits" id="hits" hidden></ul></div>
 </header>
 <main>
@@ -219,7 +219,7 @@ function build(){
   n.select('text').attr('x',d=>d.r+4).text(d=>d.name);
   sim.nodes(nodes);sim.force('link').links(links);sim.alpha(pos.size? .35:1).restart();
   $('#blank').hidden=nodes.length>0;
-  if(!nodes.length)$('#blank').firstElementChild.textContent=!db?'The book can’t be opened in this view. Sign in to see the map.':(loaded.e&&loaded.l)?(E.size?'Nothing recorded for this season through this lens.':'Nothing in the book yet. Use New entry to add the first one.'):'Opening the book…';
+  if(!nodes.length)$('#blank').firstElementChild.textContent=!db?'The book can’t be opened in this view. Sign in to see the map.':(loaded.e&&loaded.l)?(E.size?'Nothing recorded for this year through this lens.':'Nothing in the book yet. Use New entry to add the first one.'):'Opening the book…';
   paint();boot();
 }
 function tick(){
@@ -290,7 +290,7 @@ function render(){
   const list=(a,word)=>a.sort((x,y)=>y[1]-x[1]||x[0].name.localeCompare(y[0].name)).map(([e,n])=>`<li><div class="rl"><button type="button" class="ent" data-go="${esc(e.id)}">${esc(e.name)}</button><span class="role">${n} ${word}</span></div></li>`).join('');
   const un=A.filter(l=>!l.source).length;
   panel.innerHTML=`<p class="lede">A live, dynamic who’s who of the yacht racing business. Search or click through to see the connections.</p>
-    <h3>${(scope&&E.has(scope)?E.get(scope).name+' \u00b7 ':'')+(allTime?'All time':'Season '+year)}</h3><dl class="stats"><div><dt>Entries</dt><dd>${nodes.length}</dd></div><div><dt>Links</dt><dd>${A.length}</dd></div><div><dt>Need a source</dt><dd>${un}</dd></div></dl>${m}
+    <h3>${(scope&&E.has(scope)?E.get(scope).name+' \u00b7 ':'')+(allTime?'All time':'Year '+year)}</h3><dl class="stats"><div><dt>Entries</dt><dd>${nodes.length}</dd></div><div><dt>Links</dt><dd>${A.length}</dd></div><div><dt>Need a source</dt><dd>${un}</dd></div></dl>${m}
     ${brands.length?`<section><h3><b style="border-color:var(--c-spon)"></b>Sponsors backing more than one property</h3><ul class="rel">${list(brands,'deals')}</ul></section>`:''}
     ${hats.length?`<section><h3><b style="border-color:var(--c-ppl)"></b>People wearing more than one hat</h3><ul class="rel">${list(hats,'roles')}</ul></section>`:''}${tools}`;
 }
