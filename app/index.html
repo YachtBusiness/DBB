@@ -160,9 +160,9 @@ label input,label select,label textarea{padding:7px 9px;border:1px solid var(--l
 </style>
 
 <header class="top">
-  <div class="brand"><h1>The Dark Blue Book</h1><span>The who's who of yacht racing <small id="ver" style="opacity:.6;margin-left:6px">v0.1.8</small></span></div>
+  <div class="brand"><h1>The Dark Blue Book</h1><span>The who's who of yacht racing <small id="ver" style="opacity:.6;margin-left:6px">v0.1.9</small></span></div>
   <button type="button" class="menu-btn" id="menuBtn" aria-label="Contact and links" aria-expanded="false" aria-controls="menu"><svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="M2 4h14M2 9h14M2 14h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
-  <nav class="menu" id="menu" hidden aria-label="Contact"><a href="https://wa.me/61439790410" target="_blank" rel="noopener">WhatsApp</a><a href="https://www.linkedin.com/groups/2023604/" target="_blank" rel="noopener">LinkedIn</a><a href="https://www.facebook.com/darkbluebook" target="_blank" rel="noopener">Facebook</a><a href="mailto:editor@darkbluebook.com">Email</a><small>© The Dark Blue Book · v0.1.8</small></nav>
+  <nav class="menu" id="menu" hidden aria-label="Contact"><a href="https://wa.me/61439790410" target="_blank" rel="noopener">WhatsApp</a><a href="https://www.linkedin.com/groups/2023604/" target="_blank" rel="noopener">LinkedIn</a><a href="https://www.facebook.com/darkbluebook" target="_blank" rel="noopener">Facebook</a><a href="mailto:editor@darkbluebook.com">Email</a><small>© The Dark Blue Book · v0.1.9</small></nav>
   <div class="lens" role="group" aria-label="What to show">
     <button type="button" data-lens="all" aria-pressed="true">Everything</button>
     <button type="button" data-lens="money" aria-pressed="false">Money</button>
@@ -180,7 +180,7 @@ label input,label select,label textarea{padding:7px 9px;border:1px solid var(--l
   </section>
   <aside id="panel" aria-live="polite"></aside>
 </main>
-<footer class="foot" aria-label="Contact"><a href="https://wa.me/61439790410" target="_blank" rel="noopener">WhatsApp</a><a href="https://www.linkedin.com/groups/2023604/" target="_blank" rel="noopener">LinkedIn</a><a href="https://www.facebook.com/darkbluebook" target="_blank" rel="noopener">Facebook</a><a href="mailto:editor@darkbluebook.com">Email</a><span>© The Dark Blue Book · v0.1.8</span></footer>
+<footer class="foot" aria-label="Contact"><a href="https://wa.me/61439790410" target="_blank" rel="noopener">WhatsApp</a><a href="https://www.linkedin.com/groups/2023604/" target="_blank" rel="noopener">LinkedIn</a><a href="https://www.facebook.com/darkbluebook" target="_blank" rel="noopener">Facebook</a><a href="mailto:editor@darkbluebook.com">Email</a><span>© The Dark Blue Book · v0.1.9</span></footer>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
 <script>
@@ -335,7 +335,7 @@ function render(){
   if(sel){const e=E.get(sel),mine=L.filter(l=>l.from===sel||l.to===sel).sort((a,b)=>(active(b)-active(a))||((yr(b.start)||0)-(yr(a.start)||0)));let h='';
     const cur=mine.filter(active),past=mine.filter(l=>!active(l));
     for(const c of ['ppl','spon','own','str']){const g=cur.filter(l=>(CATS[l.cat]?l.cat:'str')===c);
-      if(g.length)h+=`<details class="grp"${h?'':' open'}><summary><b style="border-color:var(--c-${c})"></b>${CATS[c]} <span class="cnt">${g.length}</span></summary><ul class="rel">${g.map(l=>row(l,sel)).join('')}</ul></details>`}
+      if(g.length)h+=`<details class="grp"${h?'':' open'}><summary><b style="border-color:var(--c-${c})"></b>${c==='ppl'&&e.type==='person'?'Role':CATS[c]} <span class="cnt">${g.length}</span></summary><ul class="rel">${g.map(l=>row(l,sel)).join('')}</ul></details>`}
     if(past.length)h+=`<details class="grp"><summary><b style="border-color:var(--muted)"></b>Past <span class="cnt">${past.length}</span></summary><ul class="rel">${past.map(l=>row(l,sel)).join('')}</ul></details>`;
     panel.innerHTML=`<div><div class="kind"><i style="background:${tvar(e)}"></i>${esc(kindLabel(e))}${e.sectors.length?`<span class="sec">${esc(e.sectors.join(' \u00b7 '))}</span>`:''}${e.country?`<span class="cc">${esc(e.country)}</span>`:''}</div>
       <h2>${esc(e.name)}</h2>${e.note?`<p class="note">${esc(e.note)}</p>`:''}</div>${m}
