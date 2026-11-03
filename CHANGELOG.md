@@ -2,6 +2,10 @@
 
 Version plan: 0.1 public map live · 0.2 editing moves to Supabase · 0.3 sign-in, applications and claims · 0.4 paid tiers, organisation editing, contact details · 1.0 membership network opens · 1.x events and intros. Small fixes in between are 0.x.1, 0.x.2 and so on.
 
+## 0.1.8 (3 November 2026)
+
+- Entry panel: link groups show only links current in the selected year. Earlier ones move to a collapsed "Past" group at the bottom.
+
 ## 0.1.7 (3 November 2026)
 
 - Entry panel: every link group (People, Commercial, Ownership, Structure) is collapsible, with a count. The first group with links opens by default; the rest start closed.
