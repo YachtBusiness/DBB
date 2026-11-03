@@ -1,0 +1,390 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><style>[hidden]{display:none!important}</style>
+<meta name="description" content="The who's who of yacht racing: the people, teams, clubs, sponsors and events of the sport, and how they connect.">
+<title>The Dark Blue Book</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one working screen. A chart table (the graph) with a reference page beside it, like a pilot book open next to the chart. */
+:root{
+  --bg:#eef1f7; --surface:#ffffff; --ink:#0e1d3a; --muted:#566381; --line:#d3dae8; --wash:#e3e8f2;
+  --navy:#12264d; --on-navy:#f2f5fb;
+  --t-person:#12806c; --t-team:#1d5fc4; --t-club:#8a6a3b; --t-event:#3a4f80; --t-venue:#2f8a3d; --t-class:#7a52a8; --t-record:#c2379a; --t-entry:#6b7896; --t-org:#56627c; --t-sponsor:#b07a08; --t-supplier:#3f7f97; --t-media:#b4532a; --t-owner:#a63a55;
+  --c-own:#a63a55; --c-spon:#b07a08; --c-ppl:#12806c; --c-str:#9aa6bf;
+  --warn:#9a5b00; --warn-bg:#fbefd6; --danger:#a3243b;
+  --display:"Newsreader",Georgia,"Times New Roman",serif;
+  --ui:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#091228; --surface:#0f1c3b; --ink:#e8edf9; --muted:#93a2c2; --line:#22335c; --wash:#16264b;
+  --navy:#050c1d; --on-navy:#e8edf9;
+  --t-person:#45c2a9; --t-team:#6ea4ff; --t-club:#d9b98a; --t-event:#b9c6e6; --t-venue:#7fd08a; --t-class:#b592e6; --t-record:#f08ad0; --t-entry:#8e9bbb; --t-org:#a9b4cc; --t-sponsor:#e3b040; --t-supplier:#6fb8d2; --t-media:#f0986b; --t-owner:#e87a95;
+  --c-own:#e87a95; --c-spon:#e3b040; --c-ppl:#45c2a9; --c-str:#44557f;
+  --warn:#f0c26a; --warn-bg:#3a2c0c; --danger:#ff8fa3; color-scheme:dark } }
+:root[data-theme="dark"]{
+  --bg:#091228; --surface:#0f1c3b; --ink:#e8edf9; --muted:#93a2c2; --line:#22335c; --wash:#16264b;
+  --navy:#050c1d; --on-navy:#e8edf9;
+  --t-person:#45c2a9; --t-team:#6ea4ff; --t-club:#d9b98a; --t-event:#b9c6e6; --t-venue:#7fd08a; --t-class:#b592e6; --t-record:#f08ad0; --t-entry:#8e9bbb; --t-org:#a9b4cc; --t-sponsor:#e3b040; --t-supplier:#6fb8d2; --t-media:#f0986b; --t-owner:#e87a95;
+  --c-own:#e87a95; --c-spon:#e3b040; --c-ppl:#45c2a9; --c-str:#44557f;
+  --warn:#f0c26a; --warn-bg:#3a2c0c; --danger:#ff8fa3; color-scheme:dark }
+
+*{box-sizing:border-box}
+html,body{height:100%}
+body{background:var(--bg);color:var(--ink);font-family:var(--ui);font-size:14px;line-height:1.45;display:flex;flex-direction:column}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--t-team);outline-offset:2px}
+
+.top{background:var(--navy);color:var(--on-navy);padding:12px 20px;display:flex;flex-wrap:wrap;gap:12px 24px;align-items:center}
+.brand{display:flex;flex-direction:column;min-width:0;margin-right:auto}
+.brand h1{font-family:var(--display);font-weight:600;font-size:24px;line-height:1.1;margin:0;letter-spacing:.005em}
+.brand span{font-size:12px;opacity:.75;letter-spacing:.04em}
+.lens{display:flex;border:1px solid color-mix(in srgb,var(--on-navy) 35%,transparent);border-radius:999px;overflow:hidden}
+.lens button{background:none;border:0;padding:6px 14px;color:var(--on-navy);cursor:pointer;font-size:13px}
+.lens button[aria-pressed="true"]{background:var(--on-navy);color:var(--navy);font-weight:600}
+#scope{padding:6px 10px;border-radius:6px;border:1px solid color-mix(in srgb,var(--on-navy) 35%,transparent);background:var(--navy);color:var(--on-navy);font-size:13px;max-width:165px}
+.when{display:flex;align-items:center;gap:8px;font-size:13px}
+.when label{flex-direction:row;color:var(--on-navy);opacity:.75;font-size:12px}
+.when input{width:120px;accent-color:var(--on-navy)}
+.when output{font-family:var(--mono);font-variant-numeric:tabular-nums;min-width:4ch}
+.when button{background:none;border:1px solid color-mix(in srgb,var(--on-navy) 35%,transparent);border-radius:999px;padding:5px 12px;color:var(--on-navy);cursor:pointer;font-size:13px}
+.when button[aria-pressed="true"]{background:var(--on-navy);color:var(--navy);font-weight:600}
+.when.off input,.when.off output,.when.off label{opacity:.35}
+ul.rel li.past{opacity:.55}
+.tl{display:flex;flex-direction:column;gap:7px}
+.tl .ax{display:flex;justify-content:space-between;font:11px var(--mono);color:var(--muted)}
+.tl .r{display:grid;gap:3px;min-width:0}
+.tl .r span{font-size:12px}
+.tl .trk{height:7px;background:var(--wash);border-radius:2px;position:relative;overflow:hidden}
+.tl .trk i{position:absolute;top:0;bottom:0;border-radius:2px}
+.find{position:relative;flex:0 1 210px;min-width:160px}
+.find input{width:100%;padding:7px 12px;border-radius:6px;border:1px solid color-mix(in srgb,var(--on-navy) 35%,transparent);background:color-mix(in srgb,var(--on-navy) 10%,transparent);color:var(--on-navy)}
+.find input::placeholder{color:var(--on-navy);opacity:.6}
+.hits{position:absolute;z-index:5;left:0;right:0;top:calc(100% + 4px);background:var(--surface);color:var(--ink);border:1px solid var(--line);border-radius:6px;list-style:none;margin:0;padding:4px;box-shadow:0 8px 24px rgb(0 0 0 / .25)}
+.hits button{display:flex;gap:8px;align-items:baseline;width:100%;text-align:left;background:none;border:0;padding:6px 8px;border-radius:4px;cursor:pointer}
+.hits button:hover,.hits button:focus-visible{background:var(--wash)}
+.hits small{color:var(--muted);margin-left:auto}
+
+main{flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,1fr) 400px}
+.chart{position:relative;min-width:0;min-height:0;overflow:hidden}
+#g{display:block;width:100%;height:100%;cursor:grab;touch-action:none}
+#g:active{cursor:grabbing}
+.lk{fill:none;stroke-width:1.3;opacity:.75}
+.lk.own{stroke:var(--c-own)} .lk.spon{stroke:var(--c-spon)} .lk.ppl{stroke:var(--c-ppl)} .lk.str{stroke:var(--c-str)}
+.lk.unsrc{stroke-dasharray:4 4}
+.lk.dim{opacity:.07} .lk.hot{stroke-width:2.2;opacity:1}
+.nd{cursor:pointer}
+.nd circle{stroke:var(--bg);stroke-width:1.5}
+.nd.person circle{fill:var(--t-person)} .nd.team circle{fill:var(--t-team)} .nd.club circle{fill:var(--t-club)} .nd.event circle{fill:var(--t-event)} .nd.venue circle{fill:var(--t-venue)} .nd.class circle{fill:var(--t-class)} .nd.record circle{fill:var(--t-record)} .nd.entry circle{fill:var(--t-entry)} .nd.org circle{fill:var(--t-org)} .nd.sponsor circle{fill:var(--t-sponsor)} .nd.supplier circle{fill:var(--t-supplier)} .nd.media circle{fill:var(--t-media)} .nd.owner circle{fill:var(--t-owner)}
+.nd.edition circle{fill:var(--t-edition)} .nd.media circle{fill:var(--t-media)} .nd.host circle{fill:var(--t-host)} .nd.club circle{fill:var(--t-club)} .nd.record circle{fill:var(--t-record)} .nd.org circle{fill:var(--t-org)} .nd.brand circle{fill:var(--t-brand)} .nd.investor circle{fill:var(--t-investor)} .nd.class circle{fill:var(--t-class)} .nd.supplier circle{fill:var(--t-supplier)}
+.nd text{font-family:var(--ui);font-size:11px;fill:var(--ink);paint-order:stroke;stroke:var(--bg);stroke-width:3px;stroke-linejoin:round;pointer-events:none;display:none}
+.nd.lab text{display:block}
+.nd.dim{opacity:.13}
+.nd.sel circle{stroke:var(--ink);stroke-width:2.5}
+.nd:focus-visible{outline:none} .nd:focus-visible circle{stroke:var(--ink);stroke-width:2.5}
+.legend{position:absolute;left:16px;bottom:12px;right:16px;display:flex;flex-wrap:wrap;gap:4px 14px;font-size:11.5px;color:var(--muted);pointer-events:none}
+.legend i{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:5px;vertical-align:-1px}
+.legend b{display:inline-block;width:16px;height:0;border-top:2px solid;margin-right:5px;vertical-align:3px}
+.legend b.dash{border-top-style:dashed;border-color:var(--muted)}
+.blank{position:absolute;inset:0;display:grid;place-items:center;text-align:center;padding:24px;color:var(--muted)}
+.blank p{max-width:38ch;font-family:var(--display);font-size:19px;margin:0}
+
+aside{background:var(--surface);border-left:1px solid var(--line);overflow-y:auto;min-width:0;padding:20px;display:flex;flex-direction:column;gap:18px}
+.kind{display:flex;align-items:center;gap:8px;font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:var(--muted)}
+.kind i{width:9px;height:9px;border-radius:50%}
+.kind .sec{letter-spacing:.04em;text-transform:none;font-size:12px}
+.checks{display:flex;flex-wrap:wrap;gap:4px 12px}.checks label{flex-direction:row;align-items:center;gap:5px;color:var(--ink);font-size:13px}.checks input{width:auto}
+.kind .cc{font-family:var(--mono);letter-spacing:.06em;margin-left:auto;color:var(--ink);border:1px solid var(--line);padding:1px 6px;border-radius:3px}
+h2{font-family:var(--display);font-weight:600;font-size:28px;line-height:1.12;margin:4px 0 0;text-wrap:balance}
+.note{color:var(--muted);margin:6px 0 0}
+.claim{font-size:12px;color:var(--muted);margin:8px 0 0}
+h3{font-size:11px;letter-spacing:.09em;text-transform:uppercase;font-weight:600;margin:0 0 6px;display:flex;align-items:center;gap:7px}
+h3 b{width:14px;border-top:2px solid}
+ul.rel{list-style:none;margin:0;padding:0;border-top:1px solid var(--line)}
+ul.rel li{padding:9px 0;border-bottom:1px solid var(--line);display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 8px}
+.rl{display:flex;flex-wrap:wrap;gap:2px 8px;align-items:baseline;min-width:0}
+.role{color:var(--muted)}
+.ent{background:none;border:0;padding:0;font-weight:600;cursor:pointer;text-align:left;text-decoration:underline;text-decoration-color:var(--line);text-underline-offset:3px}
+.ent:hover{text-decoration-color:currentColor}
+.meta{grid-column:1;font-size:12px;color:var(--muted);display:flex;flex-wrap:wrap;gap:2px 10px}
+.meta a{color:inherit}
+.chip{background:var(--warn-bg);color:var(--warn);border-radius:3px;padding:0 6px;font-size:11px;font-weight:500}
+.mini{grid-column:2;grid-row:1 / span 2;align-self:start;background:none;border:1px solid var(--line);border-radius:4px;padding:2px 8px;font-size:12px;cursor:pointer;color:var(--muted)}
+.mini:hover{color:var(--ink);border-color:var(--muted)}
+.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:0}
+.stats div{border-top:2px solid var(--ink);padding-top:6px}
+.stats dt{font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}
+.stats dd{margin:0;font-family:var(--display);font-size:26px;font-variant-numeric:tabular-nums;line-height:1.1}
+.lede{font-family:var(--display);font-size:17px;line-height:1.4;margin:0;max-width:44ch}
+.acts{display:flex;flex-wrap:wrap;gap:8px}
+.btn{background:var(--wash);border:1px solid var(--line);border-radius:5px;padding:6px 12px;cursor:pointer;font-weight:500}
+.btn.go{background:var(--ink);color:var(--surface);border-color:var(--ink)}
+.btn.bad{color:var(--danger)}
+form{display:flex;flex-direction:column;gap:12px}
+label{display:flex;flex-direction:column;gap:4px;font-size:12px;color:var(--muted)}
+label input,label select,label textarea{padding:7px 9px;border:1px solid var(--line);border-radius:5px;background:var(--bg);color:var(--ink);font-size:14px;width:100%}
+.two{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.msg{background:var(--warn-bg);color:var(--warn);padding:8px 10px;border-radius:5px;font-size:13px}
+
+@media (max-width:860px){
+  #scope{flex:1 1 100%;max-width:none}
+  .when{flex:1 1 100%}.when input{flex:1}
+  html,body{height:auto}
+  main{grid-template-columns:minmax(0,1fr)}
+  .chart{height:60svh;min-height:340px}
+  aside{border-left:0;border-top:1px solid var(--line);padding:20px 16px}
+  .top{padding:12px 16px}
+  .find{flex:1 1 100%}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<header class="top">
+  <div class="brand"><h1>The Dark Blue Book</h1><span>The who's who of yacht racing</span></div>
+  <div class="lens" role="group" aria-label="What to show">
+    <button type="button" data-lens="all" aria-pressed="true">Everything</button>
+    <button type="button" data-lens="money" aria-pressed="false">Money</button>
+    <button type="button" data-lens="people" aria-pressed="false">People</button>
+  </div>
+  <select id="scope" aria-label="Show one series"><option value="">All series &amp; events</option></select>
+  <div class="when"><button type="button" id="alltime" aria-pressed="false">All time</button><label for="yr">Season</label><input type="range" id="yr" min="2019" max="2026" step="1" value="2026"><output id="yrv" for="yr">2026</output></div>
+  <div class="find"><input id="q" type="search" placeholder="Find a sailor, team or brand" autocomplete="off" aria-label="Find an entry"><ul class="hits" id="hits" hidden></ul></div>
+</header>
+<main>
+  <section class="chart" aria-label="Relationship map">
+    <svg id="g" role="img" aria-label="Map of teams, people, brands and events and the links between them"></svg>
+    <div class="blank" id="blank"><p>Opening the book…</p></div>
+    <div class="legend" id="legend"></div>
+  </section>
+  <aside id="panel" aria-live="polite"></aside>
+</main>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
+<script>
+(function(){
+const TYPES={person:'Person',team:'Team',club:'Yacht club',org:'Organisation',event:'Event',entry:'Entry',class:'Boat class',venue:'Venue',record:'Record'};
+const LEVELS={series:'Series',event:'Event',edition:'Edition',round:'Round'};
+const SECTORS=['sponsor','supplier','owner','media','agency','organiser','governing body','class association','industry body','public body','nonprofit'];
+const LEGACY={series:{type:'event',level:'series'},edition:{type:'event',level:'edition'},host:{type:'venue'},brand:{type:'org',sectors:['sponsor']},supplier:{type:'org',sectors:['supplier']},media:{type:'org',sectors:['media']},investor:{type:'org',sectors:['owner']}};
+const COLOURED=['sponsor','supplier','owner','media'];
+function norm(e){const g=LEGACY[e.type];if(g){e.legacyType=e.legacyType||e.type;e.type=g.type;if(g.level&&!e.level)e.level=g.level;if(g.sectors&&!(e.sectors||[]).length)e.sectors=g.sectors.slice()}
+  if(!TYPES[e.type])e.type='org';e.sectors=Array.isArray(e.sectors)?e.sectors:[];e.level=e.type==='event'?(LEVELS[e.level]?e.level:'event'):'';return e}
+const ck=e=>e.type==='org'?(COLOURED.find(s=>e.sectors.includes(s))||'org'):e.type;
+const kindLabel=e=>e.type==='event'&&e.level&&e.level!=='event'?LEVELS[e.level]:TYPES[e.type];
+const CATS={own:'Ownership',spon:'Commercial',ppl:'People',str:'Structure'};
+const ROLES=['owner','co-owner','majority owner','minority owner','investor','backer','co-founder','title partner','presenting partner','main partner','partner','supplier','driver','skipper','helm','team principal','defender','challenger','wing trimmer','strategist','crew','CEO','coach','competes in','round of','set','ratified','organiser','represents','host city','stopover host','finish host','broadcast partner','production partner','commentator','journalist'];
+const LENS={all:null,money:['own','spon'],people:['ppl']};
+let E=new Map(),L=[],sel=null,lens='all',mode='view',editing=null,canEdit=false,db=null,loaded={e:false,l:false},msg='',zk=1;
+const $=s=>document.querySelector(s),panel=$('#panel');
+const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const tvar=e=>'var(--t-'+ck(e)+')';
+const byName=()=>[...E.values()].sort((a,b)=>a.name.localeCompare(b.name));
+
+/* ---------- graph ---------- */
+const svg=d3.select('#g'),root=svg.append('g'),linkG=root.append('g'),nodeG=root.append('g');
+let nodes=[],links=[],pos=new Map(),needFit=true;
+const NOW=new Date().getFullYear();let year=NOW,allTime=false,scope='';
+function core(){if(!scope||!E.has(scope))return null;const s=new Set([scope]);let grew=true;while(grew){grew=false;L.forEach(l=>{if(l.cat==='str'&&s.has(l.to)&&!s.has(l.from)){s.add(l.from);grew=true}})}return s}
+const yr=s=>{const m=/^(\d{4})/.exec(s||'');return m?+m[1]:null};
+function active(l){if(allTime)return true;const a=yr(l.start),b=yr(l.end);if(a==null&&b==null)return year===NOW;return(a==null||a<=year)&&(b==null||b>=year)}
+const zoom=d3.zoom().scaleExtent([.25,5]).on('zoom',e=>{root.attr('transform',e.transform);zk=e.transform.k;paint()});
+svg.call(zoom).on('click',e=>{if(e.target===svg.node())pick(null)});
+const sim=d3.forceSimulation()
+  .force('link',d3.forceLink().id(d=>d.id).distance(d=>d.cat==='str'?80:48).strength(.45))
+  .force('charge',d3.forceManyBody().strength(-280))
+  .force('x',d3.forceX().strength(.05)).force('y',d3.forceY().strength(.08))
+  .force('collide',d3.forceCollide(d=>d.r+7)).on('tick',tick);
+function size(){const b=$('.chart').getBoundingClientRect();if(b.width&&b.height)svg.attr('viewBox',[-b.width/2,-b.height/2,b.width,b.height].join(' '))}
+window.addEventListener('resize',size);size();
+
+function visibleLinks(){const c=LENS[lens],k=core();return L.filter(l=>E.has(l.from)&&E.has(l.to)&&active(l)&&(!c||c.includes(l.cat))&&(!k||k.has(l.from)||k.has(l.to)))}
+function build(){
+  nodes.forEach(n=>pos.set(n.id,{x:n.x,y:n.y}));
+  const vl=visibleLinks(),deg=new Map();
+  L.filter(active).forEach(l=>{deg.set(l.from,(deg.get(l.from)||0)+1);deg.set(l.to,(deg.get(l.to)||0)+1)});
+  const keep=new Set();vl.forEach(l=>{keep.add(l.from);keep.add(l.to)});
+  nodes=[...E.values()].filter(e=>(lens==='all'&&allTime&&!scope)||keep.has(e.id)).map(e=>{const p=pos.get(e.id)||{},d=deg.get(e.id)||0;
+    return {id:e.id,name:e.name,type:e.type,level:e.level,ck:ck(e),kl:kindLabel(e),deg:d,r:(e.level==='series'?9:(e.level==='edition'||e.level==='round')?7:4.5)+Math.sqrt(d)*2.3,x:p.x,y:p.y}});
+  const pairs=new Map();
+  links=vl.map(l=>{const k=[l.from,l.to].sort().join('|'),a=pairs.get(k)||[];const o={id:l.id,tip:E.get(l.from).name+' \u00b7 '+l.role+' \u00b7 '+E.get(l.to).name+(l.source?'':' (unverified)'),source:l.from,target:l.to,cat:CATS[l.cat]?l.cat:'str',unsrc:!l.source,i:a.length,grp:a};a.push(o);pairs.set(k,a);return o});
+  linkG.selectAll('path').data(links,d=>d.id).join(en=>{const q=en.append('path');q.append('title');return q}).select('title').text(d=>d.tip);
+  const n=nodeG.selectAll('g.nd').data(nodes,d=>d.id).join(en=>{
+    const g=en.append('g').attr('class','nd').attr('tabindex',0).attr('role','button');
+    g.append('circle');g.append('text').attr('dy','.32em');
+    g.on('click',(e,d)=>{e.stopPropagation();pick(d.id)}).on('keydown',(e,d)=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();pick(d.id)}});
+    g.call(d3.drag().on('start',(e,d)=>{if(!e.active)sim.alphaTarget(.25).restart();d.fx=d.x;d.fy=d.y})
+      .on('drag',(e,d)=>{d.fx=e.x;d.fy=e.y}).on('end',(e,d)=>{if(!e.active)sim.alphaTarget(0);d.fx=null;d.fy=null}));
+    return g});
+  n.attr('aria-label',d=>d.name+', '+d.kl);
+  n.select('circle').attr('r',d=>d.r);
+  n.select('text').attr('x',d=>d.r+4).text(d=>d.name);
+  sim.nodes(nodes);sim.force('link').links(links);sim.alpha(pos.size? .35:1).restart();
+  $('#blank').hidden=nodes.length>0;
+  if(!nodes.length)$('#blank').firstElementChild.textContent=!db?'The book can’t be opened in this view. Sign in to see the map.':(loaded.e&&loaded.l)?(E.size?'Nothing recorded for this season through this lens.':'Nothing in the book yet. Use New entry to add the first one.'):'Opening the book…';
+  paint();boot();
+}
+function tick(){
+  linkG.selectAll('path').attr('d',d=>{const s=d.source,t=d.target;if(s.x==null||t.x==null)return'';
+    const flip=s.id>t.id?-1:1,dx=t.x-s.x,dy=t.y-s.y,len=Math.hypot(dx,dy)||1,off=(d.i-(d.grp.length-1)/2)*16*flip;
+    return`M${s.x},${s.y}Q${(s.x+t.x)/2-dy/len*off},${(s.y+t.y)/2+dx/len*off} ${t.x},${t.y}`});
+  nodeG.selectAll('g.nd').attr('transform',d=>`translate(${d.x},${d.y})`);
+  if(needFit&&sim.alpha()<.1){needFit=false;fit()}
+}
+function fit(){if(!nodes.length)return;const b=$('.chart').getBoundingClientRect(),xs=nodes.map(n=>n.x),ys=nodes.map(n=>n.y);
+  const x0=Math.min(...xs),x1=Math.max(...xs),y0=Math.min(...ys),y1=Math.max(...ys);
+  const k=Math.max(.25,Math.min(1.3,(b.width-90)/((x1-x0)||1),(b.height-110)/((y1-y0)||1)));
+  svg.transition().duration(matchMedia('(prefers-reduced-motion:reduce)').matches?0:500).call(zoom.transform,d3.zoomIdentity.scale(k).translate(-(x0+x1)/2,-(y0+y1)/2-10/k))}
+function paint(){
+  const near=new Set();if(sel){near.add(sel);links.forEach(l=>{const s=l.source.id||l.source,t=l.target.id||l.target;if(s===sel)near.add(t);if(t===sel)near.add(s)})}
+  nodeG.selectAll('g.nd').attr('class',d=>'nd '+d.ck+(d.id===sel?' sel':'')+(sel&&!near.has(d.id)?' dim':'')+
+    ((sel?near.has(d.id):(d.level==='series'||d.level==='edition'||d.type==='team'||d.deg>=5||zk>1.6))?' lab':''));
+  linkG.selectAll('path').attr('class',d=>{const s=d.source.id||d.source,t=d.target.id||d.target,h=sel&&(s===sel||t===sel);
+    return'lk '+d.cat+(d.unsrc?' unsrc':'')+(sel?(h?' hot':' dim'):'')});
+}
+function pick(id,fromHash){sel=id&&E.has(id)?id:null;mode='view';editing=null;msg='';paint();render();if(!fromHash)syncHash();
+  if(sel&&window.matchMedia('(max-width:860px)').matches)panel.scrollIntoView({behavior:'smooth',block:'start'})}
+
+/* ---------- deep links ---------- */
+let booted=false;
+function syncHash(){const want=sel?'#'+encodeURIComponent(sel):'';if(location.hash===want)return;try{history.pushState(null,'',want||location.pathname+location.search)}catch(e){}}
+function reveal(id){if(!E.has(id))return false;if(nodes.some(n=>n.id===id))return true;
+  if(lens!=='all'){lens='all';document.querySelectorAll('.lens button').forEach(x=>x.setAttribute('aria-pressed',x.dataset.lens==='all'))}
+  if(scope){scope='';scEl.value=''}needFit=true;build();
+  if(!nodes.some(n=>n.id===id)){allTime=true;syncWhen();needFit=true;build()}return true}
+function fromHash(){let id='';try{id=decodeURIComponent(location.hash.slice(1))}catch(e){}
+  if(id&&reveal(id))pick(id,true);else if(!id&&sel)pick(null,true)}
+function boot(){if(booted||!loaded.e||!loaded.l||!E.size)return;booted=true;fromHash()}
+window.addEventListener('popstate',fromHash);window.addEventListener('hashchange',fromHash);
+
+/* ---------- panel ---------- */
+function when(l){return l.start&&l.end?l.start+' to '+l.end:l.start?'since '+l.start:l.end?'until '+l.end:''}
+function src(l){if(!l.source)return'<span class="chip">needs source</span>';let h='source';try{h=new URL(l.source).hostname.replace(/^www\./,'')}catch(e){return'<span>'+esc(l.source)+'</span>'}
+  return`<a href="${esc(l.source)}" target="_blank" rel="noopener">${esc(h)} ↗</a>`}
+function row(l,me){const out=l.from===me,o=E.get(out?l.to:l.from);if(!o)return'';
+  const who=`<button type="button" class="ent" data-go="${esc(o.id)}">${esc(o.name)}</button>`,role=`<span class="role">${esc(l.role)}</span>`;
+  const ctx=l.context&&E.get(l.context)?`<span>in ${esc(E.get(l.context).name)}</span>`:'',w=when(l);
+  return`<li class="${active(l)?'':'past'}"><div class="rl">${out?role+who:who+role}</div>${canEdit?`<button type="button" class="mini" data-editlink="${esc(l.id)}">Edit</button>`:''}
+    <div class="meta">${ctx}${w?`<span>${esc(w)}</span>`:''}${l.note?`<span>${esc(l.note)}</span>`:''}${src(l)}</div></li>`}
+function timeline(mine,me){const d=mine.filter(l=>yr(l.start)!=null||yr(l.end)!=null);if(d.length<2)return'';
+  const ys=d.flatMap(l=>[yr(l.start),yr(l.end)]).filter(v=>v!=null),min=Math.min(...ys),max=Math.max(NOW,...ys),span=max-min+1;
+  const rows=d.slice().sort((a,b)=>(yr(a.start)||min)-(yr(b.start)||min)).map(l=>{const a=yr(l.start)==null?min:yr(l.start),b=yr(l.end)==null?max:yr(l.end),o=E.get(l.from===me?l.to:l.from);
+    return`<div class="r"><span>${esc(l.role)} \u00b7 ${esc(o?o.name:'')}${yr(l.end)==null?' \u2192':''}</span><div class="trk"><i style="left:${(a-min)/span*100}%;width:${(b-a+1)/span*100}%;background:var(--c-${CATS[l.cat]?l.cat:'str'})"></i></div></div>`}).join('');
+  const und=mine.length-d.length;
+  return`<section class="tl"><h3>Timeline</h3><div class="ax"><span>${min}</span><span>${max}</span></div>${rows}${und?`<p class="claim">${und} undated ${und>1?'links':'link'} not shown here.</p>`:''}</section>`}
+function render(){
+  if(mode==='entity')return formEntity();
+  if(mode==='link')return formLink();
+  const tools=canEdit?`<div class="acts"><button type="button" class="btn" data-new="entity">New entry</button><button type="button" class="btn" data-new="link">New link</button>${sel?'<button type="button" class="btn" data-editent="1">Edit this entry</button>':''}</div>`:'';
+  const m=msg?`<div class="msg">${esc(msg)}</div>`:'';
+  if(sel){const e=E.get(sel),mine=L.filter(l=>l.from===sel||l.to===sel).sort((a,b)=>(active(b)-active(a))||((yr(b.start)||0)-(yr(a.start)||0)));let h='';
+    for(const c in CATS){const r=mine.filter(l=>(CATS[l.cat]?l.cat:'str')===c).map(l=>row(l,sel)).join('');
+      if(r)h+=`<section><h3><b style="border-color:var(--c-${c})"></b>${CATS[c]}</h3><ul class="rel">${r}</ul></section>`}
+    panel.innerHTML=`<div><div class="kind"><i style="background:${tvar(e)}"></i>${esc(kindLabel(e))}${e.sectors.length?`<span class="sec">${esc(e.sectors.join(' \u00b7 '))}</span>`:''}${e.country?`<span class="cc">${esc(e.country)}</span>`:''}</div>
+      <h2>${esc(e.name)}</h2>${e.note?`<p class="note">${esc(e.note)}</p>`:''}</div>${m}
+      ${timeline(mine,sel)}${h||'<p class="note">No links recorded yet.</p>'}${tools}<div class="acts"><button type="button" class="btn" data-go="">Back to overview</button>${window.claude?'':'<button type="button" class="btn" data-copy="1">Copy link</button>'}</div>`;
+    return}
+  const brands=[],hats=[];
+  const vis=new Set(visibleLinks().map(l=>l.id)),A=scope?L.filter(l=>vis.has(l.id)):L.filter(active);
+  E.forEach(e=>{const out=A.filter(l=>l.from===e.id&&E.has(l.to));
+    if(e.type==='org'&&e.sectors.includes('sponsor')){const n=out.filter(l=>l.cat==='spon').length;if(n>1)brands.push([e,n])}
+    if(e.type==='person'&&out.length>1)hats.push([e,out.length])});
+  const list=(a,word)=>a.sort((x,y)=>y[1]-x[1]||x[0].name.localeCompare(y[0].name)).map(([e,n])=>`<li><div class="rl"><button type="button" class="ent" data-go="${esc(e.id)}">${esc(e.name)}</button><span class="role">${n} ${word}</span></div></li>`).join('');
+  const un=A.filter(l=>!l.source).length;
+  panel.innerHTML=`<p class="lede">A live, dynamic who’s who of the yacht racing business. Search or click through to see the connections.</p>
+    <h3>${(scope&&E.has(scope)?E.get(scope).name+' \u00b7 ':'')+(allTime?'All time':'Season '+year)}</h3><dl class="stats"><div><dt>Entries</dt><dd>${nodes.length}</dd></div><div><dt>Links</dt><dd>${A.length}</dd></div><div><dt>Need a source</dt><dd>${un}</dd></div></dl>${m}
+    ${brands.length?`<section><h3><b style="border-color:var(--c-spon)"></b>Sponsors backing more than one property</h3><ul class="rel">${list(brands,'deals')}</ul></section>`:''}
+    ${hats.length?`<section><h3><b style="border-color:var(--c-ppl)"></b>People wearing more than one hat</h3><ul class="rel">${list(hats,'roles')}</ul></section>`:''}${tools}`;
+}
+const opt=(v,t,cur)=>`<option value="${esc(v)}"${v===cur?' selected':''}>${esc(t)}</option>`;
+function formEntity(){const e=editing?E.get(editing):{name:'',type:'person',level:'',sectors:[],country:'',note:''};
+  panel.innerHTML=`<form id="fe"><h2>${editing?'Edit entry':'New entry'}</h2>${msg?`<div class="msg">${esc(msg)}</div>`:''}
+    <label>Name<input id="fe-name" required value="${esc(e.name)}"></label>
+    <div class="two"><label>Kind<select id="fe-type">${Object.keys(TYPES).map(k=>opt(k,TYPES[k],e.type)).join('')}</select></label>
+    <label>Level (events only)<select id="fe-level">${Object.keys(LEVELS).map(k=>opt(k,LEVELS[k],e.level||'event')).join('')}</select></label></div>
+    <fieldset class="checks" style="border:0;padding:0;margin:0"><legend style="font-size:12px;color:var(--muted);margin-bottom:4px">Sectors (organisations only)</legend>${SECTORS.map(s=>`<label><input type="checkbox" name="fe-sec" value="${esc(s)}"${e.sectors.includes(s)?' checked':''}>${esc(s)}</label>`).join('')}</fieldset>
+    <div class="two">
+    <label>Country code<input id="fe-country" maxlength="3" placeholder="GBR" value="${esc(e.country)}"></label></div>
+    <label>Note<textarea id="fe-note" rows="3">${esc(e.note)}</textarea></label>
+    <div class="acts"><button class="btn go">Save entry</button><button type="button" class="btn" data-cancel="1">Cancel</button>${editing?'<button type="button" class="btn bad" data-del="entity">Delete entry and its links</button>':''}</div></form>`}
+function formLink(){const l=editing?L.find(x=>x.id===editing):{from:sel||'',to:'',role:'',cat:'spon',context:'',start:'',end:'',source:'',note:''};
+  const ents=byName(),eo=cur=>opt('','Choose…',cur)+ents.map(e=>opt(e.id,e.name+' ('+kindLabel(e)+')',cur)).join('');
+  const ctx=opt('','None',l.context)+ents.filter(e=>e.type==='event').map(e=>opt(e.id,e.name,l.context)).join('');
+  panel.innerHTML=`<form id="fl"><h2>${editing?'Edit link':'New link'}</h2>${msg?`<div class="msg">${esc(msg)}</div>`:''}
+    <label>Who<select id="fl-from" required>${eo(l.from)}</select></label>
+    <div class="two"><label>Is the<input id="fl-role" required list="roles" placeholder="title partner" value="${esc(l.role)}"><datalist id="roles">${ROLES.map(r=>`<option value="${r}">`).join('')}</datalist></label>
+    <label>Kind of link<select id="fl-cat">${Object.keys(CATS).map(k=>opt(k,CATS[k],l.cat)).join('')}</select></label></div>
+    <label>Of<select id="fl-to" required>${eo(l.to)}</select></label>
+    <label>Applies in (optional)<select id="fl-context">${ctx}</select></label>
+    <div class="two"><label>From<input id="fl-start" placeholder="2026 or 2026-06" value="${esc(l.start)}"></label><label>Until<input id="fl-end" placeholder="blank if current" value="${esc(l.end)}"></label></div>
+    <label>Source (a link, or where you saw it)<input id="fl-source" type="text" placeholder="https:// or e.g. team press release, 9 Oct 2026" value="${esc(l.source)}"></label>
+    <label>Note<input id="fl-note" value="${esc(l.note)}"></label>
+    <div class="acts"><button class="btn go">Save link</button><button type="button" class="btn" data-cancel="1">Cancel</button>${editing?'<button type="button" class="btn bad" data-del="link">Delete link</button>':''}</div></form>`}
+const val=id=>document.getElementById(id).value.trim();
+function fail(e){msg=e&&e.code==='invalid_argument'?'That change was not saved. Only editors of this book can change it.':e&&e.code==='quota_exceeded'?'The book is full. Delete some entries before adding more.':'That change was not saved. Try again in a moment.';render()}
+async function saveEntity(){const name=val('fe-name');if(!name)return;let id=editing;
+  if(!id){const base=name.toLowerCase().normalize('NFD').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')||'entry';id=base;let n=2;while(E.has(id))id=base+'-'+n++}
+  const old=editing?E.get(editing):{};
+  const type=val('fe-type'),body={name,type,level:type==='event'?val('fe-level'):'',sectors:type==='org'?[...document.querySelectorAll('input[name="fe-sec"]:checked')].map(x=>x.value):[],country:val('fe-country').toUpperCase(),note:val('fe-note'),claimedBy:old.claimedBy||null};if(old.legacyType)body.legacyType=old.legacyType;
+  try{await db.doc('entities/'+id).set(body);
+    sel=id;mode='view';editing=null;msg='';paint();render()}catch(e){fail(e)}}
+async function saveLink(){const from=val('fl-from'),to=val('fl-to'),role=val('fl-role');
+  if(!from||!to||!role)return;if(from===to){msg='A link needs two different entries.';return render()}
+  const old=editing?L.find(x=>x.id===editing):{};
+  const body={from,to,role,cat:val('fl-cat'),context:val('fl-context'),start:val('fl-start'),end:val('fl-end'),source:val('fl-source'),note:val('fl-note'),status:old.status||'curated'};
+  try{const ref=editing?db.doc('links/'+editing):db.collection('links').doc();await ref.set(body);sel=from;mode='view';editing=null;msg='';paint();render()}catch(e){fail(e)}}
+async function remove(kind){try{
+  if(kind==='link'){await db.doc('links/'+editing).delete()}
+  else{for(const l of L.filter(l=>l.from===editing||l.to===editing))await db.doc('links/'+l.id).delete();await db.doc('entities/'+editing).delete();sel=null}
+  mode='view';editing=null;msg='';paint();render()}catch(e){fail(e)}}
+
+panel.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;const d=b.dataset;
+  if(d.copy){const u=location.href.split('#')[0]+'#'+encodeURIComponent(sel),ok=()=>{b.textContent='Link copied'},no=()=>{b.textContent=u};
+    try{navigator.clipboard.writeText(u).then(ok,no)}catch(e){no()}return}
+  if('go' in d)return pick(d.go||null);
+  if(d.new){mode=d.new;editing=null;msg='';return render()}
+  if(d.editent){mode='entity';editing=sel;msg='';return render()}
+  if(d.editlink){mode='link';editing=d.editlink;msg='';return render()}
+  if(d.cancel){mode='view';editing=null;msg='';return render()}
+  if(d.del){b.outerHTML=`<button type="button" class="btn bad" data-delyes="${d.del}">Yes, delete for good</button><button type="button" class="btn" data-cancel="1">Keep it</button>`;return}
+  if(d.delyes)return remove(d.delyes)});
+panel.addEventListener('submit',e=>{e.preventDefault();e.target.id==='fe'?saveEntity():saveLink()});
+
+/* ---------- header ---------- */
+document.querySelectorAll('.lens button').forEach(b=>b.addEventListener('click',()=>{lens=b.dataset.lens;
+  document.querySelectorAll('.lens button').forEach(x=>x.setAttribute('aria-pressed',x===b));try{localStorage.setItem('dbb-lens',lens)}catch(e){}needFit=true;build()}));
+const scEl=$('#scope');
+function fillScope(){const cur=scope;scEl.innerHTML='<option value="">All series &amp; events</option>'+byName().filter(e=>e.type==='event'&&(e.level==='series'||(e.level==='event'&&L.some(l=>l.cat==='str'&&l.to===e.id&&E.has(l.from)&&E.get(l.from).level==='edition')))).map(e=>opt(e.id,e.name,cur)).join('')}
+scEl.addEventListener('change',()=>{scope=scEl.value;needFit=true;build();if(mode==='view')render()});
+const yrEl=$('#yr'),allBtn=$('#alltime');
+function syncWhen(){yrEl.max=NOW;yrEl.value=year;$('#yrv').textContent=year;allBtn.setAttribute('aria-pressed',allTime);$('.when').classList.toggle('off',allTime)}
+yrEl.addEventListener('input',()=>{year=+yrEl.value;allTime=false;syncWhen();build();if(mode==='view')render()});
+allBtn.addEventListener('click',()=>{allTime=!allTime;syncWhen();needFit=true;build();if(mode==='view')render()});
+syncWhen();
+const q=$('#q'),hits=$('#hits');
+q.addEventListener('input',()=>{const s=q.value.trim().toLowerCase();if(!s){hits.hidden=true;return}
+  const r=byName().filter(e=>e.name.toLowerCase().includes(s)||(e.note||'').toLowerCase().includes(s)).slice(0,8);
+  hits.innerHTML=r.length?r.map(e=>`<li><button type="button" data-id="${esc(e.id)}">${esc(e.name)}<small>${esc(kindLabel(e))}</small></button></li>`).join(''):'<li><button type="button" disabled>No entry by that name</button></li>';hits.hidden=false});
+hits.addEventListener('click',e=>{const b=e.target.closest('button[data-id]');if(!b)return;hits.hidden=true;q.value='';
+  if(!nodes.some(n=>n.id===b.dataset.id)){if(lens!=='all')document.querySelector('.lens [data-lens="all"]').click();if(!nodes.some(n=>n.id===b.dataset.id)){allTime=true;syncWhen();needFit=true;build()}}pick(b.dataset.id)});
+document.addEventListener('click',e=>{if(!e.target.closest('.find'))hits.hidden=true});
+$('#legend').innerHTML=[['person','Person'],['team','Team'],['club','Yacht club'],['event','Event'],['venue','Venue'],['class','Boat class'],['record','Record'],['sponsor','Sponsor'],['supplier','Supplier'],['owner','Owner'],['media','Media'],['org','Other organisation']].map(([k,t])=>`<span><i style="background:var(--t-${k})"></i>${t}</span>`).join('')+
+  Object.keys(CATS).map(c=>`<span><b style="border-color:var(--c-${c})"></b>${CATS[c]}</span>`).join('')+'<span><b class="dash"></b>Dashed line: unverified</span>';
+
+/* ---------- data ---------- */
+render();
+const SB_URL='https://mntfwjwjcfdanxfpipgm.supabase.co',SB_KEY='sb_publishable_XfrmGdoOfFhWgK0ybagpdA_MxfVZauP';
+async function fetchAll(table,cols){const out=[];for(let from=0;;from+=1000){
+  const r=await fetch(`${SB_URL}/rest/v1/${table}?select=${cols}&order=id`,{headers:{apikey:SB_KEY,Range:`${from}-${from+999}`,'Range-Unit':'items'}});
+  if(!r.ok)throw new Error(table+' '+r.status);const rows=await r.json();out.push(...rows);if(rows.length<1000)return out}}
+async function start(){
+  try{const [es,ls]=await Promise.all([fetchAll('entities','id,name,type,sectors,level,country,note'),fetchAll('links','id,from_id,to_id,role,cat,context_id,start_date,end_date,source,note')]);
+    db={};E=new Map(es.map(x=>[x.id,norm({id:x.id,name:x.name,type:x.type,sectors:x.sectors||[],level:x.level||'',country:x.country||'',note:x.note||''})]));
+    L=ls.map(l=>({id:l.id,from:l.from_id,to:l.to_id,role:l.role,cat:l.cat,context:l.context_id||'',start:l.start_date||'',end:l.end_date||'',source:l.source||'',note:l.note||''}));
+    loaded={e:true,l:true};fillScope();yrEl.min=Math.min(NOW-1,...L.map(l=>yr(l.start)||NOW));build();render()}
+  catch(e){db=null;loaded={e:true,l:true};$('#blank').hidden=false;$('#blank').firstElementChild.textContent='The book could not be loaded. Please try again in a moment.'}
+}
+try{const s=localStorage.getItem('dbb-lens');if(s&&LENS[s]!==undefined&&s!=='all'){lens=s;document.querySelectorAll('.lens button').forEach(x=>x.setAttribute('aria-pressed',x.dataset.lens===s))}}catch(e){}
+start();
+})();
+</script>
+
+</html>
