@@ -144,6 +144,9 @@ label input,label select,label textarea{padding:7px 9px;border:1px solid var(--l
 .foot{background:var(--navy);color:var(--on-navy);display:flex;flex-wrap:wrap;align-items:center;gap:6px 18px;padding:8px 20px;font-size:12.5px}
 .foot a{color:inherit;opacity:.85;text-decoration:none}.foot a:hover{opacity:1;text-decoration:underline}
 .foot span{margin-left:auto;opacity:.6}
+.acct{background:none;border:0;padding:0;font:inherit;color:inherit;cursor:pointer;opacity:.85;text-align:left}.acct:hover{opacity:1;text-decoration:underline}
+.menu .acct{padding:10px 12px;border-radius:5px;opacity:1}.menu .acct:hover{background:var(--wash);text-decoration:none}
+.who{font-size:12.5px;color:var(--muted);margin:0}
 .top{position:relative}
 @media (max-width:860px){
   .menu-btn{display:inline-block}.foot{display:none}
@@ -160,9 +163,9 @@ label input,label select,label textarea{padding:7px 9px;border:1px solid var(--l
 </style>
 
 <header class="top">
-  <div class="brand"><h1>The Dark Blue Book</h1><span>The who's who of yacht racing <small id="ver" style="opacity:.6;margin-left:6px">v0.1.10</small></span></div>
+  <div class="brand"><h1>The Dark Blue Book</h1><span>The who's who of yacht racing <small id="ver" style="opacity:.6;margin-left:6px">v0.2.0</small></span></div>
   <button type="button" class="menu-btn" id="menuBtn" aria-label="Contact and links" aria-expanded="false" aria-controls="menu"><svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="M2 4h14M2 9h14M2 14h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
-  <nav class="menu" id="menu" hidden aria-label="Contact"><a href="https://wa.me/61439790410" target="_blank" rel="noopener">WhatsApp</a><a href="https://www.linkedin.com/groups/2023604/" target="_blank" rel="noopener">LinkedIn</a><a href="https://www.facebook.com/darkbluebook" target="_blank" rel="noopener">Facebook</a><a href="mailto:editor@darkbluebook.com">Email</a><small>© The Dark Blue Book · v0.1.10</small></nav>
+  <nav class="menu" id="menu" hidden aria-label="Contact"><a href="https://wa.me/61439790410" target="_blank" rel="noopener">WhatsApp</a><a href="https://www.linkedin.com/groups/2023604/" target="_blank" rel="noopener">LinkedIn</a><a href="https://www.facebook.com/darkbluebook" target="_blank" rel="noopener">Facebook</a><a href="mailto:editor@darkbluebook.com">Email</a><button type="button" class="acct" data-acct="1">Sign in</button><small>© The Dark Blue Book · v0.2.0</small></nav>
   <div class="lens" role="group" aria-label="What to show">
     <button type="button" data-lens="all" aria-pressed="true">Everything</button>
     <button type="button" data-lens="money" aria-pressed="false">Money</button>
@@ -180,7 +183,7 @@ label input,label select,label textarea{padding:7px 9px;border:1px solid var(--l
   </section>
   <aside id="panel" aria-live="polite"></aside>
 </main>
-<footer class="foot" aria-label="Contact"><a href="https://wa.me/61439790410" target="_blank" rel="noopener">WhatsApp</a><a href="https://www.linkedin.com/groups/2023604/" target="_blank" rel="noopener">LinkedIn</a><a href="https://www.facebook.com/darkbluebook" target="_blank" rel="noopener">Facebook</a><a href="mailto:editor@darkbluebook.com">Email</a><span>© The Dark Blue Book · v0.1.10</span></footer>
+<footer class="foot" aria-label="Contact"><a href="https://wa.me/61439790410" target="_blank" rel="noopener">WhatsApp</a><a href="https://www.linkedin.com/groups/2023604/" target="_blank" rel="noopener">LinkedIn</a><a href="https://www.facebook.com/darkbluebook" target="_blank" rel="noopener">Facebook</a><a href="mailto:editor@darkbluebook.com">Email</a><button type="button" class="acct" data-acct="1">Sign in</button><span>© The Dark Blue Book · v0.2.0</span></footer>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
 <script>
@@ -331,6 +334,7 @@ function timeline(mine,me){const d=mine.filter(l=>yr(l.start)!=null||yr(l.end)!=
 function render(){
   if(mode==='entity')return formEntity();
   if(mode==='link')return formLink();
+  if(mode==='signin')return formSignin();
   const tools=canEdit?`<div class="acts"><button type="button" class="btn" data-new="entity">New entry</button><button type="button" class="btn" data-new="link">New link</button>${sel?'<button type="button" class="btn" data-editent="1">Edit this entry</button>':''}</div>`:'';
   const m=msg?`<div class="msg">${esc(msg)}</div>`:'';
   if(sel){const e=E.get(sel),mine=L.filter(l=>l.from===sel||l.to===sel).sort((a,b)=>(active(b)-active(a))||((yr(b.start)||0)-(yr(a.start)||0)));let h='';
@@ -352,6 +356,7 @@ const opt=(v,t,cur)=>`<option value="${esc(v)}"${v===cur?' selected':''}>${esc(t
 function formEntity(){const e=editing?E.get(editing):{name:'',type:'person',level:'',sectors:[],country:'',note:''};
   panel.innerHTML=`<form id="fe"><h2>${editing?'Edit entry':'New entry'}</h2>${msg?`<div class="msg">${esc(msg)}</div>`:''}
     <label>Name<input id="fe-name" required value="${esc(e.name)}"></label>
+    ${editing?`<p class="who">Id: ${esc(editing)}</p>`:`<label>Id (short, lowercase: a surname or brand, e.g. ainslie, rolex)<input id="fe-id" required pattern="[a-z0-9-]+" value=""></label>`}
     <div class="two"><label>Kind<select id="fe-type">${Object.keys(TYPES).map(k=>opt(k,TYPES[k],e.type)).join('')}</select></label>
     <label>Level (events only)<select id="fe-level">${Object.keys(LEVELS).map(k=>opt(k,LEVELS[k],e.level||'event')).join('')}</select></label></div>
     <fieldset class="checks" style="border:0;padding:0;margin:0"><legend style="font-size:12px;color:var(--muted);margin-bottom:4px">Sectors (organisations only)</legend>${SECTORS.map(s=>`<label><input type="checkbox" name="fe-sec" value="${esc(s)}"${e.sectors.includes(s)?' checked':''}>${esc(s)}</label>`).join('')}</fieldset>
@@ -373,22 +378,60 @@ function formLink(){const l=editing?L.find(x=>x.id===editing):{from:sel||'',to:'
     <label>Note<input id="fl-note" value="${esc(l.note)}"></label>
     <div class="acts"><button class="btn go">Save link</button><button type="button" class="btn" data-cancel="1">Cancel</button>${editing?'<button type="button" class="btn bad" data-del="link">Delete link</button>':''}</div></form>`}
 const val=id=>document.getElementById(id).value.trim();
-function fail(e){msg=e&&e.code==='invalid_argument'?'That change was not saved. Only editors of this book can change it.':e&&e.code==='quota_exceeded'?'The book is full. Delete some entries before adding more.':'That change was not saved. Try again in a moment.';render()}
+function fail(e){const t=String(e&&e.message||'');
+  msg=/401|403|JWT|row-level/i.test(t)?'That change was not saved: you need to be signed in as an editor.':/duplicate key|23505/.test(t)?'That change was not saved: an entry with that id already exists.':/foreign key|23503/.test(t)?'That change was not saved: it refers to an entry that no longer exists. Reload the page and try again.':'That change was not saved. '+t.slice(0,200);render()}
+async function reload(){await start();if(sel&&!E.has(sel))sel=null}
 async function saveEntity(){const name=val('fe-name');if(!name)return;let id=editing;
-  if(!id){const base=name.toLowerCase().normalize('NFD').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')||'entry';id=base;let n=2;while(E.has(id))id=base+'-'+n++}
-  const old=editing?E.get(editing):{};
-  const type=val('fe-type'),body={name,type,level:type==='event'?val('fe-level'):'',sectors:type==='org'?[...document.querySelectorAll('input[name="fe-sec"]:checked')].map(x=>x.value):[],country:val('fe-country').toUpperCase(),note:val('fe-note'),claimedBy:old.claimedBy||null};if(old.legacyType)body.legacyType=old.legacyType;
-  try{await db.doc('entities/'+id).set(body);
-    sel=id;mode='view';editing=null;msg='';paint();render()}catch(e){fail(e)}}
+  if(!id){id=val('fe-id').toLowerCase().replace(/[^a-z0-9-]+/g,'-').replace(/^-|-$/g,'');if(!id){msg='Give the entry an id.';return render()}if(E.has(id)){msg='The id "'+id+'" is taken by '+E.get(id).name+'. Choose another.';return render()}}
+  const type=val('fe-type'),body={name,type,level:type==='event'?val('fe-level'):null,sectors:type==='org'?[...document.querySelectorAll('input[name="fe-sec"]:checked')].map(x=>x.value):[],country:val('fe-country').toUpperCase(),note:val('fe-note')};
+  try{if(editing)await api('PATCH','entities?id=eq.'+encodeURIComponent(id),body);else await api('POST','entities',{id,...body});
+    sel=id;mode='view';editing=null;msg='';await reload();syncHash()}catch(e){fail(e)}}
 async function saveLink(){const from=val('fl-from'),to=val('fl-to'),role=val('fl-role');
   if(!from||!to||!role)return;if(from===to){msg='A link needs two different entries.';return render()}
-  const old=editing?L.find(x=>x.id===editing):{};
-  const body={from,to,role,cat:val('fl-cat'),context:val('fl-context'),start:val('fl-start'),end:val('fl-end'),source:val('fl-source'),note:val('fl-note'),status:old.status||'curated'};
-  try{const ref=editing?db.doc('links/'+editing):db.collection('links').doc();await ref.set(body);sel=from;mode='view';editing=null;msg='';paint();render()}catch(e){fail(e)}}
-async function remove(kind){try{
-  if(kind==='link'){await db.doc('links/'+editing).delete()}
-  else{for(const l of L.filter(l=>l.from===editing||l.to===editing))await db.doc('links/'+l.id).delete();await db.doc('entities/'+editing).delete();sel=null}
-  mode='view';editing=null;msg='';paint();render()}catch(e){fail(e)}}
+  const body={from_id:from,to_id:to,role,cat:val('fl-cat'),context_id:val('fl-context')||null,start_date:val('fl-start'),end_date:val('fl-end'),source:val('fl-source'),note:val('fl-note')};
+  try{if(editing)await api('PATCH','links?id=eq.'+encodeURIComponent(editing),body);else await api('POST','links',body);
+    if(!sel||(sel!==from&&sel!==to))sel=from;mode='view';editing=null;msg='';await reload();syncHash()}catch(e){fail(e)}}
+async function remove(kind){try{const id=encodeURIComponent(editing);
+  if(kind==='link')await api('DELETE','links?id=eq.'+id);
+  else{await api('DELETE',`links?or=(from_id.eq.${id},to_id.eq.${id})`);await api('DELETE','entities?id=eq.'+id);sel=null}
+  mode='view';editing=null;msg='';await reload();syncHash()}catch(e){fail(e)}}
+
+/* ---------- sign-in (Supabase Auth, magic link) ---------- */
+const AUTH_KEY='dbb-auth';let auth=null,who='';
+try{auth=JSON.parse(localStorage.getItem(AUTH_KEY)||'null')}catch(e){}
+function saveAuth(a){auth=a;try{a?localStorage.setItem(AUTH_KEY,JSON.stringify(a)):localStorage.removeItem(AUTH_KEY)}catch(e){}}
+(function takeHash(){const h=location.hash.slice(1);if(!/(^|&)(access_token|error_description)=/.test(h))return;
+  const p=new URLSearchParams(h);
+  if(p.get('access_token'))saveAuth({access_token:p.get('access_token'),refresh_token:p.get('refresh_token'),expires_at:Date.now()/1000+(+p.get('expires_in')||3600)});
+  else msg='Sign-in failed: '+(p.get('error_description')||'unknown error').replace(/\+/g,' ')+'. Ask for a new link.';
+  try{history.replaceState(null,'',location.pathname+location.search)}catch(e){}})();
+async function token(){if(!auth)return null;
+  if(auth.expires_at-60>Date.now()/1000)return auth.access_token;
+  const r=await fetch(`${SB_URL}/auth/v1/token?grant_type=refresh_token`,{method:'POST',headers:{apikey:SB_KEY,'Content-Type':'application/json'},body:JSON.stringify({refresh_token:auth.refresh_token})});
+  if(!r.ok){saveAuth(null);return null}const j=await r.json();saveAuth({access_token:j.access_token,refresh_token:j.refresh_token,expires_at:j.expires_at||Date.now()/1000+j.expires_in});return auth.access_token}
+async function api(method,path,body){const t=await token();if(!t)throw new Error('401 not signed in');
+  const r=await fetch(`${SB_URL}/rest/v1/${path}`,{method,headers:{apikey:SB_KEY,Authorization:'Bearer '+t,'Content-Type':'application/json',Prefer:'return=representation'},body:body?JSON.stringify(body):undefined});
+  const txt=await r.text();if(!r.ok)throw new Error(r.status+' '+txt);const rows=txt?JSON.parse(txt):[];
+  if(method!=='DELETE'&&Array.isArray(rows)&&!rows.length)throw new Error('403 row-level security: nothing was saved');return rows}
+async function checkAuth(){canEdit=false;who='';const t=await token().catch(()=>null);
+  if(t){try{const u=await fetch(`${SB_URL}/auth/v1/user`,{headers:{apikey:SB_KEY,Authorization:'Bearer '+t}});
+      if(!u.ok){saveAuth(null)}else{who=(await u.json()).email||'';
+        const r=await fetch(`${SB_URL}/rest/v1/editors?select=user_id`,{headers:{apikey:SB_KEY,Authorization:'Bearer '+t}});canEdit=r.ok&&(await r.json()).length>0}}catch(e){}}
+  document.querySelectorAll('.acct').forEach(b=>b.textContent=auth?'Sign out':'Sign in');
+  if(auth&&!canEdit&&who&&!msg)msg='Signed in as '+who+', but this account is not an editor.'}
+function formSignin(){panel.innerHTML=`<form id="fs"><h2>Editor sign-in</h2>${msg?`<div class="msg">${esc(msg)}</div>`:''}
+  <p class="note">Enter your email and we’ll send you a sign-in link. Open it on this device.</p>
+  <label>Email<input id="fs-email" type="email" required autocomplete="email"></label>
+  <div class="acts"><button class="btn go">Send link</button><button type="button" class="btn" data-cancel="1">Cancel</button></div></form>`}
+async function sendLink(){const email=val('fs-email');if(!email)return;
+  const r=await fetch(`${SB_URL}/auth/v1/otp?redirect_to=${encodeURIComponent(location.origin+location.pathname)}`,{method:'POST',headers:{apikey:SB_KEY,'Content-Type':'application/json'},body:JSON.stringify({email,create_user:false})}).catch(()=>null);
+  if(r&&r.ok){panel.innerHTML=`<div><h2>Check your email</h2><p class="note">If ${esc(email)} has an editor account, a sign-in link is on its way. It works once and expires after an hour.</p><div class="acts"><button type="button" class="btn" data-cancel="1">Back</button></div></div>`;return}
+  let t='';try{t=(await r.json()).msg||''}catch(e){}msg=r&&r.status===429?'Too many sign-in emails. Wait a few minutes and try again.':'The link could not be sent. '+t;render()}
+async function signOut(){const t=auth&&auth.access_token;saveAuth(null);canEdit=false;who='';msg='Signed out.';
+  if(t)fetch(`${SB_URL}/auth/v1/logout`,{method:'POST',headers:{apikey:SB_KEY,Authorization:'Bearer '+t}}).catch(()=>{});
+  await checkAuth();mode='view';editing=null;paint();render()}
+document.addEventListener('click',e=>{const b=e.target.closest('[data-acct]');if(!b)return;$('#menu').hidden=true;
+  if(auth)return signOut();mode='signin';editing=null;msg='';render();panel.scrollIntoView({behavior:'smooth',block:'start'})});
 
 panel.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;const d=b.dataset;
   if(d.copy){const u=location.href.split('#')[0]+'#'+encodeURIComponent(sel),ok=()=>{b.textContent='Link copied'},no=()=>{b.textContent=u};
@@ -400,7 +443,10 @@ panel.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)retu
   if(d.cancel){mode='view';editing=null;msg='';return render()}
   if(d.del){b.outerHTML=`<button type="button" class="btn bad" data-delyes="${d.del}">Yes, delete for good</button><button type="button" class="btn" data-cancel="1">Keep it</button>`;return}
   if(d.delyes)return remove(d.delyes)});
-panel.addEventListener('submit',e=>{e.preventDefault();e.target.id==='fe'?saveEntity():saveLink()});
+panel.addEventListener('input',e=>{if(e.target.id!=='fe-name')return;const f=document.getElementById('fe-id');if(!f||f.dataset.touched)return;
+  const w=e.target.value.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9 -]+/g,'').trim().split(/\s+/);f.value=(w.length>1&&TYPES[val('fe-type')]==='Person'?w[w.length-1]:w.join('-')).slice(0,30)});
+panel.addEventListener('change',e=>{if(e.target.id==='fe-id')e.target.dataset.touched=1});
+panel.addEventListener('submit',e=>{e.preventDefault();const f=e.target.id;f==='fe'?saveEntity():f==='fs'?sendLink():saveLink()});
 
 /* ---------- header ---------- */
 document.querySelectorAll('.lens button').forEach(b=>b.addEventListener('click',()=>{lens=b.dataset.lens;
@@ -436,7 +482,7 @@ async function start(){
     FEAT=fs;
     db={};E=new Map(es.map(x=>[x.id,norm({id:x.id,name:x.name,type:x.type,sectors:x.sectors||[],level:x.level||'',country:x.country||'',note:x.note||''})]));
     L=ls.map(l=>({id:l.id,from:l.from_id,to:l.to_id,role:l.role,cat:l.cat,context:l.context_id||'',start:l.start_date||'',end:l.end_date||'',source:l.source||'',note:l.note||'',created:l.created_at||''}));
-    loaded={e:true,l:true};fillScope();yrEl.min=Math.max(YR_FLOOR,Math.min(NOW-1,...L.map(l=>yr(l.start)||NOW)));build();render()}
+    loaded={e:true,l:true};fillScope();await checkAuth();yrEl.min=Math.max(YR_FLOOR,Math.min(NOW-1,...L.map(l=>yr(l.start)||NOW)));build();render()}
   catch(e){db=null;loaded={e:true,l:true};$('#blank').hidden=false;$('#blank').firstElementChild.textContent='The book could not be loaded. Please try again in a moment.'}
 }
 try{const s=localStorage.getItem('dbb-lens');if(s&&LENS[s]!==undefined&&s!=='all'){lens=s;document.querySelectorAll('.lens button').forEach(x=>x.setAttribute('aria-pressed',x.dataset.lens===s))}}catch(e){}

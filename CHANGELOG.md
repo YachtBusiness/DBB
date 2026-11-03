@@ -2,6 +2,12 @@
 
 Version plan: 0.1 public map live · 0.2 editing moves to Supabase · 0.3 sign-in, applications and claims · 0.4 paid tiers, organisation editing, contact details · 1.0 membership network opens · 1.x events and intros. Small fixes in between are 0.x.1, 0.x.2 and so on.
 
+## 0.2.0 (3 November 2026, on preview)
+
+- Editor sign-in: "Sign in" in the footer (desktop) and the menu (mobile) sends a one-time sign-in link by email. No passwords. Only accounts added in Supabase can sign in, and only accounts in the editors table can change the book.
+- Editors can add, edit and delete entries and links from the app. Changes save straight to Supabase and are logged in the audit log.
+- New links get the next l-number automatically (database default).
+
 ## 0.1.10 (3 November 2026)
 
 - The Year slider starts at 2010 instead of the oldest dated link (1857). Older links still show under All time.
