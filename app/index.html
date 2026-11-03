@@ -110,6 +110,9 @@ ul.rel li{padding:9px 0;border-bottom:1px solid var(--line);display:grid;grid-te
 .chip{background:var(--warn-bg);color:var(--warn);border-radius:3px;padding:0 6px;font-size:11px;font-weight:500}
 .mini{grid-column:2;grid-row:1 / span 2;align-self:start;background:none;border:1px solid var(--line);border-radius:4px;padding:2px 8px;font-size:12px;cursor:pointer;color:var(--muted)}
 .mini:hover{color:var(--ink);border-color:var(--muted)}
+.feat .big{font-family:var(--display);font-size:22px;font-weight:600;line-height:1.15;margin:4px 0 2px;text-decoration-thickness:1px}
+.chips{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:5px}
+.chips li{font-size:13.5px}
 .sub{font-size:12px;color:var(--muted);margin:10px 0 4px}
 .stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:0}
 .stats div{border-top:2px solid var(--ink);padding-top:6px}
@@ -149,9 +152,9 @@ label input,label select,label textarea{padding:7px 9px;border:1px solid var(--l
 </style>
 
 <header class="top">
-  <div class="brand"><h1>The Dark Blue Book</h1><span>The who's who of yacht racing <small id="ver" style="opacity:.6;margin-left:6px">v0.1.3</small></span></div>
+  <div class="brand"><h1>The Dark Blue Book</h1><span>The who's who of yacht racing <small id="ver" style="opacity:.6;margin-left:6px">v0.1.4</small></span></div>
   <button type="button" class="menu-btn" id="menuBtn" aria-label="Contact and links" aria-expanded="false" aria-controls="menu"><svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="M2 4h14M2 9h14M2 14h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
-  <nav class="menu" id="menu" hidden aria-label="Contact"><a href="https://wa.me/61439790410" target="_blank" rel="noopener">WhatsApp</a><a href="https://www.linkedin.com/groups/2023604/" target="_blank" rel="noopener">LinkedIn</a><a href="https://www.facebook.com/darkbluebook" target="_blank" rel="noopener">Facebook</a><a href="mailto:editor@darkbluebook.com">Email</a><small>© The Dark Blue Book · v0.1.3</small></nav>
+  <nav class="menu" id="menu" hidden aria-label="Contact"><a href="https://wa.me/61439790410" target="_blank" rel="noopener">WhatsApp</a><a href="https://www.linkedin.com/groups/2023604/" target="_blank" rel="noopener">LinkedIn</a><a href="https://www.facebook.com/darkbluebook" target="_blank" rel="noopener">Facebook</a><a href="mailto:editor@darkbluebook.com">Email</a><small>© The Dark Blue Book · v0.1.4</small></nav>
   <div class="lens" role="group" aria-label="What to show">
     <button type="button" data-lens="all" aria-pressed="true">Everything</button>
     <button type="button" data-lens="money" aria-pressed="false">Money</button>
@@ -169,7 +172,7 @@ label input,label select,label textarea{padding:7px 9px;border:1px solid var(--l
   </section>
   <aside id="panel" aria-live="polite"></aside>
 </main>
-<footer class="foot" aria-label="Contact"><a href="https://wa.me/61439790410" target="_blank" rel="noopener">WhatsApp</a><a href="https://www.linkedin.com/groups/2023604/" target="_blank" rel="noopener">LinkedIn</a><a href="https://www.facebook.com/darkbluebook" target="_blank" rel="noopener">Facebook</a><a href="mailto:editor@darkbluebook.com">Email</a><span>© The Dark Blue Book · v0.1.3</span></footer>
+<footer class="foot" aria-label="Contact"><a href="https://wa.me/61439790410" target="_blank" rel="noopener">WhatsApp</a><a href="https://www.linkedin.com/groups/2023604/" target="_blank" rel="noopener">LinkedIn</a><a href="https://www.facebook.com/darkbluebook" target="_blank" rel="noopener">Facebook</a><a href="mailto:editor@darkbluebook.com">Email</a><span>© The Dark Blue Book · v0.1.4</span></footer>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
 <script>
@@ -257,6 +260,23 @@ function pick(id,fromHash){sel=id&&E.has(id)?id:null;mode='view';editing=null;ms
   if(sel&&window.matchMedia('(max-width:860px)').matches)panel.scrollIntoView({behavior:'smooth',block:'start'})}
 
 /* ---------- latest changes ---------- */
+let FEAT=[];
+function featured(){
+  const f=FEAT.find(x=>x.slot==='featured'&&E.has(x.entity_id));if(!f)return'';const e=E.get(f.entity_id);
+  const mine=L.filter(l=>(l.from===e.id||l.to===e.id)&&E.has(l.from)&&E.has(l.to));
+  const other=l=>E.get(l.from===e.id?l.to:l.from);
+  const rank=r=>/title|major|naming|principal/i.test(r)?0:/main|presenting|premium|global/i.test(r)?1:/official/i.test(r)?2:3;
+  const group=(cat,label,max)=>{const r=mine.filter(l=>l.cat===cat).sort((a,b)=>rank(a.role)-rank(b.role)||other(a).name.localeCompare(other(b).name));if(!r.length)return'';
+    return`<p class="sub">${label}</p><ul class="chips">${r.slice(0,max).map(l=>`<li><button type="button" class="ent" data-go="${esc(other(l).id)}">${esc(other(l).name)}</button> <span class="role">${esc(l.role)}</span></li>`).join('')}${r.length>max?`<li><button type="button" class="ent" data-go="${esc(e.id)}">+${r.length-max} more</button></li>`:''}</ul>`};
+  return`<section class="feat"><h3><b style="border-color:var(--c-spon)"></b>Featured</h3>
+    <div class="kind"><i style="background:${tvar(e)}"></i>${esc(kindLabel(e))}</div>
+    <button type="button" class="ent big" data-go="${esc(e.id)}">${esc(e.name)}</button>
+    ${f.headline||e.note?`<p class="note">${esc(f.headline||e.note)}</p>`:''}
+    ${group('spon','Partners',8)}${group('ppl','People',6)}</section>`}
+function inTheNews(){
+  const r=FEAT.filter(x=>x.slot==='news'&&E.has(x.entity_id)).sort((a,b)=>a.position-b.position);if(!r.length)return'';
+  return`<section><h3><b style="border-color:var(--c-own)"></b>In the news</h3><ul class="rel">${r.map(x=>{const e=E.get(x.entity_id);
+    return`<li><div class="rl"><button type="button" class="ent" data-go="${esc(e.id)}">${esc(e.name)}</button></div>${x.headline?`<div class="meta"><span>${esc(x.headline)}</span>${x.link?`<a href="${esc(x.link)}" target="_blank" rel="noopener">read ↗</a>`:''}</div>`:''}</li>`}).join('')}</ul></section>`}
 const ORGISH=new Set(['org','team','club']);
 const lnum=id=>{const m=/^l(\d+)$/.exec(id);return m?+m[1]:-1};
 function latest(){
@@ -314,7 +334,7 @@ function render(){
   const un=A.filter(l=>!l.source).length;
   panel.innerHTML=`<p class="lede">A live, dynamic who’s who of the yacht racing business. Search or click through to see the connections.</p>
     <h3>${(scope&&E.has(scope)?E.get(scope).name+' \u00b7 ':'')+(allTime?'All time':'Year '+year)}</h3><dl class="stats"><div><dt>Entries</dt><dd>${nodes.length}</dd></div><div><dt>Links</dt><dd>${A.length}</dd></div><div><dt>Need a source</dt><dd>${un}</dd></div></dl>${m}
-    ${latest()}${tools}`;
+    ${featured()}${inTheNews()}${latest()}${tools}`;
 }
 const opt=(v,t,cur)=>`<option value="${esc(v)}"${v===cur?' selected':''}>${esc(t)}</option>`;
 function formEntity(){const e=editing?E.get(editing):{name:'',type:'person',level:'',sectors:[],country:'',note:''};
@@ -396,11 +416,12 @@ $('#legend').innerHTML=[['person','Person'],['team','Team'],['club','Yacht club'
 /* ---------- data ---------- */
 render();
 const SB_URL='https://mntfwjwjcfdanxfpipgm.supabase.co',SB_KEY='sb_publishable_XfrmGdoOfFhWgK0ybagpdA_MxfVZauP';
-async function fetchAll(table,cols){const out=[];for(let from=0;;from+=1000){
-  const r=await fetch(`${SB_URL}/rest/v1/${table}?select=${cols}&order=id`,{headers:{apikey:SB_KEY,Range:`${from}-${from+999}`,'Range-Unit':'items'}});
+async function fetchAll(table,cols,order='id'){const out=[];for(let from=0;;from+=1000){
+  const r=await fetch(`${SB_URL}/rest/v1/${table}?select=${cols}&order=${order}`,{headers:{apikey:SB_KEY,Range:`${from}-${from+999}`,'Range-Unit':'items'}});
   if(!r.ok)throw new Error(table+' '+r.status);const rows=await r.json();out.push(...rows);if(rows.length<1000)return out}}
 async function start(){
-  try{const [es,ls]=await Promise.all([fetchAll('entities','id,name,type,sectors,level,country,note'),fetchAll('links','id,from_id,to_id,role,cat,context_id,start_date,end_date,source,note,created_at')]);
+  try{const [es,ls,fs]=await Promise.all([fetchAll('entities','id,name,type,sectors,level,country,note'),fetchAll('links','id,from_id,to_id,role,cat,context_id,start_date,end_date,source,note,created_at'),fetchAll('features','slot,position,entity_id,headline,link','slot,position').catch(()=>[])]);
+    FEAT=fs;
     db={};E=new Map(es.map(x=>[x.id,norm({id:x.id,name:x.name,type:x.type,sectors:x.sectors||[],level:x.level||'',country:x.country||'',note:x.note||''})]));
     L=ls.map(l=>({id:l.id,from:l.from_id,to:l.to_id,role:l.role,cat:l.cat,context:l.context_id||'',start:l.start_date||'',end:l.end_date||'',source:l.source||'',note:l.note||'',created:l.created_at||''}));
     loaded={e:true,l:true};fillScope();yrEl.min=Math.min(NOW-1,...L.map(l=>yr(l.start)||NOW));build();render()}
