@@ -50,6 +50,7 @@ button,input,select,textarea{font:inherit;color:inherit}
 .when button[aria-pressed="true"]{background:var(--on-navy);color:var(--navy);font-weight:600}
 .when.off input,.when.off output,.when.off label{opacity:.35}
 ul.rel li.past{opacity:.55}
+ul.rel li.soon .rl::after{content:'Upcoming';margin-left:6px;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);border:1px solid var(--line);border-radius:3px;padding:0 4px}
 .grp summary{cursor:pointer;list-style:none;display:flex;align-items:center;gap:7px;font-size:11px;letter-spacing:.09em;text-transform:uppercase;font-weight:600;padding:6px 0}
 .grp summary::-webkit-details-marker{display:none}
 .grp summary b{width:14px;border-top:2px solid}
@@ -163,9 +164,9 @@ label input,label select,label textarea{padding:7px 9px;border:1px solid var(--l
 </style>
 
 <header class="top">
-  <div class="brand"><h1>The Dark Blue Book</h1><span>The who's who of yacht racing <small id="ver" style="opacity:.6;margin-left:6px">v0.2.0</small></span></div>
+  <div class="brand"><h1>The Dark Blue Book</h1><span>The who's who of yacht racing <small id="ver" style="opacity:.6;margin-left:6px">v0.2.1</small></span></div>
   <button type="button" class="menu-btn" id="menuBtn" aria-label="Contact and links" aria-expanded="false" aria-controls="menu"><svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="M2 4h14M2 9h14M2 14h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
-  <nav class="menu" id="menu" hidden aria-label="Contact"><a href="https://wa.me/61439790410" target="_blank" rel="noopener">WhatsApp</a><a href="https://www.linkedin.com/groups/2023604/" target="_blank" rel="noopener">LinkedIn</a><a href="https://www.facebook.com/darkbluebook" target="_blank" rel="noopener">Facebook</a><a href="mailto:editor@darkbluebook.com">Email</a><button type="button" class="acct" data-acct="1">Sign in</button><small>© The Dark Blue Book · v0.2.0</small></nav>
+  <nav class="menu" id="menu" hidden aria-label="Contact"><a href="https://wa.me/61439790410" target="_blank" rel="noopener">WhatsApp</a><a href="https://www.linkedin.com/groups/2023604/" target="_blank" rel="noopener">LinkedIn</a><a href="https://www.facebook.com/darkbluebook" target="_blank" rel="noopener">Facebook</a><a href="mailto:editor@darkbluebook.com">Email</a><button type="button" class="acct" data-acct="1">Sign in</button><small>© The Dark Blue Book · v0.2.1</small></nav>
   <div class="lens" role="group" aria-label="What to show">
     <button type="button" data-lens="all" aria-pressed="true">Everything</button>
     <button type="button" data-lens="money" aria-pressed="false">Money</button>
@@ -183,7 +184,7 @@ label input,label select,label textarea{padding:7px 9px;border:1px solid var(--l
   </section>
   <aside id="panel" aria-live="polite"></aside>
 </main>
-<footer class="foot" aria-label="Contact"><a href="https://wa.me/61439790410" target="_blank" rel="noopener">WhatsApp</a><a href="https://www.linkedin.com/groups/2023604/" target="_blank" rel="noopener">LinkedIn</a><a href="https://www.facebook.com/darkbluebook" target="_blank" rel="noopener">Facebook</a><a href="mailto:editor@darkbluebook.com">Email</a><button type="button" class="acct" data-acct="1">Sign in</button><span>© The Dark Blue Book · v0.2.0</span></footer>
+<footer class="foot" aria-label="Contact"><a href="https://wa.me/61439790410" target="_blank" rel="noopener">WhatsApp</a><a href="https://www.linkedin.com/groups/2023604/" target="_blank" rel="noopener">LinkedIn</a><a href="https://www.facebook.com/darkbluebook" target="_blank" rel="noopener">Facebook</a><a href="mailto:editor@darkbluebook.com">Email</a><button type="button" class="acct" data-acct="1">Sign in</button><span>© The Dark Blue Book · v0.2.1</span></footer>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
 <script>
@@ -215,6 +216,8 @@ const NOW=new Date().getFullYear();let year=NOW,allTime=false,scope='';
 function core(){if(!scope||!E.has(scope))return null;const s=new Set([scope]);let grew=true;while(grew){grew=false;L.forEach(l=>{if(l.cat==='str'&&s.has(l.to)&&!s.has(l.from)){s.add(l.from);grew=true}})}return s}
 const YR_FLOOR=2010; // earliest year on the slider; older links still show under All time
 const yr=s=>{const m=/^(\d{4})/.exec(s||'');return m?+m[1]:null};
+const ended=l=>!allTime&&yr(l.end)!=null&&yr(l.end)<year,ahead=l=>!allTime&&yr(l.start)!=null&&yr(l.start)>year;
+let MAXY=NOW;
 function active(l){if(allTime)return true;const a=yr(l.start),b=yr(l.end);if(a==null&&b==null)return year===NOW;return(a==null||a<=year)&&(b==null||b>=year)}
 const zoom=d3.zoom().scaleExtent([.25,5]).on('zoom',e=>{root.attr('transform',e.transform);zk=e.transform.k;paint()});
 svg.call(zoom).on('click',e=>{if(e.target===svg.node())pick(null)});
@@ -318,13 +321,13 @@ function boot(){if(booted||!loaded.e||!loaded.l||!E.size)return;booted=true;from
 window.addEventListener('popstate',fromHash);window.addEventListener('hashchange',fromHash);
 
 /* ---------- panel ---------- */
-function when(l){return l.start&&l.end?l.start+' to '+l.end:l.start?'since '+l.start:l.end?'until '+l.end:''}
+function when(l){return l.start&&l.start===l.end?(ahead(l)?'in ':'')+l.start:l.start&&l.end?l.start+' to '+l.end:l.start?(ahead(l)?'from ':'since ')+l.start:l.end?'until '+l.end:''}
 function src(l){if(!l.source)return'<span class="chip">needs source</span>';let h='source';try{h=new URL(l.source).hostname.replace(/^www\./,'')}catch(e){return'<span>'+esc(l.source)+'</span>'}
   return`<a href="${esc(l.source)}" target="_blank" rel="noopener">${esc(h)} ↗</a>`}
 function row(l,me){const out=l.from===me,o=E.get(out?l.to:l.from);if(!o)return'';
   const who=`<button type="button" class="ent" data-go="${esc(o.id)}">${esc(o.name)}</button>`,role=`<span class="role">${esc(l.role)}</span>`;
   const ctx=l.context&&E.get(l.context)?`<span>in ${esc(E.get(l.context).name)}</span>`:'',w=when(l);
-  return`<li class="${active(l)?'':'past'}"><div class="rl">${out?role+who:who+role}</div>${canEdit?`<button type="button" class="mini" data-editlink="${esc(l.id)}">Edit</button>`:''}
+  return`<li class="${ended(l)?'past':ahead(l)?'soon':''}"><div class="rl">${out?role+who:who+role}</div>${canEdit?`<button type="button" class="mini" data-editlink="${esc(l.id)}">Edit</button>`:''}
     <div class="meta">${ctx}${w?`<span>${esc(w)}</span>`:''}${l.note?`<span>${esc(l.note)}</span>`:''}${src(l)}</div></li>`}
 function timeline(mine,me){const d=mine.filter(l=>yr(l.start)!=null||yr(l.end)!=null);if(d.length<2)return'';
   const ys=d.flatMap(l=>[yr(l.start),yr(l.end)]).filter(v=>v!=null),min=Math.min(...ys),max=Math.max(NOW,...ys),span=max-min+1;
@@ -339,7 +342,7 @@ function render(){
   const tools=canEdit?`<div class="acts"><button type="button" class="btn" data-new="entity">New entry</button><button type="button" class="btn" data-new="link">New link</button>${sel?'<button type="button" class="btn" data-editent="1">Edit this entry</button>':''}</div>`:'';
   const m=msg?`<div class="msg">${esc(msg)}</div>`:'';
   if(sel){const e=E.get(sel),mine=L.filter(l=>l.from===sel||l.to===sel).sort((a,b)=>(active(b)-active(a))||((yr(b.start)||0)-(yr(a.start)||0)));let h='';
-    const cur=mine.filter(active),past=mine.filter(l=>!active(l));
+    const past=mine.filter(ended),cur=mine.filter(l=>!ended(l));
     for(const c of ['ppl','spon','own','str']){const g=cur.filter(l=>(CATS[l.cat]?l.cat:'str')===c);
       if(g.length)h+=`<details class="grp"${h?'':' open'}><summary><b style="border-color:var(--c-${c})"></b>${c==='ppl'&&e.type==='person'?'Role':CATS[c]} <span class="cnt">${g.length}</span></summary><ul class="rel">${g.map(l=>row(l,sel)).join('')}</ul></details>`}
     if(past.length)h+=`<details class="grp"><summary><b style="border-color:var(--muted)"></b>Past <span class="cnt">${past.length}</span></summary><ul class="rel">${past.map(l=>row(l,sel)).join('')}</ul></details>`;
@@ -458,7 +461,7 @@ const scEl=$('#scope');
 function fillScope(){const cur=scope;scEl.innerHTML='<option value="">All series &amp; events</option>'+byName().filter(e=>e.type==='event'&&(e.level==='series'||(e.level==='event'&&L.some(l=>l.cat==='str'&&l.to===e.id&&E.has(l.from)&&E.get(l.from).level==='edition')))).map(e=>opt(e.id,e.name,cur)).join('')}
 scEl.addEventListener('change',()=>{scope=scEl.value;needFit=true;build();if(mode==='view')render()});
 const yrEl=$('#yr'),allBtn=$('#alltime');
-function syncWhen(){yrEl.max=NOW;yrEl.value=year;$('#yrv').textContent=year;allBtn.setAttribute('aria-pressed',allTime);$('.when').classList.toggle('off',allTime)}
+function syncWhen(){yrEl.max=MAXY;yrEl.value=year;$('#yrv').textContent=year;allBtn.setAttribute('aria-pressed',allTime);$('.when').classList.toggle('off',allTime)}
 yrEl.addEventListener('input',()=>{year=+yrEl.value;allTime=false;syncWhen();build();if(mode==='view')render()});
 allBtn.addEventListener('click',()=>{allTime=!allTime;syncWhen();needFit=true;build();if(mode==='view')render()});
 syncWhen();
@@ -485,7 +488,7 @@ async function start(){
     FEAT=fs;
     db={};E=new Map(es.map(x=>[x.id,norm({id:x.id,name:x.name,type:x.type,sectors:x.sectors||[],level:x.level||'',country:x.country||'',note:x.note||''})]));
     L=ls.map(l=>({id:l.id,from:l.from_id,to:l.to_id,role:l.role,cat:l.cat,context:l.context_id||'',start:l.start_date||'',end:l.end_date||'',source:l.source||'',note:l.note||'',created:l.created_at||''}));
-    loaded={e:true,l:true};fillScope();await checkAuth();yrEl.min=Math.max(YR_FLOOR,Math.min(NOW-1,...L.map(l=>yr(l.start)||NOW)));build();render()}
+    loaded={e:true,l:true};fillScope();MAXY=Math.max(NOW,...L.map(l=>yr(l.start)).filter(v=>v!=null));syncWhen();await checkAuth();yrEl.min=Math.max(YR_FLOOR,Math.min(NOW-1,...L.map(l=>yr(l.start)||NOW)));build();render()}
   catch(e){db=null;loaded={e:true,l:true};$('#blank').hidden=false;$('#blank').firstElementChild.textContent='The book could not be loaded. Please try again in a moment.'}
 }
 try{const s=localStorage.getItem('dbb-lens');if(s&&LENS[s]!==undefined&&s!=='all'){lens=s;document.querySelectorAll('.lens button').forEach(x=>x.setAttribute('aria-pressed',x.dataset.lens===s))}}catch(e){}

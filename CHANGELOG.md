@@ -2,6 +2,11 @@
 
 Version plan: 0.1 public map live · 0.2 editing moves to Supabase · 0.3 sign-in, applications and claims · 0.4 paid tiers, organisation editing, contact details · 1.0 membership network opens · 1.x events and intros. Small fixes in between are 0.x.1, 0.x.2 and so on.
 
+## 0.2.1 (4 November 2026)
+
+- Links that haven't started yet are no longer filed under Past. They show with current links, marked Upcoming and dated "from 2027". Past now means ended.
+- The Year slider runs up to the latest year anything in the book starts (2028 for now; contract end dates don't count), still starting on the current year.
+
 ## 0.2.0 (3 November 2026)
 
 - Editor sign-in: "Sign in" in the footer (desktop) and the menu (mobile) sends a one-time sign-in link by email. No passwords. Only accounts added in Supabase can sign in, and only accounts in the editors table can change the book.
