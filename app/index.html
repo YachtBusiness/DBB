@@ -481,12 +481,12 @@ function formReport(){const e=rkind==='error'&&sel?E.get(sel):null;if(rkind==='e
       :`<p class="note">Something missing, wrong or annoying? Ideas welcome too. It goes straight to the editors.</p>`}
     <label>${e?'Details':'Your feedback'}<textarea id="fr-msg" rows="5" required minlength="3" maxlength="2000"></textarea></label>
     <div class="two"><label>Your name (optional)<input id="fr-name" maxlength="120" autocomplete="name"></label>
-    <label>Email (optional, for a reply)<input id="fr-email" type="email" maxlength="200" autocomplete="email" value="${esc(who)}"></label></div>
+    <label>Your email<input id="fr-email" type="email" required maxlength="200" autocomplete="email" value="${esc(who)}"></label></div>
     <label class="hp" aria-hidden="true">Leave this empty<input id="fr-web" tabindex="-1" autocomplete="off"></label>
     <div class="acts"><button class="btn go" id="fr-send">Send</button><button type="button" class="btn" data-cancel="1">Cancel</button></div></form>`;
   document.getElementById('fr-msg').focus({preventScroll:true})}
-async function sendReport(){const m=val('fr-msg');if(m.length<3)return;const email=val('fr-email');
-  const thanks=()=>{panel.innerHTML=`<div><h2>Thank you</h2><p class="note">${rkind==='error'?'An editor will check it and correct the book if needed.':'It’s with the editors.'}${email?' If we have a question, we’ll reply to '+esc(email)+'.':''}</p><div class="acts"><button type="button" class="btn" data-cancel="1">${sel?'Back to the entry':'Back'}</button></div></div>`;if(canEdit)countReports()};
+async function sendReport(){const m=val('fr-msg'),email=val('fr-email');if(m.length<3||!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email))return;
+  const thanks=()=>{panel.innerHTML=`<div><h2>Thank you</h2><p class="note">${rkind==='error'?'An editor will check it and correct the book if needed.':'It’s with the editors.'}${' If we have a question, we’ll reply to '+esc(email)+'.'}</p><div class="acts"><button type="button" class="btn" data-cancel="1">${sel?'Back to the entry':'Back'}</button></div></div>`;if(canEdit)countReports()};
   if(val('fr-web'))return thanks();
   const btn=document.getElementById('fr-send'),box=document.getElementById('fr-box'),lk=document.getElementById('fr-link');btn.disabled=true;btn.textContent='Sending…';
   const body={kind:rkind,entity_id:rkind==='error'?sel:null,link_id:rkind==='error'&&lk&&lk.value||null,page:location.href.slice(0,500),message:m,name:val('fr-name'),email};

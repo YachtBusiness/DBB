@@ -4,8 +4,8 @@ Version plan: 0.1 public map live · 0.2 editing moves to Supabase · 0.3 sign-i
 
 ## 0.2.2 (5 November 2026)
 
-- "Report an error" on every entry. The reader picks the entry itself or one of its links, says what's wrong, and can leave a name and email for a reply.
-- "Send feedback" in the footer (desktop) and the menu (mobile), open to anyone.
+- "Report an error" on every entry. The reader picks the entry itself or one of its links, says what's wrong, and gives their email (required) and optionally a name.
+- "Send feedback" in the footer (desktop) and the menu (mobile), open to anyone; email required.
 - Both land in one editor queue: signed-in editors see "Reports (n)" with the open count, can open the entry concerned, mark a report done, reopen it or delete it. Only editors can read reports.
 - New `reports` table. Anyone can send; a hidden field catches simple bots, and new reports are refused once 60 have arrived in an hour.
 
