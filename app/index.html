@@ -156,6 +156,10 @@ label input,label select,label textarea{padding:7px 9px;border:1px solid var(--l
 .sugg button:hover{border-color:var(--muted)}
 .chg h3 .cnt{color:var(--muted);font-weight:500;letter-spacing:0;text-transform:none}
 .chg .meta .by{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.04em}
+/* section headings: larger, on a grey band */
+h3,.grp summary,.tld summary{font-size:13px;letter-spacing:.07em;background:var(--wash);padding:8px 10px;border-radius:5px;margin:0 0 8px}
+.grp[open] summary,.tld[open] summary{margin-bottom:8px}
+.grp summary b,h3 b{width:16px;border-top-width:3px}
 .hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
 ul.rel li.rep{display:block}
 .rmsg{white-space:pre-wrap;margin:6px 0 8px;overflow-wrap:anywhere}
@@ -176,9 +180,9 @@ ul.rel li.rep{display:block}
 </style>
 
 <header class="top">
-  <div class="brand"><h1>The Dark Blue Book</h1><span>The who's who of yacht racing <small id="ver" style="opacity:.6;margin-left:6px">v0.2.5</small></span></div>
+  <div class="brand"><h1>The Dark Blue Book</h1><span>The who's who of yacht racing <small id="ver" style="opacity:.6;margin-left:6px">v0.2.6</small></span></div>
   <button type="button" class="menu-btn" id="menuBtn" aria-label="Contact and links" aria-expanded="false" aria-controls="menu"><svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="M2 4h14M2 9h14M2 14h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
-  <nav class="menu" id="menu" hidden aria-label="Contact"><a href="https://wa.me/61439790410" target="_blank" rel="noopener">WhatsApp</a><a href="https://www.linkedin.com/groups/2023604/" target="_blank" rel="noopener">LinkedIn</a><a href="https://www.facebook.com/darkbluebook" target="_blank" rel="noopener">Facebook</a><a href="mailto:editor@darkbluebook.com">Email</a><button type="button" class="acct" data-fb="1">Send feedback</button><button type="button" class="acct" data-acct="1">Sign in</button><small>© The Dark Blue Book · v0.2.5</small></nav>
+  <nav class="menu" id="menu" hidden aria-label="Contact"><a href="https://wa.me/61439790410" target="_blank" rel="noopener">WhatsApp</a><a href="https://www.linkedin.com/groups/2023604/" target="_blank" rel="noopener">LinkedIn</a><a href="https://www.facebook.com/darkbluebook" target="_blank" rel="noopener">Facebook</a><a href="mailto:editor@darkbluebook.com">Email</a><button type="button" class="acct" data-fb="1">Send feedback</button><button type="button" class="acct" data-acct="1">Sign in</button><small>© The Dark Blue Book · v0.2.6</small></nav>
   <div class="lens" role="group" aria-label="What to show">
     <button type="button" data-lens="all" aria-pressed="true">Everything</button>
     <button type="button" data-lens="money" aria-pressed="false">Money</button>
@@ -196,7 +200,7 @@ ul.rel li.rep{display:block}
   </section>
   <aside id="panel" aria-live="polite"></aside>
 </main>
-<footer class="foot" aria-label="Contact"><a href="https://wa.me/61439790410" target="_blank" rel="noopener">WhatsApp</a><a href="https://www.linkedin.com/groups/2023604/" target="_blank" rel="noopener">LinkedIn</a><a href="https://www.facebook.com/darkbluebook" target="_blank" rel="noopener">Facebook</a><a href="mailto:editor@darkbluebook.com">Email</a><button type="button" class="acct" data-fb="1">Send feedback</button><button type="button" class="acct" data-acct="1">Sign in</button><span>© The Dark Blue Book · v0.2.5</span></footer>
+<footer class="foot" aria-label="Contact"><a href="https://wa.me/61439790410" target="_blank" rel="noopener">WhatsApp</a><a href="https://www.linkedin.com/groups/2023604/" target="_blank" rel="noopener">LinkedIn</a><a href="https://www.facebook.com/darkbluebook" target="_blank" rel="noopener">Facebook</a><a href="mailto:editor@darkbluebook.com">Email</a><button type="button" class="acct" data-fb="1">Send feedback</button><button type="button" class="acct" data-acct="1">Sign in</button><span>© The Dark Blue Book · v0.2.6</span></footer>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
 <script>
