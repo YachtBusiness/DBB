@@ -168,9 +168,9 @@ ul.rel li.rep{display:block}
 </style>
 
 <header class="top">
-  <div class="brand"><h1>The Dark Blue Book</h1><span>The who's who of yacht racing <small id="ver" style="opacity:.6;margin-left:6px">v0.2.2</small></span></div>
+  <div class="brand"><h1>The Dark Blue Book</h1><span>The who's who of yacht racing <small id="ver" style="opacity:.6;margin-left:6px">v0.2.3</small></span></div>
   <button type="button" class="menu-btn" id="menuBtn" aria-label="Contact and links" aria-expanded="false" aria-controls="menu"><svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="M2 4h14M2 9h14M2 14h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
-  <nav class="menu" id="menu" hidden aria-label="Contact"><a href="https://wa.me/61439790410" target="_blank" rel="noopener">WhatsApp</a><a href="https://www.linkedin.com/groups/2023604/" target="_blank" rel="noopener">LinkedIn</a><a href="https://www.facebook.com/darkbluebook" target="_blank" rel="noopener">Facebook</a><a href="mailto:editor@darkbluebook.com">Email</a><button type="button" class="acct" data-fb="1">Send feedback</button><button type="button" class="acct" data-acct="1">Sign in</button><small>© The Dark Blue Book · v0.2.2</small></nav>
+  <nav class="menu" id="menu" hidden aria-label="Contact"><a href="https://wa.me/61439790410" target="_blank" rel="noopener">WhatsApp</a><a href="https://www.linkedin.com/groups/2023604/" target="_blank" rel="noopener">LinkedIn</a><a href="https://www.facebook.com/darkbluebook" target="_blank" rel="noopener">Facebook</a><a href="mailto:editor@darkbluebook.com">Email</a><button type="button" class="acct" data-fb="1">Send feedback</button><button type="button" class="acct" data-acct="1">Sign in</button><small>© The Dark Blue Book · v0.2.3</small></nav>
   <div class="lens" role="group" aria-label="What to show">
     <button type="button" data-lens="all" aria-pressed="true">Everything</button>
     <button type="button" data-lens="money" aria-pressed="false">Money</button>
@@ -188,7 +188,7 @@ ul.rel li.rep{display:block}
   </section>
   <aside id="panel" aria-live="polite"></aside>
 </main>
-<footer class="foot" aria-label="Contact"><a href="https://wa.me/61439790410" target="_blank" rel="noopener">WhatsApp</a><a href="https://www.linkedin.com/groups/2023604/" target="_blank" rel="noopener">LinkedIn</a><a href="https://www.facebook.com/darkbluebook" target="_blank" rel="noopener">Facebook</a><a href="mailto:editor@darkbluebook.com">Email</a><button type="button" class="acct" data-fb="1">Send feedback</button><button type="button" class="acct" data-acct="1">Sign in</button><span>© The Dark Blue Book · v0.2.2</span></footer>
+<footer class="foot" aria-label="Contact"><a href="https://wa.me/61439790410" target="_blank" rel="noopener">WhatsApp</a><a href="https://www.linkedin.com/groups/2023604/" target="_blank" rel="noopener">LinkedIn</a><a href="https://www.facebook.com/darkbluebook" target="_blank" rel="noopener">Facebook</a><a href="mailto:editor@darkbluebook.com">Email</a><button type="button" class="acct" data-fb="1">Send feedback</button><button type="button" class="acct" data-acct="1">Sign in</button><span>© The Dark Blue Book · v0.2.3</span></footer>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
 <script>
@@ -281,7 +281,7 @@ function paint(){
 function pick(id,fromHash){sel=id&&E.has(id)?id:null;mode='view';editing=null;msg='';paint();render();if(!fromHash)syncHash();
   if(sel&&window.matchMedia('(max-width:860px)').matches)panel.scrollIntoView({behavior:'smooth',block:'start'})}
 
-/* ---------- latest changes ---------- */
+/* ---------- overview: featured, in the news ---------- */
 let FEAT=[];
 function featured(){
   const f=FEAT.find(x=>x.slot==='featured'&&E.has(x.entity_id));if(!f)return'';const e=E.get(f.entity_id);
@@ -299,19 +299,6 @@ function inTheNews(){
   const r=FEAT.filter(x=>x.slot==='news'&&E.has(x.entity_id)).sort((a,b)=>a.position-b.position);if(!r.length)return'';
   return`<section><h3><b style="border-color:var(--c-own)"></b>In the news</h3><ul class="rel">${r.map(x=>{const e=E.get(x.entity_id);
     return`<li><div class="rl"><button type="button" class="ent" data-go="${esc(e.id)}">${esc(e.name)}</button></div>${x.headline?`<div class="meta"><span>${esc(x.headline)}</span>${x.link?`<a href="${esc(x.link)}" target="_blank" rel="noopener">read ↗</a>`:''}</div>`:''}</li>`}).join('')}</ul></section>`}
-const ORGISH=new Set(['org','team','club']);
-const lnum=id=>{const m=/^l(\d+)$/.exec(id);return m?+m[1]:-1};
-function latest(){
-  const sorted=L.filter(l=>E.has(l.from)&&E.has(l.to)).slice().sort((a,b)=>(b.created||'').localeCompare(a.created||'')||lnum(b.id)-lnum(a.id));
-  const ppl=[],org=[],seen=new Set();
-  for(const l of sorted){for(const [me,other] of [[l.from,l.to],[l.to,l.from]]){if(seen.has(me))continue;const e=E.get(me),bucket=e.type==='person'?ppl:ORGISH.has(e.type)?org:null;
-      if(!bucket||bucket.length>=3)continue;seen.add(me);bucket.push([e,l,E.get(other)])}
-    if(ppl.length>=3&&org.length>=3)break}
-  const item=([e,l,o])=>`<li><div class="rl"><button type="button" class="ent" data-go="${esc(e.id)}">${esc(e.name)}</button></div><div class="meta"><span>${l.from===e.id?esc(l.role)+' \u00b7 '+esc(o.name):esc(o.name)+', '+esc(l.role)}</span></div></li>`;
-  if(!ppl.length&&!org.length)return'';
-  return`<section><h3><b style="border-color:var(--ink)"></b>Latest changes</h3>
-    ${ppl.length?`<p class="sub">People</p><ul class="rel">${ppl.map(item).join('')}</ul>`:''}
-    ${org.length?`<p class="sub">Organisations</p><ul class="rel">${org.map(item).join('')}</ul>`:''}</section>`}
 
 /* ---------- deep links ---------- */
 let booted=false;
@@ -361,7 +348,7 @@ function render(){
   const un=A.filter(l=>!l.source).length;
   panel.innerHTML=`<p class="lede">A live, dynamic who’s who of the yacht racing business. Search or click through to see the connections.</p>
     <h3>${(scope&&E.has(scope)?E.get(scope).name+' \u00b7 ':'')+(allTime?'All time':'Year '+year)}</h3><dl class="stats"><div><dt>Entries</dt><dd>${nodes.length}</dd></div><div><dt>Links</dt><dd>${A.length}</dd></div><div><dt>Need a source</dt><dd>${un}</dd></div></dl>${m}
-    ${featured()}${inTheNews()}${latest()}${tools}`;
+    ${featured()}${inTheNews()}${tools}`;
 }
 const opt=(v,t,cur)=>`<option value="${esc(v)}"${v===cur?' selected':''}>${esc(t)}</option>`;
 function formEntity(){const e=editing?E.get(editing):{name:'',type:'person',level:'',sectors:[],country:'',note:''};
