@@ -154,6 +154,8 @@ label input,label select,label textarea{padding:7px 9px;border:1px solid var(--l
 .sugg{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:12px;color:var(--muted)}
 .sugg button{background:var(--wash);border:1px solid var(--line);border-radius:999px;padding:2px 10px;font-size:12.5px;cursor:pointer;color:var(--ink)}
 .sugg button:hover{border-color:var(--muted)}
+.chg h3 .cnt{color:var(--muted);font-weight:500;letter-spacing:0;text-transform:none}
+.chg .meta .by{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.04em}
 .hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
 ul.rel li.rep{display:block}
 .rmsg{white-space:pre-wrap;margin:6px 0 8px;overflow-wrap:anywhere}
@@ -174,9 +176,9 @@ ul.rel li.rep{display:block}
 </style>
 
 <header class="top">
-  <div class="brand"><h1>The Dark Blue Book</h1><span>The who's who of yacht racing <small id="ver" style="opacity:.6;margin-left:6px">v0.2.4</small></span></div>
+  <div class="brand"><h1>The Dark Blue Book</h1><span>The who's who of yacht racing <small id="ver" style="opacity:.6;margin-left:6px">v0.2.5</small></span></div>
   <button type="button" class="menu-btn" id="menuBtn" aria-label="Contact and links" aria-expanded="false" aria-controls="menu"><svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="M2 4h14M2 9h14M2 14h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
-  <nav class="menu" id="menu" hidden aria-label="Contact"><a href="https://wa.me/61439790410" target="_blank" rel="noopener">WhatsApp</a><a href="https://www.linkedin.com/groups/2023604/" target="_blank" rel="noopener">LinkedIn</a><a href="https://www.facebook.com/darkbluebook" target="_blank" rel="noopener">Facebook</a><a href="mailto:editor@darkbluebook.com">Email</a><button type="button" class="acct" data-fb="1">Send feedback</button><button type="button" class="acct" data-acct="1">Sign in</button><small>© The Dark Blue Book · v0.2.4</small></nav>
+  <nav class="menu" id="menu" hidden aria-label="Contact"><a href="https://wa.me/61439790410" target="_blank" rel="noopener">WhatsApp</a><a href="https://www.linkedin.com/groups/2023604/" target="_blank" rel="noopener">LinkedIn</a><a href="https://www.facebook.com/darkbluebook" target="_blank" rel="noopener">Facebook</a><a href="mailto:editor@darkbluebook.com">Email</a><button type="button" class="acct" data-fb="1">Send feedback</button><button type="button" class="acct" data-acct="1">Sign in</button><small>© The Dark Blue Book · v0.2.5</small></nav>
   <div class="lens" role="group" aria-label="What to show">
     <button type="button" data-lens="all" aria-pressed="true">Everything</button>
     <button type="button" data-lens="money" aria-pressed="false">Money</button>
@@ -194,7 +196,7 @@ ul.rel li.rep{display:block}
   </section>
   <aside id="panel" aria-live="polite"></aside>
 </main>
-<footer class="foot" aria-label="Contact"><a href="https://wa.me/61439790410" target="_blank" rel="noopener">WhatsApp</a><a href="https://www.linkedin.com/groups/2023604/" target="_blank" rel="noopener">LinkedIn</a><a href="https://www.facebook.com/darkbluebook" target="_blank" rel="noopener">Facebook</a><a href="mailto:editor@darkbluebook.com">Email</a><button type="button" class="acct" data-fb="1">Send feedback</button><button type="button" class="acct" data-acct="1">Sign in</button><span>© The Dark Blue Book · v0.2.4</span></footer>
+<footer class="foot" aria-label="Contact"><a href="https://wa.me/61439790410" target="_blank" rel="noopener">WhatsApp</a><a href="https://www.linkedin.com/groups/2023604/" target="_blank" rel="noopener">LinkedIn</a><a href="https://www.facebook.com/darkbluebook" target="_blank" rel="noopener">Facebook</a><a href="mailto:editor@darkbluebook.com">Email</a><button type="button" class="acct" data-fb="1">Send feedback</button><button type="button" class="acct" data-acct="1">Sign in</button><span>© The Dark Blue Book · v0.2.5</span></footer>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
 <script>
@@ -214,6 +216,7 @@ const CATS={own:'Ownership',spon:'Commercial',ppl:'People',str:'Structure'};
 const ROLES=['owner','co-owner','majority owner','minority owner','investor','backer','co-founder','title partner','presenting partner','main partner','partner','supplier','driver','skipper','helm','team principal','defender','challenger','wing trimmer','strategist','crew','CEO','coach','competes in','round of','set','ratified','organiser','represents','host city','stopover host','finish host','broadcast partner','production partner','commentator','journalist'];
 const LENS={all:null,money:['own','spon'],people:['ppl']};
 let E=new Map(),L=[],sel=null,lens='all',mode='view',editing=null,canEdit=false,db=null,loaded={e:false,l:false},msg='',zk=1;
+let AUDIT=[],auditAll=false;
 let rkind='error',rlink='',REPORTS=[],openReports=0,showDone=false,uid='';
 const $=s=>document.querySelector(s),panel=$('#panel');
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -354,7 +357,7 @@ function render(){
   const un=A.filter(l=>!l.source).length;
   panel.innerHTML=`<p class="lede">A live, dynamic who’s who of the yacht racing business. Search or click through to see the connections.</p>
     <h3>${(scope&&E.has(scope)?E.get(scope).name+' \u00b7 ':'')+(allTime?'All time':'Year '+year)}</h3><dl class="stats"><div><dt>Entries</dt><dd>${nodes.length}</dd></div><div><dt>Links</dt><dd>${A.length}</dd></div><div><dt>Need a source</dt><dd>${un}</dd></div></dl>${m}
-    ${featured()}${inTheNews()}${tools}`;
+    ${featured()}${inTheNews()}${canEdit?changes():''}${tools}`;
 }
 const opt=(v,t,cur)=>`<option value="${esc(v)}"${v===cur?' selected':''}>${esc(t)}</option>`;
 function formEntity(){const e=editing?E.get(editing):{name:'',type:'person',level:'',sectors:[],country:'',note:''};
@@ -439,7 +442,7 @@ async function api(method,path,body){const t=await token();if(!t)throw new Error
 async function checkAuth(){canEdit=false;who='';const t=await token().catch(()=>null);
   if(t){try{const u=await fetch(`${SB_URL}/auth/v1/user`,{headers:{apikey:SB_KEY,Authorization:'Bearer '+t}});
       if(!u.ok){saveAuth(null)}else{const uj=await u.json();who=uj.email||'';uid=uj.id||'';
-        const r=await fetch(`${SB_URL}/rest/v1/editors?select=user_id`,{headers:{apikey:SB_KEY,Authorization:'Bearer '+t}});canEdit=r.ok&&(await r.json()).length>0;if(canEdit)await countReports()}}catch(e){}}
+        const r=await fetch(`${SB_URL}/rest/v1/editors?select=user_id`,{headers:{apikey:SB_KEY,Authorization:'Bearer '+t}});canEdit=r.ok&&(await r.json()).length>0;if(canEdit){await countReports();await loadAudit()}}}catch(e){}}
   document.querySelectorAll('[data-acct]').forEach(b=>b.textContent=auth?'Sign out':'Sign in');
   if(auth&&!canEdit&&who&&!msg)msg='Signed in as '+who+', but this account is not an editor.'}
 function formSignin(){panel.innerHTML=`<form id="fs"><h2>Editor sign-in</h2>${msg?`<div class="msg">${esc(msg)}</div>`:''}
@@ -466,6 +469,7 @@ panel.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)retu
   if(d.cancel){mode='view';editing=null;msg='';return render()}
   if(d.del){b.outerHTML=`<button type="button" class="btn bad" data-delyes="${d.del}">Yes, delete for good</button><button type="button" class="btn" data-cancel="1">Keep it</button>`;return}
   if(d.delyes)return remove(d.delyes);
+  if(d.auditall){auditAll=!auditAll;return render()}
   if(d.swap){const a=document.getElementById('fl-from'),z=document.getElementById('fl-to'),x=a.value;a.value=z.value;z.value=x;return linkGuide()}
   if(d.role!==undefined&&document.getElementById('fl-role')){document.getElementById('fl-role').value=d.role;if(d.rcat)document.getElementById('fl-cat').value=d.rcat;return linkGuide()}
   if(d.report){rkind='error';rlink='';mode='report';msg='';return render()}
@@ -479,6 +483,21 @@ panel.addEventListener('input',e=>{if(e.target.id==='fl-role')return linkGuide()
   const w=e.target.value.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9 -]+/g,'').trim().split(/\s+/);f.value=(w.length>1&&TYPES[val('fe-type')]==='Person'?w[w.length-1]:w.join('-')).slice(0,30)});
 panel.addEventListener('change',e=>{if(e.target.id==='fe-id')e.target.dataset.touched=1;if(e.target.id==='fl-from'||e.target.id==='fl-to')linkGuide()});
 panel.addEventListener('submit',e=>{e.preventDefault();const f=e.target.id;f==='fe'?saveEntity():f==='fs'?sendLink():f==='fr'?sendReport():saveLink()});
+
+/* ---------- latest changes (editors only, from the audit log) ---------- */
+async function loadAudit(){try{AUDIT=await apiGet('audit_log?select=id,table_name,row_id,action,old_row,new_row,changed_by,changed_at&table_name=in.(entities,links)&order=id.desc&limit=40')}catch(e){AUDIT=[]}}
+const SKIP=new Set(['updated_at','created_at','legacy_type']);
+const FIELD={name:'name',type:'kind',sectors:'sectors',level:'level',country:'country',note:'note',status:'status',from_id:'who',to_id:'of',role:'role',cat:'kind of link',context_id:'applies in',start_date:'from',end_date:'until',source:'source',id:'id'};
+function changes(){if(!AUDIT.length)return'';const ago=d=>{const m=Math.round((Date.now()-new Date(d))/60000);return m<1?'just now':m<60?m+' min ago':m<1440?Math.round(m/60)+' h ago':new Date(d).toLocaleDateString('en-GB',{day:'numeric',month:'short'})};
+  const nm=id=>E.has(id)?E.get(id).name:id;
+  const item=a=>{const r=a.new_row||a.old_row||{},gone=a.action==='DELETE';
+    let what;if(a.table_name==='entities'){const lbl=gone||!E.has(a.row_id)?`<strong>${esc(r.name||a.row_id)}</strong>`:`<button type="button" class="ent" data-go="${esc(a.row_id)}">${esc(r.name||nm(a.row_id))}</button>`;what=lbl+` <span class="role">entry</span>`}
+    else{const f=r.from_id,t=r.to_id;what=`${E.has(f)&&!gone?`<button type="button" class="ent" data-go="${esc(f)}">${esc(nm(f))}</button>`:`<strong>${esc(nm(f))}</strong>`} <span class="role">${esc(r.role||'')}</span> ${esc(nm(t))}`}
+    let verb=a.action==='INSERT'?'Added':gone?'Deleted':'Edited';
+    if(a.action==='UPDATE'&&a.old_row&&a.new_row){const ch=Object.keys(a.new_row).filter(k=>!SKIP.has(k)&&JSON.stringify(a.new_row[k])!==JSON.stringify(a.old_row[k])).map(k=>FIELD[k]||k);if(ch.length)verb+=': '+ch.join(', ')}
+    return`<li><div class="rl">${what}</div><div class="meta"><span>${esc(verb)}</span><span>${ago(a.changed_at)}</span><span class="by">${a.changed_by?'app':'intake'}</span></div></li>`};
+  const list=auditAll?AUDIT:AUDIT.slice(0,10);
+  return`<section class="chg"><h3><b style="border-color:var(--ink)"></b>Latest changes <span class="cnt">editors only</span></h3><ul class="rel">${list.map(item).join('')}</ul>${AUDIT.length>10?`<div class="acts" style="margin-top:8px"><button type="button" class="btn" data-auditall="1">${auditAll?'Show fewer':'Show last '+AUDIT.length}</button></div>`:''}</section>`}
 
 /* ---------- reports and feedback ---------- */
 document.addEventListener('click',e=>{const b=e.target.closest('[data-fb]');if(!b)return;$('#menu').hidden=true;$('#menuBtn').setAttribute('aria-expanded','false');
