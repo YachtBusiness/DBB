@@ -2,6 +2,17 @@
 
 Version plan: 0.1 public map live · 0.2 editing moves to Supabase · 0.3 sign-in, applications and claims · 0.4 paid tiers, organisation editing, contact details · 1.0 membership network opens · 1.x events and intros. Small fixes in between are 0.x.1, 0.x.2 and so on.
 
+## 0.3.0 (preview, 5 November 2026)
+
+First step of 0.3: applications.
+
+- Header: Apply button and Sign in at the top right (Join on mobile). Sign in left the footer and menu; once signed in it shows the member's first name, or Account, and opens their account panel.
+- Apply: name, email (sign-in only, never shown), nationality (one, required, from a fuller list), at least one role (team, club, organisation or event from the book, or typed if it isn't there; current or past with years), LinkedIn, WhatsApp/mobile, Instagram, other social, bio, connection to the sport, teams and events worked with, referred by. As the applicant types their name, the app suggests matching people already in the book ("Is this you?"); picking one fills in their roles from the book. Matching copes with accents, middle names and common nicknames.
+- Applying creates the sign-in account and emails a one-time link (public sign-up stays off; a new `apply` Edge Function does it). Opening the link confirms the email and shows "Your application is being reviewed", with the date applied. Applicants can edit or withdraw (which deletes their details) and browse the map. Unconfirmed applications are deleted after a week.
+- Editors: Applications (n) beside Reports. Each application shows everything given, links to LinkedIn, Instagram and WhatsApp, possible matches in the book, and an editor-only note. Accept puts them on the map in one step: a new person entry or the one they claimed, any organisation that wasn't listed (matched to an existing entry or added as new), and a link for each role (sourced "Member application"). Decline deletes the application and account, with no email.
+- After accepting, the welcome email is ready to send from the editor's own inbox (Open in email, or Copy).
+- New tables `members` and `member_notes`; applications are only written through database functions, so applicants can't change their own status.
+
 ## 0.2.7 (5 November 2026)
 
 - Sign-in with an email that has no account now says so plainly ("There's no account for …") instead of showing Supabase's "Signups not allowed for otp".

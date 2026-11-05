@@ -165,7 +165,27 @@ ul.rel li.rep{display:block}
 .rmsg{white-space:pre-wrap;margin:6px 0 8px;overflow-wrap:anywhere}
 .rep .acts .btn{padding:3px 10px;font-size:12.5px}
 .top{position:relative}
+.join{display:flex;align-items:center;gap:14px;order:9}
+.join .apply{background:var(--on-navy);color:var(--navy);border:0;border-radius:999px;padding:6px 16px;font-weight:600;cursor:pointer}
+.join .apply:hover{opacity:.9}.join .sm{display:none}
+.join .acct{white-space:nowrap;max-width:14ch;overflow:hidden;text-overflow:ellipsis}
+.hint{font-size:12px;color:var(--muted)}
+fieldset.roleset{border:1px solid var(--line);border-radius:6px;padding:10px 12px 12px;margin:0 0 10px;display:flex;flex-direction:column;gap:10px}
+fieldset.roleset legend{font-size:12px;color:var(--muted);padding:0 4px;display:flex;gap:10px;align-items:baseline}
+.orgstate{margin:-6px 0 0;font-size:12px}.orgstate:empty{display:none}
+.linky{background:none;border:0;padding:0;color:var(--muted);text-decoration:underline;cursor:pointer;font-size:12px}
+.match{background:var(--wash);border-radius:6px;padding:10px 12px;font-size:13px}.match p{margin:0 0 6px}
+.match.warn{background:var(--warn-bg);color:var(--warn)}
+.match ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}.match li{display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center;justify-content:space-between}
+dl.appl{display:grid;grid-template-columns:max-content minmax(0,1fr);gap:6px 14px;margin:0;font-size:13.5px}dl.appl dt{color:var(--muted);font-size:12px;padding-top:1px}dl.appl dd{margin:0;overflow-wrap:anywhere}
+.checks.col{flex-direction:column;gap:8px}.checks.col label{align-items:baseline;flex-wrap:wrap}
+input.inline{width:12ch;padding:3px 6px;border:1px solid var(--line);border-radius:4px;background:var(--bg);font-size:13px}
+label.inl{flex-direction:row;align-items:baseline;gap:8px;color:var(--ink);font-size:13.5px}label.inl input{width:auto}
+li.rvrole{display:flex!important;flex-direction:column;gap:8px}
+a.btn{text-decoration:none;color:inherit}a.btn.go{color:var(--surface)}
+@media (min-width:861px){.join{margin-left:auto}}
 @media (max-width:860px){
+  .join{order:0;gap:10px}.join .lg{display:none}.join .sm{display:inline}.join .apply{padding:5px 12px}
   .menu-btn{display:inline-block}.foot{display:none}
   #scope{flex:1 1 100%;max-width:none}
   .when{flex:1 1 100%}.when input{flex:1}
@@ -180,9 +200,10 @@ ul.rel li.rep{display:block}
 </style>
 
 <header class="top">
-  <div class="brand"><h1>The Dark Blue Book</h1><span>The who's who of yacht racing <small id="ver" style="opacity:.6;margin-left:6px">v0.2.7</small></span></div>
+  <div class="brand"><h1>The Dark Blue Book</h1><span>The who's who of yacht racing <small id="ver" style="opacity:.6;margin-left:6px">v0.3.0</small></span></div>
+  <div class="join"><button type="button" class="apply" data-join="1"><span class="lg">Apply</span><span class="sm">Join</span></button><button type="button" class="acct" data-acct="1">Sign in</button></div>
   <button type="button" class="menu-btn" id="menuBtn" aria-label="Contact and links" aria-expanded="false" aria-controls="menu"><svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="M2 4h14M2 9h14M2 14h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
-  <nav class="menu" id="menu" hidden aria-label="Contact"><a href="https://wa.me/61439790410" target="_blank" rel="noopener">WhatsApp</a><a href="https://www.linkedin.com/groups/2023604/" target="_blank" rel="noopener">LinkedIn</a><a href="https://www.facebook.com/darkbluebook" target="_blank" rel="noopener">Facebook</a><a href="mailto:editor@darkbluebook.com">Email</a><button type="button" class="acct" data-fb="1">Send feedback</button><button type="button" class="acct" data-acct="1">Sign in</button><small>© The Dark Blue Book · v0.2.7</small></nav>
+  <nav class="menu" id="menu" hidden aria-label="Contact"><a href="https://wa.me/61439790410" target="_blank" rel="noopener">WhatsApp</a><a href="https://www.linkedin.com/groups/2023604/" target="_blank" rel="noopener">LinkedIn</a><a href="https://www.facebook.com/darkbluebook" target="_blank" rel="noopener">Facebook</a><a href="mailto:editor@darkbluebook.com">Email</a><button type="button" class="acct" data-fb="1">Send feedback</button><small>© The Dark Blue Book · v0.3.0</small></nav>
   <div class="lens" role="group" aria-label="What to show">
     <button type="button" data-lens="all" aria-pressed="true">Everything</button>
     <button type="button" data-lens="money" aria-pressed="false">Money</button>
@@ -200,7 +221,7 @@ ul.rel li.rep{display:block}
   </section>
   <aside id="panel" aria-live="polite"></aside>
 </main>
-<footer class="foot" aria-label="Contact"><a href="https://wa.me/61439790410" target="_blank" rel="noopener">WhatsApp</a><a href="https://www.linkedin.com/groups/2023604/" target="_blank" rel="noopener">LinkedIn</a><a href="https://www.facebook.com/darkbluebook" target="_blank" rel="noopener">Facebook</a><a href="mailto:editor@darkbluebook.com">Email</a><button type="button" class="acct" data-fb="1">Send feedback</button><button type="button" class="acct" data-acct="1">Sign in</button><span>© The Dark Blue Book · v0.2.7</span></footer>
+<footer class="foot" aria-label="Contact"><a href="https://wa.me/61439790410" target="_blank" rel="noopener">WhatsApp</a><a href="https://www.linkedin.com/groups/2023604/" target="_blank" rel="noopener">LinkedIn</a><a href="https://www.facebook.com/darkbluebook" target="_blank" rel="noopener">Facebook</a><a href="mailto:editor@darkbluebook.com">Email</a><button type="button" class="acct" data-fb="1">Send feedback</button><span>© The Dark Blue Book · v0.3.0</span></footer>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
 <script>
@@ -346,7 +367,11 @@ function render(){
   if(mode==='signin')return formSignin();
   if(mode==='report')return formReport();
   if(mode==='reports')return listReports();
-  const tools=canEdit?`<div class="acts"><button type="button" class="btn" data-new="entity">New entry</button><button type="button" class="btn" data-new="link">New link</button>${sel?'<button type="button" class="btn" data-editent="1">Edit this entry</button>':''}<button type="button" class="btn" data-reports="1">Reports${openReports?' ('+openReports+')':''}</button></div>`:'';
+  if(mode==='apply')return formApply();
+  if(mode==='account')return formAccount();
+  if(mode==='apps')return listApps();
+  if(mode==='review')return formReview();
+  const tools=canEdit?`<div class="acts"><button type="button" class="btn" data-new="entity">New entry</button><button type="button" class="btn" data-new="link">New link</button>${sel?'<button type="button" class="btn" data-editent="1">Edit this entry</button>':''}<button type="button" class="btn" data-reports="1">Reports${openReports?' ('+openReports+')':''}</button><button type="button" class="btn" data-apps="1">Applications${pendingApps?' ('+pendingApps+')':''}</button></div>`:'';
   const m=msg?`<div class="msg">${esc(msg)}</div>`:'';
   if(sel){const e=E.get(sel),mine=L.filter(l=>l.from===sel||l.to===sel).sort((a,b)=>(active(b)-active(a))||((yr(b.start)||0)-(yr(a.start)||0)));let h='';
     const past=mine.filter(ended),cur=mine.filter(l=>!ended(l));
@@ -446,22 +471,23 @@ async function api(method,path,body){const t=await token();if(!t)throw new Error
 async function checkAuth(){canEdit=false;who='';const t=await token().catch(()=>null);
   if(t){try{const u=await fetch(`${SB_URL}/auth/v1/user`,{headers:{apikey:SB_KEY,Authorization:'Bearer '+t}});
       if(!u.ok){saveAuth(null)}else{const uj=await u.json();who=uj.email||'';uid=uj.id||'';
-        const r=await fetch(`${SB_URL}/rest/v1/editors?select=user_id`,{headers:{apikey:SB_KEY,Authorization:'Bearer '+t}});canEdit=r.ok&&(await r.json()).length>0;if(canEdit){await countReports();await loadAudit()}}}catch(e){}}
-  document.querySelectorAll('[data-acct]').forEach(b=>b.textContent=auth?'Sign out':'Sign in');
-  if(auth&&!canEdit&&who&&!msg)msg='Signed in as '+who+', but this account is not an editor.'}
-function formSignin(){panel.innerHTML=`<form id="fs"><h2>Editor sign-in</h2>${msg?`<div class="msg">${esc(msg)}</div>`:''}
-  <p class="note">Enter your email and we’ll send you a sign-in link. Open it on this device.</p>
+        const r=await fetch(`${SB_URL}/rest/v1/editors?select=user_id`,{headers:{apikey:SB_KEY,Authorization:'Bearer '+t}});canEdit=r.ok&&(await r.json()).length>0;if(canEdit){await countReports();await countApps();await loadAudit()}await loadMe()}}catch(e){}}
+  if(!auth)ME=null;
+  document.querySelectorAll('[data-acct]').forEach(b=>{b.textContent=acctLabel();b.title=auth?'Your account':'Sign in'});
+  document.querySelectorAll('[data-join]').forEach(b=>b.hidden=!!ME||(canEdit&&!!auth))}
+function formSignin(){panel.innerHTML=`<form id="fs"><h2>Sign in</h2>${msg?`<div class="msg">${esc(msg)}</div>`:''}
+  <p class="note">For members, applicants and editors. Enter your email and we’ll send you a sign-in link. Open it on this device.</p>
   <label>Email<input id="fs-email" type="email" required autocomplete="email"></label>
-  <div class="acts"><button class="btn go">Send link</button><button type="button" class="btn" data-cancel="1">Cancel</button></div></form>`}
+  <div class="acts"><button class="btn go">Send link</button><button type="button" class="btn" data-cancel="1">Cancel</button></div><p class="who">Not a member yet? <button type="button" class="linky" data-apply="1">Apply to join</button></p></form>`}
 async function sendLink(){const email=val('fs-email');if(!email)return;
   const r=await fetch(`${SB_URL}/auth/v1/otp?redirect_to=${encodeURIComponent(location.origin+location.pathname)}`,{method:'POST',headers:{apikey:SB_KEY,'Content-Type':'application/json'},body:JSON.stringify({email,create_user:false})}).catch(()=>null);
-  if(r&&r.ok){panel.innerHTML=`<div><h2>Check your email</h2><p class="note">If ${esc(email)} has an editor account, a sign-in link is on its way. It works once and expires after an hour.</p><div class="acts"><button type="button" class="btn" data-cancel="1">Back</button></div></div>`;return}
-  let t='';try{const j=await r.json();t=j.msg||j.error_description||j.message||''}catch(e){}msg=r&&r.status===429?'Too many sign-in emails. Wait a few minutes and try again.':/signups? not allowed|not found|not authori[sz]ed/i.test(t)?'There’s no account for '+email+'. Sign-in is for editors for now; membership applications open soon.':'The link could not be sent. Please try again in a moment.'+(t?' ('+t+')':'');render()}
-async function signOut(){const t=auth&&auth.access_token;saveAuth(null);canEdit=false;who='';msg='Signed out.';
+  if(r&&r.ok){panel.innerHTML=`<div><h2>Check your email</h2><p class="note">If ${esc(email)} has an account, a sign-in link is on its way. It works once and expires after an hour.</p><div class="acts"><button type="button" class="btn" data-cancel="1">Back</button></div></div>`;return}
+  let t='';try{const j=await r.json();t=j.msg||j.error_description||j.message||''}catch(e){}msg=r&&r.status===429?'Too many sign-in emails. Wait a few minutes and try again.':/signups? not allowed|not found|not authori[sz]ed/i.test(t)?'There’s no account for '+email+'. To join, apply below; you’ll confirm your email as part of it.':'The link could not be sent. Please try again in a moment.'+(t?' ('+t+')':'');render()}
+async function signOut(){const t=auth&&auth.access_token;saveAuth(null);canEdit=false;who='';uid='';ME=null;msg='Signed out.';
   if(t)fetch(`${SB_URL}/auth/v1/logout`,{method:'POST',headers:{apikey:SB_KEY,Authorization:'Bearer '+t}}).catch(()=>{});
   await checkAuth();mode='view';editing=null;paint();render()}
 document.addEventListener('click',e=>{const b=e.target.closest('[data-acct]');if(!b)return;$('#menu').hidden=true;
-  if(auth)return signOut();mode='signin';editing=null;msg='';render();panel.scrollIntoView({behavior:'smooth',block:'start'})});
+  mode=auth?'account':'signin';editing=null;msg='';render();panel.scrollIntoView({behavior:'smooth',block:'start'})});
 
 panel.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;const d=b.dataset;
   if(d.copy){const u=location.href.split('#')[0]+'#'+encodeURIComponent(sel),ok=()=>{b.textContent='Link copied'},no=()=>{b.textContent=u};
@@ -550,6 +576,216 @@ async function setReport(id,status){try{await api('PATCH','reports?id=eq.'+encod
 async function delReport(id){try{await api('DELETE','reports?id=eq.'+encodeURIComponent(id));await openReportList()}
   catch(e){msg='That report was not deleted. '+String(e.message).slice(0,160);render()}}
 
+/* ---------- membership (0.3): apply, account, editor review ---------- */
+const NATIONS='AFG Afghanistan|ALB Albania|ALG Algeria|AND Andorra|ANG Angola|ANT Antigua and Barbuda|ARG Argentina|ARM Armenia|ARU Aruba|AUS Australia|AUT Austria|AZE Azerbaijan|BAH Bahamas|BRN Bahrain|BAN Bangladesh|BAR Barbados|BLR Belarus|BEL Belgium|BIZ Belize|BER Bermuda|BOL Bolivia|BIH Bosnia and Herzegovina|BRA Brazil|IVB British Virgin Islands|BRU Brunei|BUL Bulgaria|CAM Cambodia|CMR Cameroon|CAN Canada|CPV Cape Verde|CAY Cayman Islands|CHI Chile|CHN China|TPE Chinese Taipei|COL Colombia|COK Cook Islands|CRC Costa Rica|CRO Croatia|CUB Cuba|CYP Cyprus|CZE Czechia|DEN Denmark|DOM Dominican Republic|ECU Ecuador|EGY Egypt|ESA El Salvador|EST Estonia|FIJ Fiji|FIN Finland|FRA France|GEO Georgia|GER Germany|GHA Ghana|GBR Great Britain|GRE Greece|GRN Grenada|GUM Guam|GUA Guatemala|HKG Hong Kong|HUN Hungary|ISL Iceland|IND India|INA Indonesia|IRI Iran|IRQ Iraq|IRL Ireland|ISR Israel|ITA Italy|JAM Jamaica|JPN Japan|JOR Jordan|KAZ Kazakhstan|KEN Kenya|KOR Korea|KOS Kosovo|KUW Kuwait|LAT Latvia|LIB Lebanon|LBA Libya|LIE Liechtenstein|LTU Lithuania|LUX Luxembourg|MAD Madagascar|MAS Malaysia|MDV Maldives|MLT Malta|MRI Mauritius|MEX Mexico|MDA Moldova|MON Monaco|MNE Montenegro|MAR Morocco|MOZ Mozambique|MYA Myanmar|NAM Namibia|NED Netherlands|NZL New Zealand|NCA Nicaragua|NGR Nigeria|MKD North Macedonia|NOR Norway|OMA Oman|PAK Pakistan|PLE Palestine|PAN Panama|PNG Papua New Guinea|PAR Paraguay|PER Peru|PHI Philippines|POL Poland|POR Portugal|PUR Puerto Rico|QAT Qatar|ROU Romania|RUS Russia|SAM Samoa|SMR San Marino|KSA Saudi Arabia|SEN Senegal|SRB Serbia|SEY Seychelles|SGP Singapore|SVK Slovakia|SLO Slovenia|SOL Solomon Islands|RSA South Africa|ESP Spain|SRI Sri Lanka|LCA St Lucia|VIN St Vincent and the Grenadines|SUD Sudan|SWE Sweden|SUI Switzerland|TAH Tahiti|TAN Tanzania|THA Thailand|TGA Tonga|TTO Trinidad and Tobago|TUN Tunisia|TUR Türkiye|TCA Turks and Caicos Islands|UGA Uganda|UKR Ukraine|UAE United Arab Emirates|USA United States|URU Uruguay|ISV US Virgin Islands|UZB Uzbekistan|VAN Vanuatu|VEN Venezuela|VIE Vietnam|ZAM Zambia|ZIM Zimbabwe'.split('|').map(x=>[x.slice(0,3),x.slice(4)]);
+const nationName=c=>(NATIONS.find(n=>n[0]===c)||COUNTRIES.find(n=>n[0]===c)||[c,c])[1];
+const CONNECTIONS={sailor:'Sailor, professional or amateur',team:'Team staff or management',owner:'Owner, principal or investor',sponsor:'Sponsor or brand',industry:'Marine industry or supplier',events:'Events, organising or race management',club:'Club or class association',media:'Media or communications',other:'Something else'};
+let ME=null,APPS=[],UNCONF=[],APP=null,NOTE='',draft=null,accepted=null,pendingApps=0;
+const slug=s=>String(s||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'').slice(0,40);
+const fmtDate=d=>d?new Date(d).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}):'';
+const firstName=n=>String(n||'').trim().split(/\s+/)[0]||'';
+async function rpc(name,args){const t=await token();if(!t)throw new Error('401 not signed in');
+  const r=await fetch(`${SB_URL}/rest/v1/rpc/${name}`,{method:'POST',headers:{apikey:SB_KEY,Authorization:'Bearer '+t,'Content-Type':'application/json'},body:JSON.stringify(args||{})});
+  const txt=await r.text();if(!r.ok){let m=txt;try{m=JSON.parse(txt).message||txt}catch(e){}throw new Error(m)}return txt?JSON.parse(txt):null}
+
+/* organisations an applicant can name: teams, clubs, organisations and events in the book */
+let ORGS=null;
+function orgs(){if(ORGS&&ORGS.n===E.size)return ORGS;const byLabel=new Map(),byId=new Map();
+  byName().filter(e=>['team','club','org','event'].includes(e.type)).forEach(e=>{let lb=e.name+' ('+kindLabel(e)+')';if(byLabel.has(lb))lb=e.name+' ('+kindLabel(e)+', '+e.id+')';byLabel.set(lb,e.id);byId.set(e.id,lb)});
+  return ORGS={n:E.size,byLabel,byId,html:'<datalist id="orgs">'+[...byLabel.keys()].map(k=>`<option value="${esc(k)}">`).join('')+'</datalist>'}}
+
+/* name matching: copes with accents, middle names and common nicknames */
+const NICK=[['tom','thomas','tommy'],['ben','benjamin','benji'],['dave','david'],['rob','robert','bob','bobby','robbie'],['bill','william','will','billy','liam'],['jim','james','jimmy','jamie'],['mike','michael','mick','mikey'],['chris','christopher','christian','kit'],['nick','nicholas','nico','nicolas'],['alex','alexander','alexandra','alessandro','alejandro','sandy'],['pete','peter'],['matt','matthew','mattie'],['andy','andrew','drew','andrea','andreas'],['dan','daniel','danny'],['sam','samuel','samantha'],['joe','joseph','joey','giuseppe','jose'],['tony','anthony','antonio','anton'],['ed','edward','eddie','ted','teddy'],['jon','jonathan','john','jonny','johnny','jack','giovanni','juan'],['kate','katherine','catherine','katie','kathryn','cat'],['liz','elizabeth','beth','lizzie'],['steve','stephen','steven','stefan','stefano'],['rich','richard','rick','ricky','dick'],['charlie','charles','chuck','carlos','carlo'],['fred','frederick','freddie','federico'],['harry','henry','hal'],['jen','jennifer','jenny'],['vic','victor','victoria'],['greg','gregory'],['phil','philip','phillip','felipe','filippo'],['josh','joshua'],['max','maxime','maximilian','massimo'],['nat','nathan','nathaniel','natalie'],['sebastian','seb','sebastien'],['guillaume','will'],['francesco','frank','francis','francois','frankie']];
+const NICKS=new Map();NICK.forEach(g=>g.forEach(n=>NICKS.set(n,new Set([...(NICKS.get(n)||[]),...g]))));
+const toks=s=>String(s||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-z\s'-]/g,' ').replace(/['-]/g,'').split(/\s+/).filter(Boolean);
+function sameFirst(a,b){if(a===b)return true;if(a.length===1||b.length===1)return a[0]===b[0];const s=NICKS.get(a);return !!(s&&s.has(b))}
+function nameMatches(name,max=4){const t=toks(name);if(t.length<2)return[];const f=t[0],l=t[t.length-1];
+  return [...E.values()].filter(e=>e.type==='person').map(e=>{const u=toks(e.name);if(u.length<2)return null;const g=u[0],m=u[u.length-1];
+    if(m!==l&&!(u.includes(l)&&t.includes(m)))return null;return sameFirst(f,g)?{e,score:f===g?2:1}:null}).filter(Boolean)
+    .sort((a,b)=>b.score-a.score||a.e.name.localeCompare(b.e.name)).slice(0,max).map(x=>x.e)}
+const personLine=e=>{const r=L.filter(l=>l.from===e.id&&!ended(l)&&E.has(l.to)).slice(0,2).map(l=>l.role+' at '+E.get(l.to).name);return r.join('; ')||kindLabel(e)+(e.country?' · '+e.country:'')};
+/* a claimed person's current and past roles, from the book */
+function rolesFrom(pid){const o=orgs();return L.filter(l=>l.from===pid&&o.byId.has(l.to)&&l.cat!=='str').slice(0,10).map(l=>{const past=yr(l.end)!=null&&yr(l.end)<NOW;
+  return{org:o.byId.get(l.to),role:l.role,current:!past,since:yr(l.start)?String(yr(l.start)):'',until:past?String(yr(l.end)):''}})}
+
+/* ---------- the application form (new, or editing while pending) ---------- */
+const blankRole=()=>({org:'',role:'',current:true,since:'',until:''});
+function newDraft(){return{name:'',email:'',phone:'',linkedin:'',instagram:'',other_social:'',nationality:'',bio:'',connection:'',connection_detail:'',worked_with:'',referred_by:'',roles:[blankRole()],claim:'',notme:[]}}
+function draftFromMe(m){const o=orgs();return{name:m.name,email:m.email,phone:m.phone,linkedin:m.linkedin,instagram:m.instagram,other_social:m.other_social,nationality:m.nationality,bio:m.bio,connection:m.connection,connection_detail:m.connection_detail,worked_with:m.worked_with,referred_by:m.referred_by,
+  roles:(m.roles||[]).map(r=>({org:r.entity_id&&o.byId.has(r.entity_id)?o.byId.get(r.entity_id):r.other_name||'',role:r.role,current:r.current!==false,since:r.since||'',until:r.until||''})),claim:m.claim_entity_id||'',notme:[]}}
+function collect(){if(!draft||!document.getElementById('fa'))return;const g=id=>{const x=document.getElementById(id);return x?x.value.trim():''};
+  ['name','email','phone','linkedin','instagram','other_social','nationality','bio','connection','connection_detail','worked_with','referred_by'].forEach(k=>{const x=document.getElementById('ap-'+k);if(x)draft[k]=x.value.trim()});
+  draft.roles=[...document.querySelectorAll('.roleset')].map(f=>({org:f.querySelector('.ap-org').value.trim(),role:f.querySelector('.ap-role').value.trim(),current:f.querySelector('.ap-cur').value!=='past',since:f.querySelector('.ap-since').value.trim(),until:f.querySelector('.ap-until').value.trim()}))}
+function roleRow(r,i){const o=orgs(),known=o.byLabel.has(r.org);
+  return`<fieldset class="roleset" data-i="${i}"><legend>Role ${i+1}${draft.roles.length>1?` <button type="button" class="linky" data-rmrole="${i}">Remove</button>`:''}</legend>
+    <label>Team, club, organisation or event<input class="ap-org" list="orgs" required maxlength="120" value="${esc(r.org)}" placeholder="Start typing to pick from the book" autocomplete="off"></label>
+    <p class="who orgstate">${r.org?(known?'In the book.':'Not in the book yet: that’s fine, keep the name and the editors will add it.'):''}</p>
+    <div class="two"><label>Your role<input class="ap-role" list="aroles" required maxlength="80" value="${esc(r.role)}" placeholder="e.g. trimmer, CEO, member"></label>
+    <label>Current or past<select class="ap-cur">${opt('current','Current',r.current?'current':'past')}${opt('past','Past',r.current?'current':'past')}</select></label></div>
+    <div class="two"><label>Since (year, optional)<input class="ap-since" inputmode="numeric" pattern="\\d{4}" maxlength="4" placeholder="2021" value="${esc(r.since)}"></label>
+    <label${r.current?' hidden':''}>Until (year)<input class="ap-until" inputmode="numeric" pattern="\\d{4}" maxlength="4" placeholder="2024" value="${esc(r.until)}"${r.current?'':' required'}></label></div></fieldset>`}
+function matchBox(){if(!draft||draft.claim){const e=draft&&draft.claim&&E.get(draft.claim);return e?`<div class="match"><p>You said this is you: <strong>${esc(e.name)}</strong>, ${esc(personLine(e))}. Your roles from the book are filled in below; check them.</p><button type="button" class="linky" data-unclaim="1">That’s not me</button></div>`:''}
+  const m=nameMatches(draft.name).filter(e=>!draft.notme.includes(e.id));if(!m.length)return'';
+  return`<div class="match"><p>Is this you? You may already be in the book.</p><ul>${m.map(e=>`<li><span><strong>${esc(e.name)}</strong> <span class="role">${esc(personLine(e))}</span></span><span class="acts"><button type="button" class="btn" data-claim="${esc(e.id)}">Yes, that’s me</button><button type="button" class="linky" data-notme="${esc(e.id)}">No</button></span></li>`).join('')}</ul></div>`}
+function formApply(){const edit=!!(ME&&ME.status!=='member');if(!draft)draft=edit?draftFromMe(ME):newDraft();const d=draft;
+  const nat=NATIONS.slice().sort((a,b)=>a[1].localeCompare(b[1]));
+  panel.innerHTML=`<form id="fa" novalidate><div><h2>${edit?'Edit your application':'Apply to join'}</h2>
+    <p class="note">${edit?'Change anything below and save. Editors see the latest version.':'Members are on the map and get a profile. Applications are read by the editors, usually within a few days.'}</p></div>
+    <div class="msg" id="fa-box"${msg?'':' hidden'}>${esc(msg)}</div>
+    <label>Your name<input id="ap-name" required maxlength="120" autocomplete="name" value="${esc(d.name)}"></label>
+    <div id="fa-match">${matchBox()}</div>
+    ${edit?`<p class="who">Email: ${esc(d.email)} (your sign-in address, never shown)</p>`:`<label>Email<input id="ap-email" type="email" required maxlength="200" autocomplete="email" value="${esc(d.email)}"><span class="hint">You sign in with this. It’s never shown to anyone.</span></label>`}
+    <label>Nationality<select id="ap-nationality" required>${opt('','Choose…',d.nationality)}${nat.map(([c,n])=>opt(c,n,d.nationality)).join('')}</select><span class="hint">The nation you sail or work for. One only; it’s shown on your profile.</span></label>
+    <h3>Your roles in the sport</h3>
+    <p class="who">At least one. Pick the team, club, organisation or event from the book, or type its name if it isn’t there.</p>
+    <div id="fa-roles">${d.roles.map(roleRow).join('')}</div>
+    ${d.roles.length<10?'<div><button type="button" class="btn" data-addrole="1">Add another role</button></div>':''}
+    <h3>About you</h3>
+    <label>LinkedIn<input id="ap-linkedin" type="url" maxlength="300" placeholder="https://www.linkedin.com/in/…" value="${esc(d.linkedin)}"><span class="hint">Strongly encouraged: it’s how the editors check who you are.</span></label>
+    <div class="two"><label>WhatsApp or mobile (optional)<input id="ap-phone" type="tel" maxlength="40" autocomplete="tel" value="${esc(d.phone)}"></label>
+    <label>Instagram (optional)<input id="ap-instagram" maxlength="300" placeholder="@handle" value="${esc(d.instagram)}"></label></div>
+    <label>Other social or website (optional)<input id="ap-other_social" maxlength="300" value="${esc(d.other_social)}"></label>
+    <label>Short bio<textarea id="ap-bio" rows="4" maxlength="500">${esc(d.bio)}</textarea><span class="hint">About 500 characters. Shown on your profile once you’re accepted; you can change it any time.</span></label>
+    <div class="two"><label>Your connection to the sport<select id="ap-connection">${opt('','Choose…',d.connection)}${Object.entries(CONNECTIONS).map(([k,v])=>opt(k,v,d.connection)).join('')}</select></label>
+    <label>In a few words (optional)<input id="ap-connection_detail" maxlength="300" value="${esc(d.connection_detail)}"></label></div>
+    <label>Teams and events you’ve worked with (optional)<textarea id="ap-worked_with" rows="2" maxlength="500">${esc(d.worked_with)}</textarea></label>
+    <label>Referred by (optional)<input id="ap-referred_by" maxlength="200" value="${esc(d.referred_by)}"></label>
+    <label class="hp" aria-hidden="true">Leave this empty<input id="ap-web" tabindex="-1" autocomplete="off"></label>
+    <p class="who">The editors see everything on this form. What other members see is up to you once you’re accepted.</p>
+    <div class="acts"><button class="btn go" id="fa-send">${edit?'Save changes':'Apply'}</button><button type="button" class="btn" data-${edit?'account':'cancel'}="1">Cancel</button></div>
+    ${orgs().html}<datalist id="aroles">${ROLES.filter(r=>!/^(competes in|round of|set|ratified|host city|stopover host|finish host|represents|defender|challenger)$/.test(r)).map(r=>`<option value="${esc(r)}">`).join('')}<option value="member"><option value="commercial director"><option value="sailing team manager"><option value="race officer"><option value="umpire"><option value="boat captain"><option value="designer"><option value="boatbuilder"><option value="shore team"></datalist></form>`}
+function refreshRoles(){collect();document.getElementById('fa-roles').innerHTML=draft.roles.map(roleRow).join('')}
+function applyBox(t){const b=document.getElementById('fa-box');if(!b)return;b.hidden=!t;b.textContent=t||'';if(t)b.scrollIntoView({behavior:'smooth',block:'center'})}
+const APPLY_ERR={email:'Check the email address.',application_role_name:'Each role needs a role, e.g. “trimmer” or “commercial director”.',application_role_org:'Each role needs a team, club, organisation or event.',application_role_until:'Past roles need the year they ended.',application_role_year:'Years are four digits, and Since comes before Until.',application_roles_missing:'Add at least one role.',members_nationality_check:'Choose your nationality.',members_name_check:'Give your name.',applications_rate_limit:'We’re getting a lot of applications right now. Please try again in an hour.',application_exists:'There’s already an application for this email. Sign in to see it.',application_decided:'Your application has already been decided.'};
+const applyErr=t=>{const k=Object.keys(APPLY_ERR).find(k=>String(t).includes(k));return k?APPLY_ERR[k]:'That didn’t go through. Please try again, or email editor@darkbluebook.com.'};
+function payload(){const o=orgs();return{name:draft.name,phone:draft.phone,linkedin:draft.linkedin,instagram:draft.instagram,other_social:draft.other_social,nationality:draft.nationality,bio:draft.bio,connection:draft.connection,connection_detail:draft.connection_detail,worked_with:draft.worked_with,referred_by:draft.referred_by,claim_entity_id:draft.claim||null,
+  roles:draft.roles.map(r=>({entity_id:o.byLabel.get(r.org)||null,other_name:o.byLabel.has(r.org)?'':r.org,role:r.role,current:r.current,since:r.since,until:r.current?'':r.until}))}}
+async function sendApplication(){collect();const d=draft,edit=!!(ME&&ME.status!=='member');
+  const miss=d.name.length<2?'Give your name.':!edit&&!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(d.email)?'Check the email address.':!d.nationality?'Choose your nationality.':
+    d.roles.some(r=>r.org.length<2)?'Each role needs a team, club, organisation or event.':d.roles.some(r=>r.role.length<2)?'Each role needs a role, e.g. “trimmer” or “commercial director”.':
+    d.roles.some(r=>!r.current&&!/^\d{4}$/.test(r.until))?'Past roles need the year they ended.':d.roles.some(r=>(r.since&&!/^\d{4}$/.test(r.since))||(r.since&&r.until&&!r.current&&r.since>r.until))?'Years are four digits, and Since comes before Until.':'';
+  if(miss)return applyBox(miss);applyBox('');
+  const btn=document.getElementById('fa-send');btn.disabled=true;btn.textContent=edit?'Saving…':'Sending…';
+  try{if(edit){await rpc('update_application',{p:payload()});await loadMe();draft=null;msg='Your application is updated.';mode='account';return render()}
+    const r=await fetch(`${SB_URL}/functions/v1/apply`,{method:'POST',headers:{apikey:SB_KEY,'Content-Type':'application/json'},body:JSON.stringify({email:d.email,application:payload(),website:val('ap-web'),redirect:location.origin+location.pathname})});
+    const j=await r.json().catch(()=>({}));if(!r.ok)throw new Error(j.error||j.detail||r.status);
+    const em=d.email;draft=null;
+    panel.innerHTML=`<div><h2>${j.result==='exists'?'You’ve already applied':'Check your email'}</h2><p class="note">${j.result==='exists'?`There’s already an application for ${esc(em)}. We’ve sent a sign-in link so you can see where it stands.`:`We’ve sent a link to <strong>${esc(em)}</strong>. Open it on this device to confirm your email; your application then goes to the editors.`}${j.link==='rate_limited'?' (If it doesn’t arrive, wait a few minutes and use Sign in.)':''}</p><p class="who">The link works once and expires after an hour. Not there? Check spam, or use Sign in to get another.</p><div class="acts"><button type="button" class="btn" data-cancel="1">Back to the map</button></div></div>`}
+  catch(e){btn.disabled=false;btn.textContent=edit?'Save changes':'Apply';applyBox(applyErr(e.message))}}
+panel.addEventListener('input',e=>{if(mode!=='apply'||!draft)return;
+  if(e.target.id==='ap-name'){draft.name=e.target.value.trim();const m=document.getElementById('fa-match');if(m)m.innerHTML=matchBox()}
+  if(e.target.classList.contains('ap-org')){const s=e.target.closest('.roleset').querySelector('.orgstate'),v=e.target.value.trim();s.textContent=!v?'':orgs().byLabel.has(v)?'In the book.':'Not in the book yet: that’s fine, keep the name and the editors will add it.'}});
+panel.addEventListener('change',e=>{if(!e.target.classList.contains('ap-cur'))return;const u=e.target.closest('.roleset').querySelector('.ap-until');u.closest('label').hidden=e.target.value!=='past';u.required=e.target.value==='past'});
+
+/* ---------- account: applicant status, member welcome, sign out ---------- */
+async function loadMe(){ME=null;if(!uid)return;try{const r=await apiGet('members?select=*&user_id=eq.'+uid);ME=r[0]||null}catch(e){}
+  if(ME&&ME.status==='unconfirmed'){try{await rpc('confirm_application',{});ME.status='pending';ME.confirmed_at=new Date().toISOString();justConfirmed=true}catch(e){}}}
+let justConfirmed=false;
+function acctLabel(){return !auth?'Sign in':ME&&ME.name?firstName(ME.name):'Account'}
+function formAccount(){const m=msg?`<div class="msg">${esc(msg)}</div>`:'';const out=`<button type="button" class="btn" data-signout="1">Sign out</button>`;
+  if(!ME){panel.innerHTML=`<div><h2>${canEdit?'Editor account':'Your account'}</h2><p class="note">Signed in as ${esc(who)}${canEdit?', editor':''}.</p></div>${m}${canEdit?'':`<p class="note">There’s no application for this account yet.</p>`}<div class="acts">${canEdit?'':'<button type="button" class="btn go" data-apply="1">Apply to join</button>'}${out}<button type="button" class="btn" data-cancel="1">Back to the map</button></div>`;return}
+  if(ME.status==='member'){const e=ME.entity_id&&E.get(ME.entity_id);
+    panel.innerHTML=`<div><h2>Welcome aboard, ${esc(firstName(ME.name))}</h2><p class="note">You’re a member of The Dark Blue Book${ME.accepted_at?' since '+esc(fmtDate(ME.accepted_at)):''}.</p></div>${m}
+      ${e?`<div class="acts"><button type="button" class="btn go" data-go="${esc(e.id)}">See yourself on the map</button></div>`:''}
+      <p class="note">Your profile is on its way: a photo, your bio, and which contact details other members can see. Until then, anything missing or wrong? Use Send feedback.</p>
+      <div class="acts">${out}<button type="button" class="btn" data-cancel="1">Back to the map</button></div>`;return}
+  const roles=(ME.roles||[]).map(r=>{const o=r.entity_id&&E.get(r.entity_id);return`<li><span class="role">${esc(r.role)}</span> ${esc(o?o.name:r.other_name)}${r.current?'':' <span class="role">(past'+(r.until?', until '+esc(r.until):'')+')</span>'}</li>`}).join('');
+  panel.innerHTML=`<div><h2>Your application is being reviewed</h2><p class="note">${justConfirmed?'Thanks, your email is confirmed. ':''}Applied ${esc(fmtDate(ME.applied_at))}. The editors will be in touch if they have a question, and you’ll get an email when it’s decided.</p></div>${m}
+    <dl class="appl"><dt>Name</dt><dd>${esc(ME.name)}</dd><dt>Nationality</dt><dd>${esc(nationName(ME.nationality))}</dd><dt>Roles</dt><dd><ul class="chips">${roles}</ul></dd>${ME.linkedin?`<dt>LinkedIn</dt><dd>${esc(ME.linkedin)}</dd>`:''}</dl>
+    <p class="note">Meanwhile, the map is open to everyone: have a look around.</p>
+    <div class="acts"><button type="button" class="btn" data-editapp="1">Edit application</button><button type="button" class="btn bad" data-withdraw="1">Withdraw</button>${out}<button type="button" class="btn" data-cancel="1">Back to the map</button></div>`;justConfirmed=false}
+async function withdraw(){try{await rpc('withdraw_application',{});saveAuth(null);ME=null;canEdit=false;who='';uid='';msg='Your application is withdrawn and your details are deleted.';await checkAuth();mode='view';render()}
+  catch(e){msg='That didn’t go through. '+String(e.message).slice(0,120);render()}}
+
+/* ---------- editors: applications queue and review ---------- */
+async function countApps(){try{pendingApps=(await apiGet('members?select=user_id&status=eq.pending')).length}catch(e){pendingApps=0}}
+async function openApps(){panel.innerHTML='<p class="note">Loading applications…</p>';
+  try{const r=await apiGet('members?select=*&status=in.(pending,unconfirmed)&order=applied_at.asc');APPS=r.filter(x=>x.status==='pending');UNCONF=r.filter(x=>x.status==='unconfirmed');pendingApps=APPS.length;msg=''}
+  catch(e){APPS=[];UNCONF=[];msg='Applications could not be loaded. '+String(e.message).slice(0,120)}mode='apps';render()}
+function listApps(){const sum=a=>(a.roles||[]).slice(0,2).map(r=>{const o=r.entity_id&&E.get(r.entity_id);return r.role+' · '+(o?o.name:r.other_name)}).join('; ');
+  const item=a=>`<li class="rep"><div class="rl"><button type="button" class="ent" data-review="${esc(a.user_id)}">${esc(a.name)}</button> <span class="role">${esc(nationName(a.nationality))}</span></div><div class="meta"><span>${esc(sum(a))}</span><span>Applied ${esc(fmtDate(a.applied_at))}</span>${a.claim_entity_id?'<span class="chip">says they’re in the book</span>':''}</div></li>`;
+  panel.innerHTML=`<div><h2>Applications</h2><p class="note">${APPS.length} waiting for review, oldest first.</p></div>${msg?`<div class="msg">${esc(msg)}</div>`:''}
+    ${APPS.length?`<ul class="rel">${APPS.map(item).join('')}</ul>`:'<p class="note">Nothing waiting.</p>'}
+    ${UNCONF.length?`<details class="grp"><summary><b style="border-color:var(--muted)"></b>Email not yet confirmed <span class="cnt">${UNCONF.length}</span></summary><p class="who">These applicants haven’t opened their link. Unconfirmed applications are deleted after a week.</p><ul class="rel">${UNCONF.map(a=>`<li><div class="rl"><strong>${esc(a.name)}</strong> <span class="role">${esc(a.email)}</span></div><div class="meta"><span>Applied ${esc(fmtDate(a.applied_at))}</span></div><button type="button" class="mini" data-review="${esc(a.user_id)}">View</button></li>`).join('')}</ul></details>`:''}
+    <div class="acts"><button type="button" class="btn" data-cancel="1">Back</button></div>`}
+const CAT_GUESS=r=>/owner|investor|backer|principal\b.*own/i.test(r)?'own':/partner|sponsor|supplier/i.test(r)?'spon':/^member$/i.test(r)?'str':'ppl';
+const KIND4={team:'Team',club:'Yacht club',org:'Organisation',event:'Event'};
+function uniqueId(base){let id=slug(base)||'entry',n=2;while(E.has(id))id=(slug(base)||'entry')+'-'+n++;return id}
+function personIdFor(name){const t=toks(name),last=t[t.length-1]||'',full=slug(name);return last&&!E.has(last)?last:uniqueId(full)}
+const extUrl=(u,base)=>{u=String(u||'').trim();if(!u)return'';if(/^https?:\/\//i.test(u))return u;if(base==='ig')return'https://www.instagram.com/'+u.replace(/^@/,'');if(/^[\w.-]+\.[a-z]{2,}(\/|$)/i.test(u))return'https://'+u;return''};
+const linkOut=(u,base,label)=>{const h=extUrl(u,base);return h?`<a href="${esc(h)}" target="_blank" rel="noopener">${esc(label||u)} ↗</a>`:esc(u)};
+async function openReview(id){panel.innerHTML='<p class="note">Loading…</p>';accepted=null;
+  try{const r=await apiGet('members?select=*&user_id=eq.'+encodeURIComponent(id));APP=r[0]||null;const n=await apiGet('member_notes?select=note&user_id=eq.'+encodeURIComponent(id));NOTE=n[0]?n[0].note:'';msg=''}
+  catch(e){APP=null;msg='That application could not be loaded. '+String(e.message).slice(0,120)}mode='review';render()}
+function formReview(){if(accepted)return acceptedView();const a=APP;if(!a){panel.innerHTML=`<div class="msg">${esc(msg||'That application is no longer there.')}</div><div class="acts"><button type="button" class="btn" data-apps="1">Back to applications</button></div>`;return}
+  const o=orgs(),claim=a.claim_entity_id&&E.get(a.claim_entity_id),matches=nameMatches(a.name,6).filter(e=>!claim||e.id!==claim.id),cands=(claim?[claim]:[]).concat(matches);
+  const pick=claim?claim.id:'new',pending=a.status==='pending';
+  const wa=a.phone?a.phone.replace(/[^\d]/g,''):'';
+  const roleRows=(a.roles||[]).map((r,i)=>{const e=r.entity_id&&E.get(r.entity_id),cat=CAT_GUESS(r.role);
+    const when=r.current?(r.since?'since '+r.since:'current'):(r.since?r.since+' to ':'until ')+r.until;
+    return`<li class="rvrole" data-i="${i}"><label class="inl"><input type="checkbox" class="rv-use" checked> <span><span class="role">${esc(r.role)}</span> ${e?`<button type="button" class="ent" data-go="${esc(e.id)}">${esc(e.name)}</button>`:`<strong>${esc(r.other_name)}</strong> <span class="chip">not in the book</span>`} <span class="role">${esc(when)}</span></span></label>
+      ${e?'':`<div class="two"><label>Match to an entry in the book<input class="rv-match" list="orgs" placeholder="leave blank to add it as new" autocomplete="off"></label><label>Or add it as<select class="rv-kind">${Object.entries(KIND4).map(([k,v])=>opt(k,v,'org')).join('')}</select></label></div>
+      <label>Id for the new entry<input class="rv-newid" data-newid="1" pattern="[a-z0-9-]+" value="${esc(uniqueId(r.other_name))}"></label>`}
+      <label>Kind of link<select class="rv-cat">${Object.keys(CATS).map(k=>opt(k,CATS[k],cat)).join('')}</select></label></li>`}).join('');
+  panel.innerHTML=`<div><div class="kind"><i style="background:var(--t-person)"></i>${pending?'Application':'Application, email not confirmed'}<span class="cc">${esc(a.nationality)}</span></div><h2>${esc(a.name)}</h2>
+    <p class="note">Applied ${esc(fmtDate(a.applied_at))}${a.confirmed_at?', email confirmed '+esc(fmtDate(a.confirmed_at)):''}${a.updated_at&&a.updated_at!==a.applied_at&&new Date(a.updated_at)-new Date(a.applied_at)>60000?', last edited '+esc(fmtDate(a.updated_at)):''}.</p></div>
+    ${msg?`<div class="msg">${esc(msg)}</div>`:''}
+    <dl class="appl"><dt>Email</dt><dd><a href="mailto:${esc(a.email)}">${esc(a.email)}</a></dd>
+      ${a.phone?`<dt>WhatsApp / mobile</dt><dd>${wa.length>6?`<a href="https://wa.me/${esc(wa)}" target="_blank" rel="noopener">${esc(a.phone)} ↗</a>`:esc(a.phone)}</dd>`:''}
+      <dt>LinkedIn</dt><dd>${a.linkedin?linkOut(a.linkedin,'','LinkedIn profile'):'<span class="chip">none given</span>'}</dd>
+      ${a.instagram?`<dt>Instagram</dt><dd>${linkOut(a.instagram,'ig',a.instagram)}</dd>`:''}${a.other_social?`<dt>Other</dt><dd>${linkOut(a.other_social,'')}</dd>`:''}
+      <dt>Nationality</dt><dd>${esc(nationName(a.nationality))}</dd>
+      ${a.connection?`<dt>Connection</dt><dd>${esc(CONNECTIONS[a.connection]||a.connection)}${a.connection_detail?': '+esc(a.connection_detail):''}</dd>`:''}
+      ${a.bio?`<dt>Bio</dt><dd class="rmsg">${esc(a.bio)}</dd>`:''}${a.worked_with?`<dt>Worked with</dt><dd class="rmsg">${esc(a.worked_with)}</dd>`:''}${a.referred_by?`<dt>Referred by</dt><dd>${esc(a.referred_by)}</dd>`:''}</dl>
+    <section><h3>Editor note</h3><form id="fn"><textarea id="rv-note" rows="2" maxlength="2000" placeholder="e.g. WhatsApp’d 6 Nov, confirmed he’s at Luna Rossa">${esc(NOTE)}</textarea><div class="acts"><button class="btn">Save note</button></div></form></section>
+    ${pending?`<form id="fv"><h3>On the map</h3>
+    ${cands.length?`<div class="match warn"><p>${claim?'They say they’re already in the book.':'Possible match: they didn’t pick one, but check.'}</p></div>`:''}
+    <fieldset class="checks col" style="border:0;padding:0;margin:0"><label><input type="radio" name="rv-person" value="new"${pick==='new'?' checked':''}> New person entry, id <input id="rv-pid" class="inline" pattern="[a-z0-9-]+" value="${esc(personIdFor(a.name))}"></label>
+      ${cands.map(e=>`<label><input type="radio" name="rv-person" value="${esc(e.id)}"${pick===e.id?' checked':''}> Use <button type="button" class="ent" data-go="${esc(e.id)}">${esc(e.name)}</button> <span class="role">${esc(personLine(e))}${claim&&e.id===claim.id?' · their pick':''}</span></label>`).join('')}</fieldset>
+    <h3>Roles become links</h3><p class="who">Untick any you don’t want to add. Links are sourced “Member application”.</p><ul class="rel">${roleRows}</ul>
+    <div class="acts"><button class="btn go" id="fv-go">Accept</button><button type="button" class="btn bad" data-decline="1">Decline</button><button type="button" class="btn" data-apps="1">Back</button></div></form>`
+    :`<div class="acts"><button type="button" class="btn bad" data-decline="1">Delete application</button><button type="button" class="btn" data-apps="1">Back</button></div>`}${o.html}`}
+async function saveNote(){try{await api('POST','member_notes?on_conflict=user_id',{user_id:APP.user_id,note:val('rv-note')}).catch(async e=>{if(/409|duplicate/.test(e.message))return api('PATCH','member_notes?user_id=eq.'+APP.user_id,{note:val('rv-note')});throw e});NOTE=val('rv-note');msg='Note saved.'}catch(e){msg='The note wasn’t saved. '+String(e.message).slice(0,120)}render()}
+async function acceptApp(){const a=APP,o=orgs(),btn=document.getElementById('fv-go');const who_=(document.querySelector('input[name="rv-person"]:checked')||{}).value||'new';
+  const pid=who_==='new'?slug(val('rv-pid')):who_;if(!pid){msg='Give the new person entry an id.';return render()}
+  if(who_==='new'&&E.has(pid)){msg='The id “'+pid+'” is taken by '+E.get(pid).name+'. Choose another, or use that entry if it’s them.';return render()}
+  const roles=[];for(const li of document.querySelectorAll('.rvrole')){if(!li.querySelector('.rv-use').checked)continue;const r=a.roles[+li.dataset.i],cat=li.querySelector('.rv-cat').value,base={role:r.role,cat,current:r.current,since:r.since||'',until:r.until||''};
+    if(r.entity_id){roles.push({...base,to_id:r.entity_id});continue}
+    const m=li.querySelector('.rv-match').value.trim();if(m){const id=o.byLabel.get(m);if(!id){msg='“'+m+'” isn’t an entry in the book. Pick from the list or leave it blank.';return render()}roles.push({...base,to_id:id});continue}
+    const nid=slug(li.querySelector('.rv-newid').value);if(!nid||E.has(nid)){msg='Choose a free id for '+r.other_name+'.';return render()}
+    roles.push({...base,new_entity:{id:nid,name:r.other_name,type:li.querySelector('.rv-kind').value,country:''}})}
+  if(!roles.length&&who_==='new'){msg='Keep at least one role, so the new entry is linked to something.';return render()}
+  btn.disabled=true;btn.textContent='Accepting…';
+  try{const id=await rpc('accept_application',{p_user:a.user_id,p_plan:{person_id:pid,new_person:who_==='new',roles}});await reload();accepted={id,name:a.name,email:a.email};await countApps();msg='';render()}
+  catch(e){const t=e.message;msg=/duplicate key|23505/.test(t)?'An entry with one of those ids already exists. Change the id and try again.':/accept_person_taken/.test(t)?'That person entry already belongs to another member.':/entities_id_check/.test(t)?'Ids can only use lowercase letters, numbers and hyphens.':/application_not_pending/.test(t)?'This application has already been decided.':'Not accepted: '+t.slice(0,160);render()}}
+function welcome(x){const url='https://app.darkbluebook.com/#'+encodeURIComponent(x.id);
+  return{subject:'Welcome to The Dark Blue Book',body:`Hi ${firstName(x.name)},\n\nYour application's been accepted, welcome aboard. You're now on the map: ${url}\n\nSign in to finish your profile: add a photo and choose which contact details other members can see.\n\nYou're one of our first members, so some things are still being worked out. If something's missing, wrong or annoying, tell us: use Send feedback in the app or just reply to this email.\n\nDave\nEditor, The Dark Blue Book`}}
+function acceptedView(){const x=accepted,w=welcome(x);
+  panel.innerHTML=`<div><h2>${esc(x.name)} is a member</h2><p class="note">They’re on the map. Send the welcome email from your own inbox, so replies come to you.</p></div>
+    <label>To<input readonly value="${esc(x.email)}"></label><label>Subject<input readonly value="${esc(w.subject)}"></label><label>Email<textarea id="wl-body" rows="12">${esc(w.body)}</textarea></label>
+    <div class="acts"><a class="btn go" id="wl-mail" href="mailto:${esc(x.email)}?subject=${encodeURIComponent(w.subject)}&body=${encodeURIComponent(w.body)}">Open in email</a><button type="button" class="btn" data-copywl="1">Copy text</button><button type="button" class="btn" data-go="${esc(x.id)}">Open their entry</button><button type="button" class="btn" data-apps="1">Back to applications</button></div>`}
+async function declineApp(){try{await rpc('decline_application',{p_user:APP.user_id});APP=null;msg='Application deleted. No email was sent.';await openApps()}catch(e){msg='Not deleted: '+String(e.message).slice(0,160);render()}}
+panel.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;const d=b.dataset;
+  if(d.addrole){collect();draft.roles.push(blankRole());refreshRoles();const f=document.querySelectorAll('.ap-org');f[f.length-1].focus();return}
+  if(d.rmrole!==undefined){collect();draft.roles.splice(+d.rmrole,1);if(!draft.roles.length)draft.roles.push(blankRole());formApply();return}
+  if(d.claim){collect();draft.claim=d.claim;const r=rolesFrom(d.claim);if(r.length)draft.roles=r.concat(draft.roles.filter(x=>x.org&&!r.some(y=>y.org===x.org)));formApply();return}
+  if(d.notme){collect();draft.notme.push(d.notme);document.getElementById('fa-match').innerHTML=matchBox();return}
+  if(d.unclaim){collect();draft.notme.push(draft.claim);draft.claim='';formApply();return}
+  if(d.apply){draft=null;mode='apply';msg='';return render()}
+  if(d.account){draft=null;mode='account';msg='';return render()}
+  if(d.editapp){draft=null;mode='apply';msg='';return render()}
+  if(d.signout)return signOut();
+  if(d.withdraw){b.outerHTML='<button type="button" class="btn bad" data-withdrawyes="1">Yes, withdraw and delete my details</button><button type="button" class="btn" data-account="1">Keep it</button>';return}
+  if(d.withdrawyes)return withdraw();
+  if(d.apps)return openApps();
+  if(d.review)return openReview(d.review);
+  if(d.decline){b.outerHTML='<button type="button" class="btn bad" data-declineyes="1">Yes, delete it (no email is sent)</button>';return}
+  if(d.declineyes)return declineApp();
+  if(d.copywl){const t=document.getElementById('wl-body').value;try{navigator.clipboard.writeText(t).then(()=>{b.textContent='Copied'})}catch(x){}return}});
+panel.addEventListener('submit',e=>{const f=e.target.id;if(f==='fa'){e.preventDefault();e.stopImmediatePropagation();sendApplication()}else if(f==='fv'){e.preventDefault();e.stopImmediatePropagation();acceptApp()}else if(f==='fn'){e.preventDefault();e.stopImmediatePropagation();saveNote()}},true);
+document.addEventListener('click',e=>{const b=e.target.closest('[data-join]');if(!b)return;$('#menu').hidden=true;
+  if(ME&&ME.status!=='member'){mode='account'}else if(ME){mode='account'}else{draft=null;mode='apply'}msg='';render();panel.scrollIntoView({behavior:'smooth',block:'start'})});
+
 /* ---------- header ---------- */
 document.querySelectorAll('.lens button').forEach(b=>b.addEventListener('click',()=>{lens=b.dataset.lens;
   document.querySelectorAll('.lens button').forEach(x=>x.setAttribute('aria-pressed',x===b));try{localStorage.setItem('dbb-lens',lens)}catch(e){}needFit=true;build()}));
@@ -584,7 +820,7 @@ async function start(){
     FEAT=fs;
     db={};E=new Map(es.map(x=>[x.id,norm({id:x.id,name:x.name,type:x.type,sectors:x.sectors||[],level:x.level||'',country:x.country||'',note:x.note||''})]));
     L=ls.map(l=>({id:l.id,from:l.from_id,to:l.to_id,role:l.role,cat:l.cat,context:l.context_id||'',start:l.start_date||'',end:l.end_date||'',source:l.source||'',note:l.note||'',created:l.created_at||''}));
-    loaded={e:true,l:true};fillScope();MAXY=Math.max(NOW,...L.map(l=>yr(l.start)).filter(v=>v!=null));syncWhen();await checkAuth();yrEl.min=Math.max(YR_FLOOR,Math.min(NOW-1,...L.map(l=>yr(l.start)||NOW)));build();render()}
+    loaded={e:true,l:true};fillScope();MAXY=Math.max(NOW,...L.map(l=>yr(l.start)).filter(v=>v!=null));syncWhen();await checkAuth();if(justConfirmed&&mode==='view'&&!sel)mode='account';yrEl.min=Math.max(YR_FLOOR,Math.min(NOW-1,...L.map(l=>yr(l.start)||NOW)));build();render()}
   catch(e){db=null;loaded={e:true,l:true};$('#blank').hidden=false;$('#blank').firstElementChild.textContent='The book could not be loaded. Please try again in a moment.'}
 }
 try{const s=localStorage.getItem('dbb-lens');if(s&&LENS[s]!==undefined&&s!=='all'){lens=s;document.querySelectorAll('.lens button').forEach(x=>x.setAttribute('aria-pressed',x.dataset.lens===s))}}catch(e){}
