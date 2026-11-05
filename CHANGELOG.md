@@ -2,6 +2,13 @@
 
 Version plan: 0.1 public map live · 0.2 editing moves to Supabase · 0.3 sign-in, applications and claims · 0.4 paid tiers, organisation editing, contact details · 1.0 membership network opens · 1.x events and intros. Small fixes in between are 0.x.1, 0.x.2 and so on.
 
+## 0.2.2 (5 November 2026)
+
+- "Report an error" on every entry. The reader picks the entry itself or one of its links, says what's wrong, and can leave a name and email for a reply.
+- "Send feedback" in the footer (desktop) and the menu (mobile), open to anyone.
+- Both land in one editor queue: signed-in editors see "Reports (n)" with the open count, can open the entry concerned, mark a report done, reopen it or delete it. Only editors can read reports.
+- New `reports` table. Anyone can send; a hidden field catches simple bots, and new reports are refused once 60 have arrived in an hour.
+
 ## 0.2.1 (4 November 2026)
 
 - Links that haven't started yet are no longer filed under Past. They show with current links, marked Upcoming and dated "from 2027". Past now means ended.

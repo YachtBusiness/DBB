@@ -148,6 +148,10 @@ label input,label select,label textarea{padding:7px 9px;border:1px solid var(--l
 .acct{background:none;border:0;padding:0;font:inherit;color:inherit;cursor:pointer;opacity:.85;text-align:left}.acct:hover{opacity:1;text-decoration:underline}
 .menu .acct{padding:10px 12px;border-radius:5px;opacity:1}.menu .acct:hover{background:var(--wash);text-decoration:none}
 .who{font-size:12.5px;color:var(--muted);margin:0}
+.hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+ul.rel li.rep{display:block}
+.rmsg{white-space:pre-wrap;margin:6px 0 8px;overflow-wrap:anywhere}
+.rep .acts .btn{padding:3px 10px;font-size:12.5px}
 .top{position:relative}
 @media (max-width:860px){
   .menu-btn{display:inline-block}.foot{display:none}
@@ -164,9 +168,9 @@ label input,label select,label textarea{padding:7px 9px;border:1px solid var(--l
 </style>
 
 <header class="top">
-  <div class="brand"><h1>The Dark Blue Book</h1><span>The who's who of yacht racing <small id="ver" style="opacity:.6;margin-left:6px">v0.2.1</small></span></div>
+  <div class="brand"><h1>The Dark Blue Book</h1><span>The who's who of yacht racing <small id="ver" style="opacity:.6;margin-left:6px">v0.2.2</small></span></div>
   <button type="button" class="menu-btn" id="menuBtn" aria-label="Contact and links" aria-expanded="false" aria-controls="menu"><svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="M2 4h14M2 9h14M2 14h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
-  <nav class="menu" id="menu" hidden aria-label="Contact"><a href="https://wa.me/61439790410" target="_blank" rel="noopener">WhatsApp</a><a href="https://www.linkedin.com/groups/2023604/" target="_blank" rel="noopener">LinkedIn</a><a href="https://www.facebook.com/darkbluebook" target="_blank" rel="noopener">Facebook</a><a href="mailto:editor@darkbluebook.com">Email</a><button type="button" class="acct" data-acct="1">Sign in</button><small>© The Dark Blue Book · v0.2.1</small></nav>
+  <nav class="menu" id="menu" hidden aria-label="Contact"><a href="https://wa.me/61439790410" target="_blank" rel="noopener">WhatsApp</a><a href="https://www.linkedin.com/groups/2023604/" target="_blank" rel="noopener">LinkedIn</a><a href="https://www.facebook.com/darkbluebook" target="_blank" rel="noopener">Facebook</a><a href="mailto:editor@darkbluebook.com">Email</a><button type="button" class="acct" data-fb="1">Send feedback</button><button type="button" class="acct" data-acct="1">Sign in</button><small>© The Dark Blue Book · v0.2.2</small></nav>
   <div class="lens" role="group" aria-label="What to show">
     <button type="button" data-lens="all" aria-pressed="true">Everything</button>
     <button type="button" data-lens="money" aria-pressed="false">Money</button>
@@ -184,7 +188,7 @@ label input,label select,label textarea{padding:7px 9px;border:1px solid var(--l
   </section>
   <aside id="panel" aria-live="polite"></aside>
 </main>
-<footer class="foot" aria-label="Contact"><a href="https://wa.me/61439790410" target="_blank" rel="noopener">WhatsApp</a><a href="https://www.linkedin.com/groups/2023604/" target="_blank" rel="noopener">LinkedIn</a><a href="https://www.facebook.com/darkbluebook" target="_blank" rel="noopener">Facebook</a><a href="mailto:editor@darkbluebook.com">Email</a><button type="button" class="acct" data-acct="1">Sign in</button><span>© The Dark Blue Book · v0.2.1</span></footer>
+<footer class="foot" aria-label="Contact"><a href="https://wa.me/61439790410" target="_blank" rel="noopener">WhatsApp</a><a href="https://www.linkedin.com/groups/2023604/" target="_blank" rel="noopener">LinkedIn</a><a href="https://www.facebook.com/darkbluebook" target="_blank" rel="noopener">Facebook</a><a href="mailto:editor@darkbluebook.com">Email</a><button type="button" class="acct" data-fb="1">Send feedback</button><button type="button" class="acct" data-acct="1">Sign in</button><span>© The Dark Blue Book · v0.2.2</span></footer>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
 <script>
@@ -204,6 +208,7 @@ const CATS={own:'Ownership',spon:'Commercial',ppl:'People',str:'Structure'};
 const ROLES=['owner','co-owner','majority owner','minority owner','investor','backer','co-founder','title partner','presenting partner','main partner','partner','supplier','driver','skipper','helm','team principal','defender','challenger','wing trimmer','strategist','crew','CEO','coach','competes in','round of','set','ratified','organiser','represents','host city','stopover host','finish host','broadcast partner','production partner','commentator','journalist'];
 const LENS={all:null,money:['own','spon'],people:['ppl']};
 let E=new Map(),L=[],sel=null,lens='all',mode='view',editing=null,canEdit=false,db=null,loaded={e:false,l:false},msg='',zk=1;
+let rkind='error',rlink='',REPORTS=[],openReports=0,showDone=false,uid='';
 const $=s=>document.querySelector(s),panel=$('#panel');
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const tvar=e=>'var(--t-'+ck(e)+')';
@@ -339,7 +344,9 @@ function render(){
   if(mode==='entity')return formEntity();
   if(mode==='link')return formLink();
   if(mode==='signin')return formSignin();
-  const tools=canEdit?`<div class="acts"><button type="button" class="btn" data-new="entity">New entry</button><button type="button" class="btn" data-new="link">New link</button>${sel?'<button type="button" class="btn" data-editent="1">Edit this entry</button>':''}</div>`:'';
+  if(mode==='report')return formReport();
+  if(mode==='reports')return listReports();
+  const tools=canEdit?`<div class="acts"><button type="button" class="btn" data-new="entity">New entry</button><button type="button" class="btn" data-new="link">New link</button>${sel?'<button type="button" class="btn" data-editent="1">Edit this entry</button>':''}<button type="button" class="btn" data-reports="1">Reports${openReports?' ('+openReports+')':''}</button></div>`:'';
   const m=msg?`<div class="msg">${esc(msg)}</div>`:'';
   if(sel){const e=E.get(sel),mine=L.filter(l=>l.from===sel||l.to===sel).sort((a,b)=>(active(b)-active(a))||((yr(b.start)||0)-(yr(a.start)||0)));let h='';
     const past=mine.filter(ended),cur=mine.filter(l=>!ended(l));
@@ -348,7 +355,7 @@ function render(){
     if(past.length)h+=`<details class="grp"><summary><b style="border-color:var(--muted)"></b>Past <span class="cnt">${past.length}</span></summary><ul class="rel">${past.map(l=>row(l,sel)).join('')}</ul></details>`;
     panel.innerHTML=`<div><div class="kind"><i style="background:${tvar(e)}"></i>${esc(kindLabel(e))}${e.sectors.length?`<span class="sec">${esc(e.sectors.join(' \u00b7 '))}</span>`:''}${e.country?`<span class="cc">${esc(e.country)}</span>`:''}</div>
       <h2>${esc(e.name)}</h2>${e.note?`<p class="note">${esc(e.note)}</p>`:''}</div>${m}
-      ${h||'<p class="note">No links recorded yet.</p>'}${(t=>t?`<details class="tld"><summary>Timeline</summary>${t}</details>`:'')(timeline(mine,sel))}${tools}<div class="acts"><button type="button" class="btn" data-go="">Back to overview</button>${window.claude?'':'<button type="button" class="btn" data-copy="1">Copy link</button>'}</div>`;
+      ${h||'<p class="note">No links recorded yet.</p>'}${(t=>t?`<details class="tld"><summary>Timeline</summary>${t}</details>`:'')(timeline(mine,sel))}${tools}<div class="acts"><button type="button" class="btn" data-go="">Back to overview</button>${window.claude?'':'<button type="button" class="btn" data-copy="1">Copy link</button>'}<button type="button" class="btn" data-report="1">Report an error</button></div>`;
     return}
   const vis=new Set(visibleLinks().map(l=>l.id)),A=scope?L.filter(l=>vis.has(l.id)):L.filter(active);
   const un=A.filter(l=>!l.source).length;
@@ -421,9 +428,9 @@ async function api(method,path,body){const t=await token();if(!t)throw new Error
   if(method!=='DELETE'&&Array.isArray(rows)&&!rows.length)throw new Error('403 row-level security: nothing was saved');return rows}
 async function checkAuth(){canEdit=false;who='';const t=await token().catch(()=>null);
   if(t){try{const u=await fetch(`${SB_URL}/auth/v1/user`,{headers:{apikey:SB_KEY,Authorization:'Bearer '+t}});
-      if(!u.ok){saveAuth(null)}else{who=(await u.json()).email||'';
-        const r=await fetch(`${SB_URL}/rest/v1/editors?select=user_id`,{headers:{apikey:SB_KEY,Authorization:'Bearer '+t}});canEdit=r.ok&&(await r.json()).length>0}}catch(e){}}
-  document.querySelectorAll('.acct').forEach(b=>b.textContent=auth?'Sign out':'Sign in');
+      if(!u.ok){saveAuth(null)}else{const uj=await u.json();who=uj.email||'';uid=uj.id||'';
+        const r=await fetch(`${SB_URL}/rest/v1/editors?select=user_id`,{headers:{apikey:SB_KEY,Authorization:'Bearer '+t}});canEdit=r.ok&&(await r.json()).length>0;if(canEdit)await countReports()}}catch(e){}}
+  document.querySelectorAll('[data-acct]').forEach(b=>b.textContent=auth?'Sign out':'Sign in');
   if(auth&&!canEdit&&who&&!msg)msg='Signed in as '+who+', but this account is not an editor.'}
 function formSignin(){panel.innerHTML=`<form id="fs"><h2>Editor sign-in</h2>${msg?`<div class="msg">${esc(msg)}</div>`:''}
   <p class="note">Enter your email and we’ll send you a sign-in link. Open it on this device.</p>
@@ -448,11 +455,65 @@ panel.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)retu
   if(d.editlink){mode='link';editing=d.editlink;msg='';return render()}
   if(d.cancel){mode='view';editing=null;msg='';return render()}
   if(d.del){b.outerHTML=`<button type="button" class="btn bad" data-delyes="${d.del}">Yes, delete for good</button><button type="button" class="btn" data-cancel="1">Keep it</button>`;return}
-  if(d.delyes)return remove(d.delyes)});
+  if(d.delyes)return remove(d.delyes);
+  if(d.report){rkind='error';rlink='';mode='report';msg='';return render()}
+  if(d.reports){mode='reports';msg='';return openReportList()}
+  if(d.rshow){showDone=!showDone;return openReportList()}
+  if(d.rdone)return setReport(d.rdone,'done');
+  if(d.ropen)return setReport(d.ropen,'open');
+  if(d.rdel){b.outerHTML=`<button type="button" class="btn bad" data-rdelyes="${esc(d.rdel)}">Yes, delete</button><button type="button" class="btn" data-reports="1">Keep it</button>`;return}
+  if(d.rdelyes)return delReport(d.rdelyes)});
 panel.addEventListener('input',e=>{if(e.target.id!=='fe-name')return;const f=document.getElementById('fe-id');if(!f||f.dataset.touched)return;
   const w=e.target.value.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9 -]+/g,'').trim().split(/\s+/);f.value=(w.length>1&&TYPES[val('fe-type')]==='Person'?w[w.length-1]:w.join('-')).slice(0,30)});
 panel.addEventListener('change',e=>{if(e.target.id==='fe-id')e.target.dataset.touched=1});
-panel.addEventListener('submit',e=>{e.preventDefault();const f=e.target.id;f==='fe'?saveEntity():f==='fs'?sendLink():saveLink()});
+panel.addEventListener('submit',e=>{e.preventDefault();const f=e.target.id;f==='fe'?saveEntity():f==='fs'?sendLink():f==='fr'?sendReport():saveLink()});
+
+/* ---------- reports and feedback ---------- */
+document.addEventListener('click',e=>{const b=e.target.closest('[data-fb]');if(!b)return;$('#menu').hidden=true;$('#menuBtn').setAttribute('aria-expanded','false');
+  rkind='feedback';rlink='';mode='report';msg='';render();panel.scrollIntoView({behavior:'smooth',block:'start'})});
+const linkLabel=(l,me)=>{const f=E.get(l.from),t=E.get(l.to);if(!f||!t)return l.role;return me===l.from?l.role+' \u00b7 '+t.name:me===l.to?f.name+', '+l.role:f.name+' '+l.role+' '+t.name};
+function formReport(){const e=rkind==='error'&&sel?E.get(sel):null;if(rkind==='error'&&!e)rkind='feedback';
+  const mine=e?L.filter(l=>(l.from===sel||l.to===sel)&&E.has(l.from)&&E.has(l.to)).sort((a,b)=>linkLabel(a,sel).localeCompare(linkLabel(b,sel))):[];
+  panel.innerHTML=`<form id="fr"><h2>${e?'Report an error':'Send feedback'}</h2>
+    <div class="msg" id="fr-box" hidden></div>
+    ${e?`<p class="note">On <strong>${esc(e.name)}</strong>. Tell us what’s wrong and, if you can, where the right information is published.</p>
+    <label>What’s wrong<select id="fr-link">${opt('','The entry itself (name, kind, country, note)',rlink)}${mine.length?'<option disabled>──────────</option>':''}${mine.map(l=>opt(l.id,linkLabel(l,sel),rlink)).join('')}</select></label>`
+      :`<p class="note">Something missing, wrong or annoying? Ideas welcome too. It goes straight to the editors.</p>`}
+    <label>${e?'Details':'Your feedback'}<textarea id="fr-msg" rows="5" required minlength="3" maxlength="2000"></textarea></label>
+    <div class="two"><label>Your name (optional)<input id="fr-name" maxlength="120" autocomplete="name"></label>
+    <label>Email (optional, for a reply)<input id="fr-email" type="email" maxlength="200" autocomplete="email" value="${esc(who)}"></label></div>
+    <label class="hp" aria-hidden="true">Leave this empty<input id="fr-web" tabindex="-1" autocomplete="off"></label>
+    <div class="acts"><button class="btn go" id="fr-send">Send</button><button type="button" class="btn" data-cancel="1">Cancel</button></div></form>`;
+  document.getElementById('fr-msg').focus({preventScroll:true})}
+async function sendReport(){const m=val('fr-msg');if(m.length<3)return;const email=val('fr-email');
+  const thanks=()=>{panel.innerHTML=`<div><h2>Thank you</h2><p class="note">${rkind==='error'?'An editor will check it and correct the book if needed.':'It’s with the editors.'}${email?' If we have a question, we’ll reply to '+esc(email)+'.':''}</p><div class="acts"><button type="button" class="btn" data-cancel="1">${sel?'Back to the entry':'Back'}</button></div></div>`;if(canEdit)countReports()};
+  if(val('fr-web'))return thanks();
+  const btn=document.getElementById('fr-send'),box=document.getElementById('fr-box'),lk=document.getElementById('fr-link');btn.disabled=true;btn.textContent='Sending…';
+  const body={kind:rkind,entity_id:rkind==='error'?sel:null,link_id:rkind==='error'&&lk&&lk.value||null,page:location.href.slice(0,500),message:m,name:val('fr-name'),email};
+  try{const t=await token().catch(()=>null),h={apikey:SB_KEY,'Content-Type':'application/json',Prefer:'return=minimal'};if(t)h.Authorization='Bearer '+t;
+    const r=await fetch(`${SB_URL}/rest/v1/reports`,{method:'POST',headers:h,body:JSON.stringify(body)});if(!r.ok)throw new Error(r.status+' '+await r.text());thanks()}
+  catch(e){box.hidden=false;box.textContent=/reports_rate_limit/.test(e.message)?'We’re getting a lot of reports right now. Please try again later, or email editor@darkbluebook.com.':'That didn’t send. Please try again, or email editor@darkbluebook.com.';btn.disabled=false;btn.textContent='Send'}}
+async function apiGet(path){const t=await token();if(!t)throw new Error('401 not signed in');
+  const r=await fetch(`${SB_URL}/rest/v1/${path}`,{headers:{apikey:SB_KEY,Authorization:'Bearer '+t}});if(!r.ok)throw new Error(r.status+' '+await r.text());return r.json()}
+async function countReports(){try{openReports=(await apiGet('reports?select=id&status=eq.open')).length}catch(e){openReports=0}}
+async function openReportList(){panel.innerHTML='<p class="note">Loading reports…</p>';
+  try{REPORTS=await apiGet('reports?select=id,kind,entity_id,link_id,page,message,name,email,status,created_at&order=created_at.desc&limit=200'+(showDone?'':'&status=eq.open'));msg=''}
+  catch(e){REPORTS=[];msg=/401|403/.test(e.message)?'Sign in as an editor to see reports.':'Reports could not be loaded. '+e.message.slice(0,120)}
+  await countReports();mode='reports';render()}
+function listReports(){const fmt=d=>new Date(d).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
+  const item=r=>{const e=r.entity_id&&E.get(r.entity_id),l=r.link_id&&L.find(x=>x.id===r.link_id);
+    const about=e?`<button type="button" class="ent" data-go="${esc(e.id)}">${esc(e.name)}</button>${l?` <span class="role">link: ${esc(linkLabel(l,''))}</span>`:r.link_id?' <span class="role">link since deleted</span>':''}`
+      :r.kind==='error'?'<span class="role">Entry since deleted</span>':'<strong>General feedback</strong>';
+    const from=[r.name&&esc(r.name),r.email&&`<a href="mailto:${esc(r.email)}">${esc(r.email)}</a>`].filter(Boolean).join(' \u00b7 ')||'Anonymous';
+    return`<li class="rep${r.status==='done'?' past':''}"><div class="rl">${about}</div><div class="meta"><span>${r.kind==='error'?'Error report':'Feedback'} \u00b7 ${fmt(r.created_at)}${r.status==='done'?' \u00b7 done':''}</span><span>${from}</span></div>
+      <p class="rmsg">${esc(r.message)}</p><div class="acts">${r.status==='open'?`<button type="button" class="btn" data-rdone="${r.id}">Mark done</button>`:`<button type="button" class="btn" data-ropen="${r.id}">Reopen</button>`}<button type="button" class="btn bad" data-rdel="${r.id}">Delete</button></div></li>`};
+  panel.innerHTML=`<div><h2>Reports and feedback</h2><p class="note">${openReports} open. Error reports from entries and feedback from the menu land here.</p></div>${msg?`<div class="msg">${esc(msg)}</div>`:''}
+    ${REPORTS.length?`<ul class="rel">${REPORTS.map(item).join('')}</ul>`:`<p class="note">${showDone?'No reports yet.':'Nothing open.'}</p>`}
+    <div class="acts"><button type="button" class="btn" data-rshow="1">${showDone?'Show open only':'Show done too'}</button><button type="button" class="btn" data-cancel="1">Back</button></div>`}
+async function setReport(id,status){try{await api('PATCH','reports?id=eq.'+encodeURIComponent(id),status==='done'?{status,resolved_at:new Date().toISOString(),resolved_by:uid||null}:{status,resolved_at:null,resolved_by:null});await openReportList()}
+  catch(e){msg='That change was not saved. '+String(e.message).slice(0,160);render()}}
+async function delReport(id){try{await api('DELETE','reports?id=eq.'+encodeURIComponent(id));await openReportList()}
+  catch(e){msg='That report was not deleted. '+String(e.message).slice(0,160);render()}}
 
 /* ---------- header ---------- */
 document.querySelectorAll('.lens button').forEach(b=>b.addEventListener('click',()=>{lens=b.dataset.lens;
