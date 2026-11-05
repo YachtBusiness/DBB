@@ -148,6 +148,12 @@ label input,label select,label textarea{padding:7px 9px;border:1px solid var(--l
 .acct{background:none;border:0;padding:0;font:inherit;color:inherit;cursor:pointer;opacity:.85;text-align:left}.acct:hover{opacity:1;text-decoration:underline}
 .menu .acct{padding:10px 12px;border-radius:5px;opacity:1}.menu .acct:hover{background:var(--wash);text-decoration:none}
 .who{font-size:12.5px;color:var(--muted);margin:0}
+.guide{display:flex;flex-direction:column;gap:8px;margin-top:-4px}
+.guide .say{font-family:var(--display);font-size:16px;line-height:1.35;margin:0;color:var(--ink)}
+.guide .warn{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px}
+.sugg{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:12px;color:var(--muted)}
+.sugg button{background:var(--wash);border:1px solid var(--line);border-radius:999px;padding:2px 10px;font-size:12.5px;cursor:pointer;color:var(--ink)}
+.sugg button:hover{border-color:var(--muted)}
 .hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
 ul.rel li.rep{display:block}
 .rmsg{white-space:pre-wrap;margin:6px 0 8px;overflow-wrap:anywhere}
@@ -168,9 +174,9 @@ ul.rel li.rep{display:block}
 </style>
 
 <header class="top">
-  <div class="brand"><h1>The Dark Blue Book</h1><span>The who's who of yacht racing <small id="ver" style="opacity:.6;margin-left:6px">v0.2.3</small></span></div>
+  <div class="brand"><h1>The Dark Blue Book</h1><span>The who's who of yacht racing <small id="ver" style="opacity:.6;margin-left:6px">v0.2.4</small></span></div>
   <button type="button" class="menu-btn" id="menuBtn" aria-label="Contact and links" aria-expanded="false" aria-controls="menu"><svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="M2 4h14M2 9h14M2 14h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
-  <nav class="menu" id="menu" hidden aria-label="Contact"><a href="https://wa.me/61439790410" target="_blank" rel="noopener">WhatsApp</a><a href="https://www.linkedin.com/groups/2023604/" target="_blank" rel="noopener">LinkedIn</a><a href="https://www.facebook.com/darkbluebook" target="_blank" rel="noopener">Facebook</a><a href="mailto:editor@darkbluebook.com">Email</a><button type="button" class="acct" data-fb="1">Send feedback</button><button type="button" class="acct" data-acct="1">Sign in</button><small>© The Dark Blue Book · v0.2.3</small></nav>
+  <nav class="menu" id="menu" hidden aria-label="Contact"><a href="https://wa.me/61439790410" target="_blank" rel="noopener">WhatsApp</a><a href="https://www.linkedin.com/groups/2023604/" target="_blank" rel="noopener">LinkedIn</a><a href="https://www.facebook.com/darkbluebook" target="_blank" rel="noopener">Facebook</a><a href="mailto:editor@darkbluebook.com">Email</a><button type="button" class="acct" data-fb="1">Send feedback</button><button type="button" class="acct" data-acct="1">Sign in</button><small>© The Dark Blue Book · v0.2.4</small></nav>
   <div class="lens" role="group" aria-label="What to show">
     <button type="button" data-lens="all" aria-pressed="true">Everything</button>
     <button type="button" data-lens="money" aria-pressed="false">Money</button>
@@ -188,7 +194,7 @@ ul.rel li.rep{display:block}
   </section>
   <aside id="panel" aria-live="polite"></aside>
 </main>
-<footer class="foot" aria-label="Contact"><a href="https://wa.me/61439790410" target="_blank" rel="noopener">WhatsApp</a><a href="https://www.linkedin.com/groups/2023604/" target="_blank" rel="noopener">LinkedIn</a><a href="https://www.facebook.com/darkbluebook" target="_blank" rel="noopener">Facebook</a><a href="mailto:editor@darkbluebook.com">Email</a><button type="button" class="acct" data-fb="1">Send feedback</button><button type="button" class="acct" data-acct="1">Sign in</button><span>© The Dark Blue Book · v0.2.3</span></footer>
+<footer class="foot" aria-label="Contact"><a href="https://wa.me/61439790410" target="_blank" rel="noopener">WhatsApp</a><a href="https://www.linkedin.com/groups/2023604/" target="_blank" rel="noopener">LinkedIn</a><a href="https://www.facebook.com/darkbluebook" target="_blank" rel="noopener">Facebook</a><a href="mailto:editor@darkbluebook.com">Email</a><button type="button" class="acct" data-fb="1">Send feedback</button><button type="button" class="acct" data-acct="1">Sign in</button><span>© The Dark Blue Book · v0.2.4</span></footer>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
 <script>
@@ -366,15 +372,32 @@ function formLink(){const l=editing?L.find(x=>x.id===editing):{from:sel||'',to:'
   const ents=byName(),eo=cur=>opt('','Choose…',cur)+ents.map(e=>opt(e.id,e.name+' ('+kindLabel(e)+')',cur)).join('');
   const ctx=opt('','None',l.context)+ents.filter(e=>e.type==='event').map(e=>opt(e.id,e.name,l.context)).join('');
   panel.innerHTML=`<form id="fl"><h2>${editing?'Edit link':'New link'}</h2>${msg?`<div class="msg">${esc(msg)}</div>`:''}
+    <p class="who">Who is the person, owner, sponsor or member: the smaller or dependent side. Of is what they work for, own, back or belong to.</p>
     <label>Who<select id="fl-from" required>${eo(l.from)}</select></label>
     <div class="two"><label>Is the<input id="fl-role" required list="roles" placeholder="title partner" value="${esc(l.role)}"><datalist id="roles">${ROLES.map(r=>`<option value="${r}">`).join('')}</datalist></label>
     <label>Kind of link<select id="fl-cat">${Object.keys(CATS).map(k=>opt(k,CATS[k],l.cat)).join('')}</select></label></div>
     <label>Of<select id="fl-to" required>${eo(l.to)}</select></label>
+    <div class="guide" id="fl-guide" aria-live="polite"></div>
     <label>Applies in (optional)<select id="fl-context">${ctx}</select></label>
     <div class="two"><label>From<input id="fl-start" placeholder="2026 or 2026-06" pattern="\\d{4}(-\\d{2})?.*" title="A year, or year and month: 2026 or 2026-06" value="${esc(l.start)}"></label><label>Until<input id="fl-end" placeholder="blank if current" pattern="\\d{4}(-\\d{2})?.*" title="A year, or year and month: 2026 or 2026-06. Leave blank if current." value="${esc(l.end)}"></label></div>
     <label>Source (a link, or where you saw it)<input id="fl-source" type="text" placeholder="https:// or e.g. team press release, 9 Oct 2026" value="${esc(l.source)}"></label>
     <label>Note<input id="fl-note" value="${esc(l.note)}"></label>
-    <div class="acts"><button class="btn go">Save link</button><button type="button" class="btn" data-cancel="1">Cancel</button>${editing?'<button type="button" class="btn bad" data-del="link">Delete link</button>':''}</div></form>`}
+    <div class="acts"><button class="btn go">Save link</button><button type="button" class="btn" data-cancel="1">Cancel</button>${editing?'<button type="button" class="btn bad" data-del="link">Delete link</button>':''}</div></form>`;linkGuide()}
+/* link direction help: built from the book's own links */
+const kindKey=e=>e.type==='event'?'event:'+(e.level||'event'):e.type;
+function pairStats(){const m=new Map();for(const l of L){const f=E.get(l.from),t=E.get(l.to);if(!f||!t)continue;const k=kindKey(f)+'>'+kindKey(t);
+    let x=m.get(k);if(!x){x={n:0,roles:new Map()};m.set(k,x)}x.n++;const r=l.role.trim();const y=x.roles.get(r)||{n:0,cats:{}};y.n++;y.cats[l.cat]=(y.cats[l.cat]||0)+1;x.roles.set(r,y)}return m}
+const sentence=(f,role,t)=>/\b(of|in|at|for|to|with|by|from|on)$/i.test(role)||/^(races|raced|competes|competed|represents|set|entered|owns|backs|sponsors|supplies|ratified|completed|bought|has)\b/i.test(role)?`${f} ${role} ${t}`:`${f} is ${role} of ${t}`;
+const kindPlural=e=>{const k=kindLabel(e).toLowerCase();return k.endsWith('s')?k+'es':k+'s'};
+function linkGuide(){const g=document.getElementById('fl-guide');if(!g)return;const f=E.get(val('fl-from')),t=E.get(val('fl-to')),role=val('fl-role');
+  if(!f||!t){g.innerHTML='';return}if(f.id===t.id){g.innerHTML='<div class="msg">A link needs two different entries.</div>';return}
+  const S=pairStats(),fw=S.get(kindKey(f)+'>'+kindKey(t)),bw=S.get(kindKey(t)+'>'+kindKey(f)),nf=fw?fw.n:0,nb=bw?bw.n:0;let h='';
+  h+=`<p class="say">${esc(sentence(f.name,role||'…',t.name))}</p>`;
+  if(nb>=3&&nb>=nf*4)h+=`<div class="msg warn"><span>Links between ${esc(kindPlural(f))} and ${esc(kindPlural(t))} usually run the other way: ${esc(t.name)} as Who, ${esc(f.name)} as Of (${nb} in the book, ${nf} this way round).</span><button type="button" class="btn" data-swap="1">Swap them</button></div>`;
+  if(fw){const top=[...fw.roles.entries()].sort((a,b)=>b[1].n-a[1].n).slice(0,6);
+    h+=`<div class="sugg"><span>Usual roles for ${esc(kindLabel(f).toLowerCase())} → ${esc(kindLabel(t).toLowerCase())}:</span>${top.map(([r,y])=>{const c=Object.entries(y.cats).sort((a,b)=>b[1]-a[1])[0][0];return`<button type="button" data-role="${esc(r)}" data-rcat="${esc(c)}">${esc(r)}</button>`}).join('')}</div>`}
+  else if(!nb)h+=`<p class="who">No links between ${esc(kindPlural(f))} and ${esc(kindPlural(t))} yet, so there's nothing to compare with.</p>`;
+  g.innerHTML=h}
 const val=id=>document.getElementById(id).value.trim();
 const CHECKS={entities_country_check:'the country must be chosen from the list or left as not known',entities_id_check:'the id can only use lowercase letters, numbers and hyphens',entities_check:'events need a level, and other kinds must not have one',entities_check1:'only organisations can have sectors',links_check:'a link needs two different entries',links_start_date_check:'the From date must start with a year, e.g. 2026 or 2026-06',links_end_date_check:'the Until date must start with a year, e.g. 2026 or 2026-06'};
 function fail(e){const t=String(e&&e.message||''),k=Object.keys(CHECKS).find(k=>new RegExp('constraint \\W*'+k+'(?!\\w)').test(t));
@@ -443,6 +466,8 @@ panel.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)retu
   if(d.cancel){mode='view';editing=null;msg='';return render()}
   if(d.del){b.outerHTML=`<button type="button" class="btn bad" data-delyes="${d.del}">Yes, delete for good</button><button type="button" class="btn" data-cancel="1">Keep it</button>`;return}
   if(d.delyes)return remove(d.delyes);
+  if(d.swap){const a=document.getElementById('fl-from'),z=document.getElementById('fl-to'),x=a.value;a.value=z.value;z.value=x;return linkGuide()}
+  if(d.role!==undefined&&document.getElementById('fl-role')){document.getElementById('fl-role').value=d.role;if(d.rcat)document.getElementById('fl-cat').value=d.rcat;return linkGuide()}
   if(d.report){rkind='error';rlink='';mode='report';msg='';return render()}
   if(d.reports){mode='reports';msg='';return openReportList()}
   if(d.rshow){showDone=!showDone;return openReportList()}
@@ -450,9 +475,9 @@ panel.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)retu
   if(d.ropen)return setReport(d.ropen,'open');
   if(d.rdel){b.outerHTML=`<button type="button" class="btn bad" data-rdelyes="${esc(d.rdel)}">Yes, delete</button><button type="button" class="btn" data-reports="1">Keep it</button>`;return}
   if(d.rdelyes)return delReport(d.rdelyes)});
-panel.addEventListener('input',e=>{if(e.target.id!=='fe-name')return;const f=document.getElementById('fe-id');if(!f||f.dataset.touched)return;
+panel.addEventListener('input',e=>{if(e.target.id==='fl-role')return linkGuide();if(e.target.id!=='fe-name')return;const f=document.getElementById('fe-id');if(!f||f.dataset.touched)return;
   const w=e.target.value.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9 -]+/g,'').trim().split(/\s+/);f.value=(w.length>1&&TYPES[val('fe-type')]==='Person'?w[w.length-1]:w.join('-')).slice(0,30)});
-panel.addEventListener('change',e=>{if(e.target.id==='fe-id')e.target.dataset.touched=1});
+panel.addEventListener('change',e=>{if(e.target.id==='fe-id')e.target.dataset.touched=1;if(e.target.id==='fl-from'||e.target.id==='fl-to')linkGuide()});
 panel.addEventListener('submit',e=>{e.preventDefault();const f=e.target.id;f==='fe'?saveEntity():f==='fs'?sendLink():f==='fr'?sendReport():saveLink()});
 
 /* ---------- reports and feedback ---------- */

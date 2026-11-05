@@ -2,6 +2,10 @@
 
 Version plan: 0.1 public map live · 0.2 editing moves to Supabase · 0.3 sign-in, applications and claims · 0.4 paid tiers, organisation editing, contact details · 1.0 membership network opens · 1.x events and intros. Small fixes in between are 0.x.1, 0.x.2 and so on.
 
+## 0.2.4 (5 November 2026)
+
+- Link form: help with direction. A one-line rule under the heading; a live sentence reading the link back ("Ichi Ban races in class Volvo 70"); a warning with a Swap button when the book usually has that pair of kinds the other way round; and the usual roles for the pair as one-click suggestions, which also set the kind of link. Suggestions and warnings come from the book's own links, so they keep up as it grows.
+
 ## 0.2.3 (5 November 2026)
 
 - Latest changes removed from the overview. It could be gamed once members add their own content; an Upcoming events block will take its place.
