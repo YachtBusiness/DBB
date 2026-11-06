@@ -742,9 +742,9 @@ function formReview(){if(accepted)return acceptedView();const a=APP;if(!a){panel
   const o=orgs(),claim=a.claim_entity_id&&E.get(a.claim_entity_id),matches=nameMatches(a.name,6).filter(e=>!claim||e.id!==claim.id),cands=(claim?[claim]:[]).concat(matches);
   const pick=claim?claim.id:'new',pending=a.status==='pending';
   const wa=a.phone?a.phone.replace(/[^\d]/g,''):'';
-  const roleRows=(a.roles||[]).map((r,i)=>{const e=r.entity_id&&E.get(r.entity_id),cat=CAT_GUESS(r.role);
+  const roleRows=(a.roles||[]).map((r,i)=>{const e=r.entity_id&&E.get(r.entity_id),cat=CAT_GUESS(r.role),have=!!(claim&&e&&L.some(l=>l.from===claim.id&&l.to===e.id&&l.role.trim().toLowerCase()===r.role.trim().toLowerCase()));
     const when=r.current?(r.since?'since '+r.since:'current'):(r.since?r.since+' to ':'until ')+r.until;
-    return`<li class="rvrole" data-i="${i}"><label class="inl"><input type="checkbox" class="rv-use" checked> <span><span class="role">${esc(r.role)}</span> ${e?`<button type="button" class="ent" data-go="${esc(e.id)}">${esc(e.name)}</button>`:`<strong>${esc(r.other_name)}</strong> <span class="chip">not in the book</span>`} <span class="role">${esc(when)}</span></span></label>
+    return`<li class="rvrole" data-i="${i}"><label class="inl"><input type="checkbox" class="rv-use"${have?'':' checked'}> <span><span class="role">${esc(r.role)}</span> ${e?`<button type="button" class="ent" data-go="${esc(e.id)}">${esc(e.name)}</button>`:`<strong>${esc(r.other_name)}</strong> <span class="chip">not in the book</span>`} <span class="role">${esc(when)}</span>${have?' <span class="chip">already in the book, won’t be added again</span>':''}</span></label>
       ${e?'':`<div class="two"><label>Match to an entry in the book<input class="rv-match" list="orgs" placeholder="leave blank to add it as new" autocomplete="off"></label><label>Or add it as<select class="rv-kind">${Object.entries(KIND4).map(([k,v])=>opt(k,v,'org')).join('')}</select></label></div>
       <label>Id for the new entry<input class="rv-newid" data-newid="1" pattern="[a-z0-9-]+" value="${esc(uniqueId(r.other_name))}"></label>`}
       <label>Kind of link<select class="rv-cat">${Object.keys(CATS).map(k=>opt(k,CATS[k],cat)).join('')}</select></label></li>`}).join('');
