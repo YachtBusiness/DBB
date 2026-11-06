@@ -2,6 +2,17 @@
 
 Version plan: 0.1 public map live · 0.2 editing moves to Supabase · 0.3 sign-in, applications and claims · 0.4 paid tiers, organisation editing, contact details · 1.0 membership network opens · 1.x events and intros. Small fixes in between are 0.x.1, 0.x.2 and so on.
 
+## 0.3.3 (preview, 6 November 2026)
+
+Member roles and member content.
+
+- Your roles, on the profile: members add roles to any team, club, organisation or event in the book, and change (current or past, years) or remove the roles they added. Roles from the editors stay as they are; members use Report an error on their entry.
+- If it isn't in the book, members add it: team, yacht club, organisation or event, with an optional country and, for organisations, an optional sector. "Other" is now a twelfth sector, with a short "What does the business do?" that only editors see. Before adding, the app suggests close matches already in the book ("Did you mean…").
+- Members never set a source. Every member-added link reads "added by member" and is never a link. Web addresses, emails and handles are refused in anything a member types (roles, names), so links stay on profiles.
+- Member content on the map: dotted lines for member-added links, a dashed ring for member-added entries, and "added by member" in entry panels. It's shown by default; "Added by members: shown/hidden" in the legend switches it off.
+- Editors: "Checked" on a member-added link and "Mark as checked" on a member-added entry make them editorial. Editors can still edit or remove anything.
+- Limits: 20 new roles and 10 new entries per member per day. A member-added entry is removed with the last role that uses it.
+
 ## 0.3.2 (6 November 2026)
 
 Member profiles.
