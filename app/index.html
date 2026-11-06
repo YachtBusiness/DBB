@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><style>[hidden]{display:none!important}</style>
 <meta name="description" content="The who's who of yacht racing: the people, teams, clubs, sponsors and events of the sport, and how they connect.">
 <title>The Dark Blue Book</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="fonts/fonts.css">
 <style>
 /* Layout: one working screen. A chart table (the graph) with a reference page beside it, like a pilot book open next to the chart. */
 :root{
@@ -200,10 +200,10 @@ a.btn{text-decoration:none;color:inherit}a.btn.go{color:var(--surface)}
 </style>
 
 <header class="top">
-  <div class="brand"><h1>The Dark Blue Book</h1><span>The who's who of yacht racing <small id="ver" style="opacity:.6;margin-left:6px">v0.3.0</small></span></div>
+  <div class="brand"><h1>The Dark Blue Book</h1><span>The who's who of yacht racing <small id="ver" style="opacity:.6;margin-left:6px">v0.3.1</small></span></div>
   <div class="join"><button type="button" class="apply" data-join="1"><span class="lg">Apply</span><span class="sm">Join</span></button><button type="button" class="acct" data-acct="1">Sign in</button></div>
   <button type="button" class="menu-btn" id="menuBtn" aria-label="Contact and links" aria-expanded="false" aria-controls="menu"><svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="M2 4h14M2 9h14M2 14h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
-  <nav class="menu" id="menu" hidden aria-label="Contact"><a href="https://wa.me/61439790410" target="_blank" rel="noopener">WhatsApp</a><a href="https://www.linkedin.com/groups/2023604/" target="_blank" rel="noopener">LinkedIn</a><a href="https://www.facebook.com/darkbluebook" target="_blank" rel="noopener">Facebook</a><a href="mailto:editor@darkbluebook.com">Email</a><button type="button" class="acct" data-fb="1">Send feedback</button><small>© The Dark Blue Book · v0.3.0</small></nav>
+  <nav class="menu" id="menu" hidden aria-label="Contact"><a href="https://wa.me/61439790410" target="_blank" rel="noopener">WhatsApp</a><a href="https://www.linkedin.com/groups/2023604/" target="_blank" rel="noopener">LinkedIn</a><a href="https://www.facebook.com/darkbluebook" target="_blank" rel="noopener">Facebook</a><a href="mailto:editor@darkbluebook.com">Email</a><button type="button" class="acct" data-fb="1">Send feedback</button><a href="privacy.html">Privacy</a><small>© The Dark Blue Book · v0.3.1</small></nav>
   <div class="lens" role="group" aria-label="What to show">
     <button type="button" data-lens="all" aria-pressed="true">Everything</button>
     <button type="button" data-lens="money" aria-pressed="false">Money</button>
@@ -221,7 +221,7 @@ a.btn{text-decoration:none;color:inherit}a.btn.go{color:var(--surface)}
   </section>
   <aside id="panel" aria-live="polite"></aside>
 </main>
-<footer class="foot" aria-label="Contact"><a href="https://wa.me/61439790410" target="_blank" rel="noopener">WhatsApp</a><a href="https://www.linkedin.com/groups/2023604/" target="_blank" rel="noopener">LinkedIn</a><a href="https://www.facebook.com/darkbluebook" target="_blank" rel="noopener">Facebook</a><a href="mailto:editor@darkbluebook.com">Email</a><button type="button" class="acct" data-fb="1">Send feedback</button><span>© The Dark Blue Book · v0.3.0</span></footer>
+<footer class="foot" aria-label="Contact"><a href="https://wa.me/61439790410" target="_blank" rel="noopener">WhatsApp</a><a href="https://www.linkedin.com/groups/2023604/" target="_blank" rel="noopener">LinkedIn</a><a href="https://www.facebook.com/darkbluebook" target="_blank" rel="noopener">Facebook</a><a href="mailto:editor@darkbluebook.com">Email</a><button type="button" class="acct" data-fb="1">Send feedback</button><a href="privacy.html">Privacy</a><span>© The Dark Blue Book · v0.3.1</span></footer>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
 <script>
@@ -544,6 +544,7 @@ function formReport(){const e=rkind==='error'&&sel?E.get(sel):null;if(rkind==='e
     <div class="two"><label>Your name (optional)<input id="fr-name" maxlength="120" autocomplete="name"></label>
     <label>Your email<input id="fr-email" type="email" required maxlength="200" autocomplete="email" value="${esc(who)}"></label></div>
     <label class="hp" aria-hidden="true">Leave this empty<input id="fr-web" tabindex="-1" autocomplete="off"></label>
+    <p class="who">We use your email only to reply about this. See the <a href="privacy.html" target="_blank" rel="noopener">privacy notice</a>.</p>
     <div class="acts"><button class="btn go" id="fr-send">Send</button><button type="button" class="btn" data-cancel="1">Cancel</button></div></form>`;
   document.getElementById('fr-msg').focus({preventScroll:true})}
 async function sendReport(){const m=val('fr-msg'),email=val('fr-email');if(m.length<3||!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email))return;
@@ -652,6 +653,7 @@ function formApply(){const edit=!!(ME&&ME.status!=='member');if(!draft)draft=edi
     <label>Referred by (optional)<input id="ap-referred_by" maxlength="200" value="${esc(d.referred_by)}"></label>
     <label class="hp" aria-hidden="true">Leave this empty<input id="ap-web" tabindex="-1" autocomplete="off"></label>
     <p class="who">The editors see everything on this form. What other members see is up to you once you’re accepted.</p>
+    ${edit?'':`<label class="inl"><input type="checkbox" id="ap-ok" required> <span>I’m 18 or over, and I’ve read the <a href="privacy.html" target="_blank" rel="noopener">privacy notice</a>.</span></label>`}
     <div class="acts"><button class="btn go" id="fa-send">${edit?'Save changes':'Apply'}</button><button type="button" class="btn" data-${edit?'account':'cancel'}="1">Cancel</button></div>
     ${orgs().html}<datalist id="aroles">${ROLES.filter(r=>!/^(competes in|round of|set|ratified|host city|stopover host|finish host|represents|defender|challenger)$/.test(r)).map(r=>`<option value="${esc(r)}">`).join('')}<option value="member"><option value="commercial director"><option value="sailing team manager"><option value="race officer"><option value="umpire"><option value="boat captain"><option value="designer"><option value="boatbuilder"><option value="shore team"></datalist></form>`}
 function refreshRoles(){collect();document.getElementById('fa-roles').innerHTML=draft.roles.map(roleRow).join('')}
@@ -664,6 +666,7 @@ async function sendApplication(){collect();const d=draft,edit=!!(ME&&ME.status!=
   const miss=d.name.length<2?'Give your name.':!edit&&!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(d.email)?'Check the email address.':!d.nationality?'Choose your nationality.':
     d.roles.some(r=>r.org.length<2)?'Each role needs a team, club, organisation or event.':d.roles.some(r=>r.role.length<2)?'Each role needs a role, e.g. “trimmer” or “commercial director”.':
     d.roles.some(r=>!r.current&&!/^\d{4}$/.test(r.until))?'Past roles need the year they ended.':d.roles.some(r=>(r.since&&!/^\d{4}$/.test(r.since))||(r.since&&r.until&&!r.current&&r.since>r.until))?'Years are four digits, and Since comes before Until.':'';
+  if(!miss&&!edit&&!(document.getElementById('ap-ok')||{}).checked)return applyBox('Please confirm you’re 18 or over and have read the privacy notice.');
   if(miss)return applyBox(miss);applyBox('');
   const btn=document.getElementById('fa-send');btn.disabled=true;btn.textContent=edit?'Saving…':'Sending…';
   try{if(edit){await rpc('update_application',{p:payload()});await loadMe();draft=null;msg='Your application is updated.';mode='account';return render()}

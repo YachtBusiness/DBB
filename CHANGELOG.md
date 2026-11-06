@@ -2,6 +2,14 @@
 
 Version plan: 0.1 public map live · 0.2 editing moves to Supabase · 0.3 sign-in, applications and claims · 0.4 paid tiers, organisation editing, contact details · 1.0 membership network opens · 1.x events and intros. Small fixes in between are 0.x.1, 0.x.2 and so on.
 
+## 0.3.1 (preview, 6 November 2026)
+
+Privacy.
+
+- Privacy notice at /privacy.html: who runs the book (Aquitude Group Limited), what's held about people in the book and about applicants and members, why, who sees it, how long it's kept, the providers used, and how to use your rights (privacy@darkbluebook.com). Linked from the footer, the menu, the Apply form and the report form.
+- Apply: a required tick box, "I'm 18 or over, and I've read the privacy notice".
+- Fonts are served from the app itself instead of Google Fonts, so visitors' IP addresses no longer go to Google. Same fonts, same look.
+
 ## 0.3.0 (6 November 2026)
 
 First step of 0.3: applications.
