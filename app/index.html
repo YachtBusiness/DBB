@@ -756,14 +756,25 @@ async function acceptApp(){const a=APP,o=orgs(),btn=document.getElementById('fv-
     roles.push({...base,new_entity:{id:nid,name:r.other_name,type:li.querySelector('.rv-kind').value,country:''}})}
   if(!roles.length&&who_==='new'){msg='Keep at least one role, so the new entry is linked to something.';return render()}
   btn.disabled=true;btn.textContent='Accepting…';
-  try{const id=await rpc('accept_application',{p_user:a.user_id,p_plan:{person_id:pid,new_person:who_==='new',roles}});await reload();accepted={id,name:a.name,email:a.email};await countApps();msg='';render()}
+  try{const id=await rpc('accept_application',{p_user:a.user_id,p_plan:{person_id:pid,new_person:who_==='new',roles}});await reload();accepted={id,uid:a.user_id,name:a.name,email:a.email,mail:'sending'};await countApps();msg='';render();sendWelcome()}
   catch(e){const t=e.message;msg=/duplicate key|23505/.test(t)?'An entry with one of those ids already exists. Change the id and try again.':/accept_person_taken/.test(t)?'That person entry already belongs to another member.':/entities_id_check/.test(t)?'Ids can only use lowercase letters, numbers and hyphens.':/application_not_pending/.test(t)?'This application has already been decided.':'Not accepted: '+t.slice(0,160);render()}}
 function welcome(x){const url='https://app.darkbluebook.com/#'+encodeURIComponent(x.id);
   return{subject:'Welcome to The Dark Blue Book',body:`Hi ${firstName(x.name)},\n\nYour application's been accepted, welcome aboard. You're now on the map: ${url}\n\nSign in to finish your profile: add a photo and choose which contact details other members can see.\n\nYou're one of our first members, so some things are still being worked out. If something's missing, wrong or annoying, tell us: use Send feedback in the app or just reply to this email.\n\nDave\nEditor, The Dark Blue Book`}}
+async function sendWelcome(again){if(!accepted)return;const x=accepted;x.mail='sending';x.why='';if(mode==='review')render();
+  try{const t=await token();const r=await fetch(`${SB_URL}/functions/v1/welcome`,{method:'POST',headers:{apikey:SB_KEY,Authorization:'Bearer '+t,'Content-Type':'application/json'},body:JSON.stringify({user_id:x.uid,again:!!again})});
+    const j=await r.json().catch(()=>({}));x.mail=r.ok?(j.result==='already'?'already':'sent'):'failed';x.why=r.ok?'':j.error==='not_configured'?'Automatic sending isn’t set up yet (no Resend key in Supabase).':'Resend said: '+(j.detail||j.error||r.status)}
+  catch(e){x.mail='failed';x.why='Couldn’t reach the server.'}
+  if(accepted===x&&mode==='review')render()}
 function acceptedView(){const x=accepted,w=welcome(x);
-  panel.innerHTML=`<div><h2>${esc(x.name)} is a member</h2><p class="note">They’re on the map. Send the welcome email from your own inbox, so replies come to you.</p></div>
-    <label>To<input readonly value="${esc(x.email)}"></label><label>Subject<input readonly value="${esc(w.subject)}"></label><label>Email<textarea id="wl-body" rows="12">${esc(w.body)}</textarea></label>
-    <div class="acts"><a class="btn go" id="wl-mail" href="mailto:${esc(x.email)}?subject=${encodeURIComponent(w.subject)}&body=${encodeURIComponent(w.body)}">Open in email</a><button type="button" class="btn" data-copywl="1">Copy text</button><button type="button" class="btn" data-go="${esc(x.id)}">Open their entry</button><button type="button" class="btn" data-apps="1">Back to applications</button></div>`}
+  const status=x.mail==='sending'?'<p class="note">Sending the welcome email…</p>'
+    :x.mail==='sent'?`<p class="note">Welcome email sent to ${esc(x.email)}, from you, with replies going to editor@darkbluebook.com.</p>`
+    :x.mail==='already'?`<p class="note">The welcome email had already gone to ${esc(x.email)}.</p>`
+    :`<div class="msg">The welcome email wasn’t sent. ${esc(x.why||'')}</div><div class="acts"><button type="button" class="btn go" data-wlagain="1">Try again</button></div>
+      <details class="grp"><summary><b style="border-color:var(--muted)"></b>Send it yourself instead</summary>
+      <label>To<input readonly value="${esc(x.email)}"></label><label>Subject<input readonly value="${esc(w.subject)}"></label><label>Email<textarea id="wl-body" rows="12">${esc(w.body)}</textarea></label>
+      <div class="acts"><a class="btn" id="wl-mail" href="mailto:${esc(x.email)}?subject=${encodeURIComponent(w.subject)}&body=${encodeURIComponent(w.body)}">Open in email</a><button type="button" class="btn" data-copywl="1">Copy text</button></div></details>`;
+  panel.innerHTML=`<div><h2>${esc(x.name)} is a member</h2><p class="note">They’re on the map.</p></div>${status}
+    <div class="acts"><button type="button" class="btn" data-go="${esc(x.id)}">Open their entry</button><button type="button" class="btn" data-apps="1">Back to applications</button></div>`}
 async function declineApp(){try{await rpc('decline_application',{p_user:APP.user_id});APP=null;msg='Application deleted. No email was sent.';await openApps()}catch(e){msg='Not deleted: '+String(e.message).slice(0,160);render()}}
 panel.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;const d=b.dataset;
   if(d.addrole){collect();draft.roles.push(blankRole());refreshRoles();const f=document.querySelectorAll('.ap-org');f[f.length-1].focus();return}
@@ -781,6 +792,7 @@ panel.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)retu
   if(d.review)return openReview(d.review);
   if(d.decline){b.outerHTML='<button type="button" class="btn bad" data-declineyes="1">Yes, delete it (no email is sent)</button>';return}
   if(d.declineyes)return declineApp();
+  if(d.wlagain)return sendWelcome(false);
   if(d.copywl){const t=document.getElementById('wl-body').value;try{navigator.clipboard.writeText(t).then(()=>{b.textContent='Copied'})}catch(x){}return}});
 panel.addEventListener('submit',e=>{const f=e.target.id;if(f==='fa'){e.preventDefault();e.stopImmediatePropagation();sendApplication()}else if(f==='fv'){e.preventDefault();e.stopImmediatePropagation();acceptApp()}else if(f==='fn'){e.preventDefault();e.stopImmediatePropagation();saveNote()}},true);
 document.addEventListener('click',e=>{const b=e.target.closest('[data-join]');if(!b)return;$('#menu').hidden=true;
