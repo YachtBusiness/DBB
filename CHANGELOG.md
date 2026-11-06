@@ -2,6 +2,18 @@
 
 Version plan: 0.1 public map live · 0.2 editing moves to Supabase · 0.3 sign-in, applications and claims · 0.4 paid tiers, organisation editing, contact details · 1.0 membership network opens · 1.x events and intros. Small fixes in between are 0.x.1, 0.x.2 and so on.
 
+## 0.3.5 (preview, 7 November 2026)
+
+Claims: owners and managers for organisation profiles.
+
+- "Claim this organisation" on organisation entries, for signed-in members whose profile has a photo, a bio and a role (otherwise it says what's missing). The claim gives the connection (staff, owner or director, agency or contractor, other), what they do for the organisation and, optionally, something to help check; only editors see that.
+- Editors: Claims (n) beside Applications. Each claim shows the claimant's profile and roles alongside. Approve as owner, approve as manager, or decline. Approving emails the member; declining deletes the claim, with no email.
+- Owners and managers edit the organisation's profile (logo, description, links), free until paid tiers launch. Owners also see People: they invite managers by the email they sign in with (the invited member is emailed and accepts on the entry or their profile) and remove managers, for example when the organisation changes PR agency. The owner gets the same answer whether or not the email belongs to a member.
+- Editors have the final say: they approve every claim, can change anyone between owner and manager, and remove anyone. Anyone can step down.
+- Who manages a profile isn't shown publicly; a commercial link (X is PR agency of Y) covers that.
+- Members see their organisations, claims and invitations on their own profile.
+- A new notify Edge Function sends invitations and claim-approved emails.
+
 ## 0.3.4 (7 November 2026)
 
 Organisation profiles.

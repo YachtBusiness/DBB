@@ -233,10 +233,10 @@ label.btn{display:inline-block;flex-direction:row;color:var(--ink);font-size:14p
 </style>
 
 <header class="top">
-  <div class="brand"><h1>The Dark Blue Book</h1><span>The who's who of yacht racing <small id="ver" style="opacity:.6;margin-left:6px">v0.3.4</small></span></div>
+  <div class="brand"><h1>The Dark Blue Book</h1><span>The who's who of yacht racing <small id="ver" style="opacity:.6;margin-left:6px">v0.3.5</small></span></div>
   <div class="join"><button type="button" class="apply" data-join="1">Join</button><button type="button" class="acct" data-acct="1">Sign in</button></div>
   <button type="button" class="menu-btn" id="menuBtn" aria-label="Contact and links" aria-expanded="false" aria-controls="menu"><svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="M2 4h14M2 9h14M2 14h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
-  <nav class="menu" id="menu" hidden aria-label="Contact"><a href="https://wa.me/61439790410" target="_blank" rel="noopener">WhatsApp</a><a href="https://www.linkedin.com/groups/2023604/" target="_blank" rel="noopener">LinkedIn</a><a href="https://www.facebook.com/darkbluebook" target="_blank" rel="noopener">Facebook</a><a href="mailto:editor@darkbluebook.com">Email</a><button type="button" class="acct" data-fb="1">Send feedback</button><a href="privacy.html">Privacy</a><small>© The Dark Blue Book · v0.3.4</small></nav>
+  <nav class="menu" id="menu" hidden aria-label="Contact"><a href="https://wa.me/61439790410" target="_blank" rel="noopener">WhatsApp</a><a href="https://www.linkedin.com/groups/2023604/" target="_blank" rel="noopener">LinkedIn</a><a href="https://www.facebook.com/darkbluebook" target="_blank" rel="noopener">Facebook</a><a href="mailto:editor@darkbluebook.com">Email</a><button type="button" class="acct" data-fb="1">Send feedback</button><a href="privacy.html">Privacy</a><small>© The Dark Blue Book · v0.3.5</small></nav>
   <div class="lens" role="group" aria-label="What to show">
     <button type="button" data-lens="all" aria-pressed="true">Everything</button>
     <button type="button" data-lens="money" aria-pressed="false">Money</button>
@@ -254,7 +254,7 @@ label.btn{display:inline-block;flex-direction:row;color:var(--ink);font-size:14p
   </section>
   <aside id="panel" aria-live="polite"></aside>
 </main>
-<footer class="foot" aria-label="Contact"><a href="https://wa.me/61439790410" target="_blank" rel="noopener">WhatsApp</a><a href="https://www.linkedin.com/groups/2023604/" target="_blank" rel="noopener">LinkedIn</a><a href="https://www.facebook.com/darkbluebook" target="_blank" rel="noopener">Facebook</a><a href="mailto:editor@darkbluebook.com">Email</a><button type="button" class="acct" data-fb="1">Send feedback</button><a href="privacy.html">Privacy</a><span>© The Dark Blue Book · v0.3.4</span></footer>
+<footer class="foot" aria-label="Contact"><a href="https://wa.me/61439790410" target="_blank" rel="noopener">WhatsApp</a><a href="https://www.linkedin.com/groups/2023604/" target="_blank" rel="noopener">LinkedIn</a><a href="https://www.facebook.com/darkbluebook" target="_blank" rel="noopener">Facebook</a><a href="mailto:editor@darkbluebook.com">Email</a><button type="button" class="acct" data-fb="1">Send feedback</button><a href="privacy.html">Privacy</a><span>© The Dark Blue Book · v0.3.5</span></footer>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
 <script>
@@ -413,7 +413,11 @@ function render(){
   if(mode==='apps')return listApps();
   if(mode==='review')return formReview();
   if(mode==='orgprof')return formOrgProfile();
-  const tools=canEdit?`<div class="acts"><button type="button" class="btn" data-new="entity">New entry</button><button type="button" class="btn" data-new="link">New link</button>${sel?'<button type="button" class="btn" data-editent="1">Edit this entry</button>':''}<button type="button" class="btn" data-reports="1">Reports${openReports?' ('+openReports+')':''}</button><button type="button" class="btn" data-apps="1">Applications${pendingApps?' ('+pendingApps+')':''}</button></div>`:'';
+  if(mode==='claim')return formClaim();
+  if(mode==='orgpeople')return formPeople();
+  if(mode==='claims')return listClaims();
+  if(mode==='claimrev')return formClaimReview();
+  const tools=canEdit?`<div class="acts"><button type="button" class="btn" data-new="entity">New entry</button><button type="button" class="btn" data-new="link">New link</button>${sel?'<button type="button" class="btn" data-editent="1">Edit this entry</button>':''}<button type="button" class="btn" data-reports="1">Reports${openReports?' ('+openReports+')':''}</button><button type="button" class="btn" data-apps="1">Applications${pendingApps?' ('+pendingApps+')':''}</button><button type="button" class="btn" data-claims="1">Claims${pendingClaims?' ('+pendingClaims+')':''}</button></div>`:'';
   const m=msg?`<div class="msg">${esc(msg)}</div>`:'';
   if(sel){const e=E.get(sel),mine=L.filter(l=>l.from===sel||l.to===sel).sort((a,b)=>(active(b)-active(a))||((yr(b.start)||0)-(yr(a.start)||0)));let h='';
     const past=mine.filter(ended),cur=mine.filter(l=>!ended(l));
@@ -513,8 +517,8 @@ async function api(method,path,body){const t=await token();if(!t)throw new Error
 async function checkAuth(){canEdit=false;who='';const t=await token().catch(()=>null);
   if(t){try{const u=await fetch(`${SB_URL}/auth/v1/user`,{headers:{apikey:SB_KEY,Authorization:'Bearer '+t}});
       if(!u.ok){saveAuth(null)}else{const uj=await u.json();who=uj.email||'';uid=uj.id||'';
-        const r=await fetch(`${SB_URL}/rest/v1/editors?select=user_id`,{headers:{apikey:SB_KEY,Authorization:'Bearer '+t}});canEdit=r.ok&&(await r.json()).length>0;if(canEdit){await countReports();await countApps();await loadAudit()}await loadRoles();await loadMe()}}catch(e){}}
-  if(!auth){ME=null;EDITOR_ROLES=[];IS_OWNER=false;MEMBERS_BY_ENTITY=new Map()}
+        const r=await fetch(`${SB_URL}/rest/v1/editors?select=user_id`,{headers:{apikey:SB_KEY,Authorization:'Bearer '+t}});canEdit=r.ok&&(await r.json()).length>0;if(canEdit){await countReports();await countApps();await countClaims();await loadAudit()}await loadRoles();await loadMe();await loadMyOrgs()}}catch(e){}}
+  if(!auth){ME=null;EDITOR_ROLES=[];IS_OWNER=false;MYORGS={roles:[],claims:[],invites:[],missing:['member']};MEMBERS_BY_ENTITY=new Map()}
   document.querySelectorAll('[data-acct]').forEach(b=>{b.textContent=acctLabel();b.title=auth?'Your account':'Sign in'});
   document.querySelectorAll('[data-join]').forEach(b=>b.hidden=!!ME||(canEdit&&!!auth))}
 function formSignin(){panel.innerHTML=`<form id="fs"><h2>Sign in</h2>${msg?`<div class="msg">${esc(msg)}</div>`:''}
@@ -906,7 +910,7 @@ function formProfile(){const d=pdraft||(pdraft=profDraft()),e=ME.entity_id&&E.ge
       ${tog('show_phone',d.show_phone,'WhatsApp or mobile','Paid members only, once paid membership starts. Nobody sees it yet.')}
     </div>
     <div class="acts"><button class="btn go" id="pf-save">Save profile</button>${e?'<button type="button" class="btn" data-seeme="1">See yourself on the map</button>':''}</div>
-    </form>${rolesSection()}
+    </form>${rolesSection()}${myOrgsSection()}
     <div class="acts"><button type="button" class="btn" data-signout="1">Sign out</button><button type="button" class="btn" data-cancel="1">Back to the map</button></div>`}
 function collectProfile(){if(!pdraft||!document.getElementById('fp'))return;const g=id=>{const x=document.getElementById('pf-'+id);return x?x.value.trim():''};
   pdraft.bio=g('biot');['linkedin','instagram','other_social','contact_email','phone'].forEach(k=>pdraft[k]=g(k));
@@ -1032,7 +1036,7 @@ function orgProfileBlock(e){if(e.type!=='org')return'';
   if(e.instagram&&extUrl(e.instagram,'ig'))links.push(`<a href="${esc(extUrl(e.instagram,'ig'))}" target="_blank" rel="noopener">Instagram ↗</a>`);
   if(e.otherSocial&&extUrl(e.otherSocial)){let h='Link';try{h=new URL(extUrl(e.otherSocial)).hostname.replace(/^www\./,'')}catch(x){}links.push(`<a href="${esc(extUrl(e.otherSocial))}" target="_blank" rel="noopener">${esc(h)} ↗</a>`)}
   if(e.contactEmail)links.push(`<a href="mailto:${esc(e.contactEmail)}">${esc(e.contactEmail)}</a>`);
-  const edit=canEdit?`<div class="acts"><button type="button" class="btn" data-orgprof="${esc(e.id)}">${hasOrgProfile(e)?'Edit profile':'Add a profile'}</button></div>`:'';
+  const edit=(canEditOrg(e.id)?`<div class="acts"><button type="button" class="btn" data-orgprof="${esc(e.id)}">${hasOrgProfile(e)?'Edit profile':'Add a profile'}</button></div>`:'')+orgActions(e);
   if(!hasOrgProfile(e))return edit;
   return`<section class="prof org">${e.logo?`<img class="logo" src="${esc(logoUrl(e.logo))}" alt="${esc(e.name)} logo" loading="lazy">`:''}<div class="pbody">
     ${e.about?`<p class="pbio">${esc(e.about)}</p>`:''}${links.length?`<p class="plinks">${links.join('')}</p>`:''}${edit}</div></section>`}
@@ -1056,7 +1060,7 @@ function collectOrg(){if(!odraft||!document.getElementById('fo'))return;['about'
 async function saveOrgProfile(){collectOrg();const d=odraft;
   if(d.contact_email&&!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(d.contact_email)){msg='Check the contact email.';return render()}
   for(const k of ['website','linkedin','other_social'])if(d[k]&&!extUrl(d[k])){msg='Check the '+(k==='other_social'?'other social link':k==='linkedin'?'LinkedIn link':'website')+': it should be a web address.';return render()}
-  try{await api('PATCH','entities?id=eq.'+encodeURIComponent(editing),{about:d.about,website:d.website,linkedin:d.linkedin,instagram:d.instagram,other_social:d.other_social,contact_email:d.contact_email.toLowerCase()});
+  try{await rpc('update_org_profile',{p_entity:editing,p:{about:d.about,website:d.website,linkedin:d.linkedin,instagram:d.instagram,other_social:d.other_social,contact_email:d.contact_email.toLowerCase()}});
     const id=editing;odraft=null;await reload();msg='Profile saved.';sel=id;mode='view';editing=null}
   catch(e){msg='Not saved. '+String(e.message).slice(0,160)}render()}
 /* logo: fitted inside a 400px square, transparency kept (PNG); JPEG only if the PNG is too big */
@@ -1071,13 +1075,13 @@ async function uploadLogo(file){if(!file)return;collectOrg();if(!/^image\//.test
   try{const f=await fitLogo(file),path=`${e.id}/${Date.now()}.${f.ext}`,t=await token();
     const r=await fetch(`${SB_URL}/storage/v1/object/logos/${path}`,{method:'POST',headers:{apikey:SB_KEY,Authorization:'Bearer '+t,'Content-Type':f.type,'x-upsert':'false','Cache-Control':'31536000'},body:f.blob});
     if(!r.ok)throw new Error('upload '+r.status+' '+(await r.text()).slice(0,120));
-    await api('PATCH','entities?id=eq.'+encodeURIComponent(e.id),{logo_path:path});e.logo=path;
+    await rpc('update_org_profile',{p_entity:e.id,p:{logo_path:path}});e.logo=path;
     if(old)fetch(`${SB_URL}/storage/v1/object/logos/${old}`,{method:'DELETE',headers:{apikey:SB_KEY,Authorization:'Bearer '+t}}).catch(()=>{});
     msg='Logo added.'}
   catch(x){msg=/too_big/.test(x.message)?'That logo couldn’t be made small enough. Try a simpler PNG.':'The logo wasn’t uploaded. ('+String(x.message).slice(0,100)+')'}
   logoBusy='';render()}
 async function removeLogo(){const e=E.get(editing),old=e.logo;if(!old)return;collectOrg();
-  try{await api('PATCH','entities?id=eq.'+encodeURIComponent(e.id),{logo_path:null});e.logo='';const t=await token();
+  try{await rpc('update_org_profile',{p_entity:e.id,p:{logo_path:''}});e.logo='';const t=await token();
     fetch(`${SB_URL}/storage/v1/object/logos/${old}`,{method:'DELETE',headers:{apikey:SB_KEY,Authorization:'Bearer '+t}}).catch(()=>{});msg='Logo removed.'}
   catch(x){msg='Not removed. '+String(x.message).slice(0,120)}render()}
 panel.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;const d=b.dataset;
@@ -1086,6 +1090,105 @@ panel.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)retu
 panel.addEventListener('change',e=>{if(e.target.id==='of-file')uploadLogo(e.target.files[0])});
 panel.addEventListener('input',e=>{if(e.target.id==='of-about'){const n=document.getElementById('of-aboutn');if(n)n.textContent=e.target.value.length}});
 panel.addEventListener('submit',e=>{if(e.target.id==='fo'){e.preventDefault();e.stopImmediatePropagation();saveOrgProfile()}},true);
+
+/* ---------- claims, owners and managers (0.3.5) ---------- */
+let MYORGS={roles:[],claims:[],invites:[],missing:['member']},CLAIMS=[],CLAIM=null,pendingClaims=0,PEOPLE=null;
+const CLAIM_CONN={staff:'I work for them',owner:'I own or direct it',agency:'An agency or contractor acting for them',other:'Something else'};
+const MISSING_LABEL={photo:'a photo',bio:'a bio',role:'a role',member:'membership'};
+const myOrgRole=id=>(MYORGS.roles.find(r=>r.entity_id===id)||{}).role||'';
+const canEditOrg=id=>canEdit||!!myOrgRole(id);
+const canRunOrg=id=>canEdit||myOrgRole(id)==='owner';
+async function loadMyOrgs(){MYORGS={roles:[],claims:[],invites:[],missing:['member']};if(!auth||!ME||ME.status!=='member'){if(canEdit)MYORGS.missing=['member'];return}
+  try{MYORGS=await rpc('my_orgs',{})}catch(e){}}
+async function countClaims(){try{pendingClaims=(await apiGet('claims?select=id')).length}catch(e){pendingClaims=0}}
+async function notify(body){const t=await token();const r=await fetch(`${SB_URL}/functions/v1/notify`,{method:'POST',headers:{apikey:SB_KEY,Authorization:'Bearer '+t,'Content-Type':'application/json'},body:JSON.stringify(body)});
+  const j=await r.json().catch(()=>({}));if(!r.ok)throw new Error(j.error||r.status);return j}
+const joinList=a=>a.length<2?a.join(''):a.slice(0,-1).join(', ')+' and '+a[a.length-1];
+/* what a signed-in member sees on an organisation's entry */
+function orgActions(e){if(e.type!=='org'||!auth)return'';const role=myOrgRole(e.id),out=[];
+  const inv=MYORGS.invites.some(i=>i.entity_id===e.id),cl=MYORGS.claims.some(c=>c.entity_id===e.id);
+  if(role)out.push(`<p class="who">You’re ${role==='owner'?'an owner':'a manager'} of this profile.</p>`);
+  if(inv)out.push(`<div class="owner"><span>You’ve been invited to help manage this profile.</span><button type="button" class="btn go" data-invyes="${esc(e.id)}">Accept</button><button type="button" class="btn" data-invno="${esc(e.id)}">Decline</button></div>`);
+  else if(cl)out.push(`<div class="owner"><span>Your claim is with the editors.</span><button type="button" class="btn" data-unclaim2="${esc(e.id)}">Withdraw</button></div>`);
+  const acts=[];if(canRunOrg(e.id))acts.push(`<button type="button" class="btn" data-orgpeople="${esc(e.id)}">People</button>`);
+  if(!role&&!inv&&!cl&&ME&&ME.status==='member')acts.push(`<button type="button" class="btn" data-claim2="${esc(e.id)}">Claim this organisation</button>`);
+  if(acts.length)out.push(`<div class="acts">${acts.join('')}</div>`);
+  return out.join('')}
+/* the claim form */
+function formClaim(){const e=E.get(editing);if(!e){mode='view';return render()}const miss=(MYORGS.missing||[]).filter(m=>m!=='member');
+  if(miss.length){panel.innerHTML=`<div><h2>Claim ${esc(e.name)}</h2><p class="note">To claim an organisation, your own profile needs ${esc(joinList(miss.map(m=>MISSING_LABEL[m])))} first. The editors look at it when they review your claim.</p></div>
+    <div class="acts"><button type="button" class="btn go" data-account="1">Go to your profile</button><button type="button" class="btn" data-go="${esc(e.id)}">Back</button></div>`;return}
+  panel.innerHTML=`<form id="fcl" novalidate><div><h2>Claim ${esc(e.name)}</h2><p class="note">Claimed profiles are looked after by their owners and managers: logo, description and links. The editors check every claim, and see your profile with it.</p></div>
+    ${msg?`<div class="msg">${esc(msg)}</div>`:''}
+    <label>Your connection<select id="cl-connection">${Object.entries(CLAIM_CONN).map(([k,v])=>opt(k,v,'staff')).join('')}</select></label>
+    <label>What do you do for them?<textarea id="cl-detail" rows="3" maxlength="500" placeholder="e.g. Head of marketing; or: we’re their PR agency and look after their media"></textarea></label>
+    <label>Anything that helps us check (optional)<textarea id="cl-evidence" rows="2" maxlength="500" placeholder="e.g. your work email, or someone there who can confirm"></textarea><span class="hint">Only the editors see this.</span></label>
+    <div class="acts"><button class="btn go">Send claim</button><button type="button" class="btn" data-go="${esc(e.id)}">Cancel</button></div></form>`}
+async function sendClaim(){const d=val('cl-detail');if(d.length<2){msg='Say what you do for them.';return render()}
+  try{await rpc('submit_claim',{p_entity:editing,p:{connection:val('cl-connection'),detail:d,evidence:val('cl-evidence')}});await loadMyOrgs();
+    const id=editing;editing=null;sel=id;mode='view';msg='Thanks: your claim is with the editors. You’ll get an email when it’s approved.'}
+  catch(e){msg=/claim_profile_incomplete/.test(e.message)?'Your profile needs a photo, a bio and a role first.':/claim_rate_limit/.test(e.message)?'That’s a lot of claims for one day. Please try again tomorrow.':'That didn’t go through. '+String(e.message).slice(0,120)}render()}
+/* owners and editors: the people behind a profile */
+async function openPeople(id){editing=id;PEOPLE=null;msg='';mode='orgpeople';render();
+  try{PEOPLE=await rpc('org_people',{p_entity:id})}catch(e){msg='Couldn’t load the people. '+String(e.message).slice(0,120)}render()}
+function formPeople(){const e=E.get(editing);if(!e){mode='view';return render()}
+  if(!PEOPLE){panel.innerHTML=`${msg?`<div class="msg">${esc(msg)}</div>`:'<p class="note">Loading…</p>'}<div class="acts"><button type="button" class="btn" data-go="${esc(e.id)}">Back</button></div>`;return}
+  const mineOwner=myOrgRole(e.id)==='owner';
+  const row=p=>{const self=p.user_id===uid,canRm=canEdit||self||(mineOwner&&p.role==='manager');
+    return`<li><div class="rl"><span class="role">${p.role==='owner'?'Owner':'Manager'}</span>${p.entity_id&&E.has(p.entity_id)?`<button type="button" class="ent" data-go="${esc(p.entity_id)}">${esc(p.name)}</button>`:esc(p.name)}${self?' <span class="role">(you)</span>':''}</div>
+      <div class="acts">${canEdit?`<button type="button" class="mini" data-setrole="${p.role==='owner'?'manager':'owner'}" data-uid="${esc(p.user_id)}">Make ${p.role==='owner'?'manager':'owner'}</button>`:''}${canRm?`<button type="button" class="mini" data-rmperson="${esc(p.user_id)}">${self?'Step down':'Remove'}</button>`:''}</div></li>`};
+  panel.innerHTML=`<div><div class="kind"><i style="background:${tvar(e)}"></i>${esc(kindLabel(e))}</div><h2>${esc(e.name)}: people</h2>
+    <p class="note">Owners and managers edit the profile. Owners can invite and remove managers; editors have the final say. This isn’t shown publicly.</p></div>
+    ${msg?`<div class="msg">${esc(msg)}</div>`:''}
+    ${PEOPLE.people.length?`<ul class="rel">${PEOPLE.people.map(row).join('')}</ul>`:'<p class="note">Nobody yet: editors look after it.</p>'}
+    ${PEOPLE.invites.length?`<h3>Invited</h3><ul class="rel">${PEOPLE.invites.map(i=>`<li><div class="rl">${esc(i.name)} <span class="role">invited ${esc(fmtDate(i.created_at))}</span></div><button type="button" class="mini" data-cancelinv="${esc(i.user_id)}">Cancel</button></li>`).join('')}</ul>`:''}
+    <form id="finv" novalidate><h3>Invite a manager</h3><p class="who">They need to be a member already. Use the email they sign in with.</p>
+      <div class="two"><label>Their email<input id="inv-email" type="email" maxlength="200" autocomplete="off"></label><span></span></div>
+      <div class="acts"><button class="btn go">Send invitation</button></div></form>
+    <div class="acts"><button type="button" class="btn" data-go="${esc(e.id)}">Back to the entry</button></div>`}
+async function sendInvite(){const em=val('inv-email');if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(em)){msg='Check the email address.';return render()}
+  try{await notify({kind:'invite',entity_id:editing,email:em});PEOPLE=await rpc('org_people',{p_entity:editing});msg=`If ${em} belongs to a member, they’ve been sent an invitation. It shows under Invited once it’s on its way.`}
+  catch(e){msg=/rate_limit/.test(e.message)?'That’s a lot of invitations for one day. Please try again tomorrow.':'The invitation wasn’t sent. '+String(e.message).slice(0,120)}render()}
+async function peopleAction(fn,args,done){try{await rpc(fn,args);PEOPLE=await rpc('org_people',{p_entity:editing}).catch(()=>null);await loadMyOrgs();msg=done}catch(e){msg='Not changed. '+String(e.message).slice(0,120)}
+  if(!PEOPLE&&!canRunOrg(editing)){const id=editing;editing=null;sel=id;mode='view'}render()}
+/* editors: the claims queue */
+async function openClaims(){panel.innerHTML='<p class="note">Loading claims…</p>';
+  try{CLAIMS=await apiGet('claims?select=*,members(name,nationality,photo_path,bio,linkedin,instagram,other_social,entity_id,accepted_at)&order=created_at.asc');pendingClaims=CLAIMS.length;msg=''}
+  catch(e){CLAIMS=[];msg='Claims could not be loaded. '+String(e.message).slice(0,120)}mode='claims';render()}
+function listClaims(){panel.innerHTML=`<div><h2>Claims</h2><p class="note">${CLAIMS.length} waiting, oldest first.</p></div>${msg?`<div class="msg">${esc(msg)}</div>`:''}
+  ${CLAIMS.length?`<ul class="rel">${CLAIMS.map((c,i)=>{const o=E.get(c.entity_id),m=c.members||{};return`<li class="rep"><div class="rl"><button type="button" class="ent" data-claimrev="${i}">${esc(m.name||'A member')}</button> <span class="role">claims</span> ${esc(o?o.name:c.entity_id)}</div><div class="meta"><span>${esc(CLAIM_CONN[c.connection]||c.connection)}</span><span>${esc(fmtDate(c.created_at))}</span></div></li>`}).join('')}</ul>`:'<p class="note">Nothing waiting.</p>'}
+  <div class="acts"><button type="button" class="btn" data-cancel="1">Back</button></div>`}
+function formClaimReview(){const c=CLAIM;if(!c){mode='claims';return render()}const o=E.get(c.entity_id),m=c.members||{},pe=m.entity_id&&E.get(m.entity_id);
+  const roles=pe?L.filter(l=>(l.from===pe.id||l.to===pe.id)&&E.has(l.from)&&E.has(l.to)).slice(0,8).map(l=>{const x=E.get(l.from===pe.id?l.to:l.from);return`<li><span class="role">${esc(l.role)}</span> ${esc(x.name)}</li>`}).join(''):'';
+  panel.innerHTML=`<div><div class="kind"><i style="background:${o?tvar(o):'var(--muted)'}"></i>Claim</div><h2>${esc(m.name||'A member')} → ${esc(o?o.name:c.entity_id)}</h2><p class="note">Sent ${esc(fmtDate(c.created_at))}.</p></div>${msg?`<div class="msg">${esc(msg)}</div>`:''}
+    <dl class="appl"><dt>Connection</dt><dd>${esc(CLAIM_CONN[c.connection]||c.connection)}</dd><dt>What they do</dt><dd class="rmsg">${esc(c.detail)}</dd>${c.evidence?`<dt>To help check</dt><dd class="rmsg">${esc(c.evidence)}</dd>`:''}</dl>
+    <section class="prof">${avatar(m.photo_path,m.name||'')}<div class="pbody"><span class="badge">Member${m.accepted_at?' since '+esc(monthYear(m.accepted_at)):''}</span>${m.bio?`<p class="pbio">${esc(m.bio)}</p>`:''}<p class="plinks">${profileLinks(m)}</p>${roles?`<ul class="chips">${roles}</ul>`:''}${pe?`<button type="button" class="ent" data-go="${esc(pe.id)}">Open their entry</button>`:''}</div></section>
+    <div class="acts"><button type="button" class="btn go" data-approve="owner">Approve as owner</button><button type="button" class="btn go" data-approve="manager">Approve as manager</button><button type="button" class="btn bad" data-declineclaim="1">Decline</button><button type="button" class="btn" data-claims="1">Back</button></div>
+    <p class="who">Owners can invite and remove managers. Approving emails them; declining deletes the claim with no email.</p>`}
+async function decideClaim(role,b){b.disabled=true;const c=CLAIM;
+  try{await rpc('decide_claim',{p_claim:c.id,p_role:role||null});let note='';
+    if(role){try{const r=await notify({kind:'claim_approved',entity_id:c.entity_id,user_id:c.user_id});note=r.result==='sent'?' They’ve been emailed.':''}catch(x){note=' The email didn’t go out, so let them know yourself.'}}
+    CLAIM=null;await openClaims();msg=role?`Approved as ${role}.${note}`:'Claim declined and deleted. No email was sent.';render()}
+  catch(e){b.disabled=false;msg='Not done. '+String(e.message).slice(0,140);render()}}
+/* the member's own organisations, on their profile */
+function myOrgsSection(){const r=MYORGS.roles,c=MYORGS.claims,i=MYORGS.invites;if(!r.length&&!c.length&&!i.length)return'';
+  const item=(x,label,extra='')=>{const o=E.get(x.entity_id);return o?`<li><div class="rl"><span class="role">${label}</span><button type="button" class="ent" data-go="${esc(o.id)}">${esc(o.name)}</button></div>${extra}</li>`:''};
+  return`<section><h3>Organisations</h3><ul class="rel">${i.map(x=>item(x,'invited',`<div class="acts"><button type="button" class="mini" data-invyes="${esc(x.entity_id)}">Accept</button><button type="button" class="mini" data-invno="${esc(x.entity_id)}">Decline</button></div>`)).join('')}${r.map(x=>item(x,x.role)).join('')}${c.map(x=>item(x,'claim sent')).join('')}</ul></section>`}
+panel.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;const d=b.dataset;const stop=()=>e.stopImmediatePropagation();
+  if(d.claim2){stop();editing=d.claim2;msg='';mode='claim';return render()}
+  if(d.unclaim2){stop();rpc('withdraw_claim',{p_entity:d.unclaim2}).then(loadMyOrgs).then(()=>{msg='Claim withdrawn.';render()}).catch(x=>{msg='Not withdrawn. '+x.message;render()});return}
+  if(d.invyes||d.invno){stop();const id=d.invyes||d.invno;rpc('respond_invite',{p_entity:id,p_accept:!!d.invyes}).then(loadMyOrgs).then(()=>{msg=d.invyes?'Done: you can now edit this organisation’s profile.':'Invitation declined.';render()}).catch(x=>{msg='Not done. '+x.message;render()});return}
+  if(d.orgpeople){stop();return openPeople(d.orgpeople)}
+  if(d.rmperson){stop();const self=d.rmperson===uid;b.outerHTML=`<button type="button" class="mini" data-rmyes="${esc(d.rmperson)}">${self?'Yes, step down':'Yes, remove'}</button>`;return}
+  if(d.rmyes){stop();return peopleAction('remove_org_role',{p_entity:editing,p_user:d.rmyes},d.rmyes===uid?'You’ve stepped down.':'Removed.')}
+  if(d.setrole){stop();return peopleAction('set_org_role',{p_entity:editing,p_user:d.uid,p_role:d.setrole},'Role changed.')}
+  if(d.cancelinv){stop();return peopleAction('cancel_invite',{p_entity:editing,p_user:d.cancelinv},'Invitation cancelled.')}
+  if(d.claims){stop();return openClaims()}
+  if(d.claimrev!==undefined){stop();CLAIM=CLAIMS[+d.claimrev];msg='';mode='claimrev';return render()}
+  if(d.approve){stop();return decideClaim(d.approve,b)}
+  if(d.declineclaim){stop();b.outerHTML='<button type="button" class="btn bad" data-declineyes2="1">Yes, decline (no email)</button>';return}
+  if(d.declineyes2){stop();return decideClaim(null,b)}},true);
+panel.addEventListener('submit',e=>{const f=e.target.id;if(f==='fcl'){e.preventDefault();e.stopImmediatePropagation();sendClaim()}else if(f==='finv'){e.preventDefault();e.stopImmediatePropagation();sendInvite()}},true);
 
 /* ---------- header ---------- */
 document.querySelectorAll('.lens button').forEach(b=>b.addEventListener('click',()=>{lens=b.dataset.lens;
