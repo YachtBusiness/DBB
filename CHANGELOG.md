@@ -24,6 +24,7 @@ Member profiles.
 - Members' entries on the map now show their profile: photo, "Member since", bio and links, as their switches allow. Members see "Edit your profile" on their own entry.
 - The owner can make a member an editor, or remove the role, from the member's entry.
 - Send feedback fills in a signed-in member's name.
+- Fix (6 Nov, after release): on a slow connection, clicking Save again no longer saves twice. Each form is locked while its save and the reload after it are under way, and the database refuses an exact duplicate link (same entries, role, context and dates).
 - Fix (after release): accepting someone who claimed an existing entry no longer duplicates the links the book already has. Roles already in the book show as such in review and are skipped. The 8 duplicate links on David Fuller's entry were removed.
 - Photo guidance (added after release): a clear, recent photo of your face, head and shoulders; not a logo, boat, animal or group shot.
 - Closed reports are deleted automatically 12 months after being closed (monthly job), as the privacy notice says.

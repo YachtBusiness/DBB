@@ -191,6 +191,7 @@ label.inl{flex-direction:row;align-items:baseline;gap:8px;color:var(--ink);font-
 li.rvrole{display:flex!important;flex-direction:column;gap:8px}
 a.btn{text-decoration:none;color:inherit}a.btn.go{color:var(--surface)}
 @media (min-width:861px){.join{margin-left:auto}}
+.btn.wait{opacity:.6;cursor:progress}
 .av{display:block;width:72px;height:72px;border-radius:50%;object-fit:cover;flex:none;background:var(--wash)}
 .av.big{width:112px;height:112px}
 .av.ph{display:grid;place-items:center;color:color-mix(in srgb,var(--muted) 45%,transparent);border:2px dashed var(--line);background:var(--bg)}
@@ -255,6 +256,14 @@ label.btn{display:inline-block;flex-direction:row;color:var(--ink);font-size:14p
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
 <script>
 (function(){
+/* one save at a time: on a slow connection, a form stays locked while its save (and the reload after it) is under way,
+   so clicking Save again can't send it twice */
+let inflight=0;const _fetch=window.fetch.bind(window);
+window.fetch=(...a)=>{inflight++;return _fetch(...a).finally(()=>{inflight--})};
+document.addEventListener('submit',e=>{const f=e.target;if(f.dataset.busy){e.preventDefault();e.stopImmediatePropagation();return}
+  f.dataset.busy='1';const btns=[...f.querySelectorAll('button:not([type=button])')].filter(b=>!b.disabled);btns.forEach(b=>{b.disabled=true;b.classList.add('wait')});
+  const check=()=>{if(!f.isConnected)return;if(inflight>0)return setTimeout(check,250);delete f.dataset.busy;btns.forEach(b=>{if(b.classList.contains('wait')){b.disabled=false;b.classList.remove('wait')}})};
+  setTimeout(check,400)},true);
 if(location.hostname!=='app.darkbluebook.com'){document.title='[Preview] '+document.title;const v=document.getElementById('ver');if(v)v.insertAdjacentHTML('afterend','<small style="margin-left:8px;background:#e3b040;color:#12264d;border-radius:3px;padding:0 6px;font-weight:600;letter-spacing:.06em">PREVIEW</small>')}
 const TYPES={person:'Person',team:'Team',club:'Yacht club',org:'Organisation',event:'Event',entry:'Entry',class:'Boat class',venue:'Venue',record:'Record'};
 const LEVELS={series:'Series',event:'Event',edition:'Edition',round:'Round'};
@@ -463,7 +472,7 @@ const val=id=>document.getElementById(id).value.trim();
 const CHECKS={entities_country_check:'the country must be chosen from the list or left as not known',entities_id_check:'the id can only use lowercase letters, numbers and hyphens',entities_check:'events need a level, and other kinds must not have one',entities_check1:'only organisations can have sectors',links_check:'a link needs two different entries',links_start_date_check:'the From date must start with a year, e.g. 2026 or 2026-06',links_end_date_check:'the Until date must start with a year, e.g. 2026 or 2026-06'};
 function fail(e){const t=String(e&&e.message||''),k=Object.keys(CHECKS).find(k=>new RegExp('constraint \\W*'+k+'(?!\\w)').test(t));
   if(k){msg='That change was not saved: '+CHECKS[k]+'.';return render()}
-  msg=/401|403|JWT|row-level/i.test(t)?'That change was not saved: you need to be signed in as an editor.':/duplicate key|23505/.test(t)?'That change was not saved: an entry with that id already exists.':/foreign key|23503/.test(t)?'That change was not saved: it refers to an entry that no longer exists. Reload the page and try again.':'That change was not saved. '+t.slice(0,200);render()}
+  msg=/401|403|JWT|row-level/i.test(t)?'That change was not saved: you need to be signed in as an editor.':/links_no_duplicates/.test(t)?'That link is already in the book, so it wasn’t added again.':/duplicate key|23505/.test(t)?'That change was not saved: an entry with that id already exists.':/foreign key|23503/.test(t)?'That change was not saved: it refers to an entry that no longer exists. Reload the page and try again.':'That change was not saved. '+t.slice(0,200);render()}
 async function reload(){await start();if(sel&&!E.has(sel))sel=null}
 async function saveEntity(){const name=val('fe-name');if(!name)return;let id=editing;
   if(!id){id=val('fe-id').toLowerCase().replace(/[^a-z0-9-]+/g,'-').replace(/^-|-$/g,'');if(!id){msg='Give the entry an id.';return render()}if(E.has(id)){msg='The id "'+id+'" is taken by '+E.get(id).name+'. Choose another.';return render()}}
