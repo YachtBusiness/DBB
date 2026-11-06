@@ -192,6 +192,9 @@ li.rvrole{display:flex!important;flex-direction:column;gap:8px}
 a.btn{text-decoration:none;color:inherit}a.btn.go{color:var(--surface)}
 @media (min-width:861px){.join{margin-left:auto}}
 .btn.wait{opacity:.6;cursor:progress}
+.logo{display:block;width:72px;height:72px;object-fit:contain;background:#fff;border:1px solid var(--line);border-radius:8px;padding:6px;flex:none}
+.logo.big{width:112px;height:112px}
+.logo.ph{display:grid;place-items:center;font-size:12px;color:var(--muted);background:var(--bg);border-style:dashed;padding:0}
 .av{display:block;width:72px;height:72px;border-radius:50%;object-fit:cover;flex:none;background:var(--wash)}
 .av.big{width:112px;height:112px}
 .av.ph{display:grid;place-items:center;color:color-mix(in srgb,var(--muted) 45%,transparent);border:2px dashed var(--line);background:var(--bg)}
@@ -230,10 +233,10 @@ label.btn{display:inline-block;flex-direction:row;color:var(--ink);font-size:14p
 </style>
 
 <header class="top">
-  <div class="brand"><h1>The Dark Blue Book</h1><span>The who's who of yacht racing <small id="ver" style="opacity:.6;margin-left:6px">v0.3.3</small></span></div>
+  <div class="brand"><h1>The Dark Blue Book</h1><span>The who's who of yacht racing <small id="ver" style="opacity:.6;margin-left:6px">v0.3.4</small></span></div>
   <div class="join"><button type="button" class="apply" data-join="1">Join</button><button type="button" class="acct" data-acct="1">Sign in</button></div>
   <button type="button" class="menu-btn" id="menuBtn" aria-label="Contact and links" aria-expanded="false" aria-controls="menu"><svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="M2 4h14M2 9h14M2 14h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
-  <nav class="menu" id="menu" hidden aria-label="Contact"><a href="https://wa.me/61439790410" target="_blank" rel="noopener">WhatsApp</a><a href="https://www.linkedin.com/groups/2023604/" target="_blank" rel="noopener">LinkedIn</a><a href="https://www.facebook.com/darkbluebook" target="_blank" rel="noopener">Facebook</a><a href="mailto:editor@darkbluebook.com">Email</a><button type="button" class="acct" data-fb="1">Send feedback</button><a href="privacy.html">Privacy</a><small>© The Dark Blue Book · v0.3.3</small></nav>
+  <nav class="menu" id="menu" hidden aria-label="Contact"><a href="https://wa.me/61439790410" target="_blank" rel="noopener">WhatsApp</a><a href="https://www.linkedin.com/groups/2023604/" target="_blank" rel="noopener">LinkedIn</a><a href="https://www.facebook.com/darkbluebook" target="_blank" rel="noopener">Facebook</a><a href="mailto:editor@darkbluebook.com">Email</a><button type="button" class="acct" data-fb="1">Send feedback</button><a href="privacy.html">Privacy</a><small>© The Dark Blue Book · v0.3.4</small></nav>
   <div class="lens" role="group" aria-label="What to show">
     <button type="button" data-lens="all" aria-pressed="true">Everything</button>
     <button type="button" data-lens="money" aria-pressed="false">Money</button>
@@ -251,7 +254,7 @@ label.btn{display:inline-block;flex-direction:row;color:var(--ink);font-size:14p
   </section>
   <aside id="panel" aria-live="polite"></aside>
 </main>
-<footer class="foot" aria-label="Contact"><a href="https://wa.me/61439790410" target="_blank" rel="noopener">WhatsApp</a><a href="https://www.linkedin.com/groups/2023604/" target="_blank" rel="noopener">LinkedIn</a><a href="https://www.facebook.com/darkbluebook" target="_blank" rel="noopener">Facebook</a><a href="mailto:editor@darkbluebook.com">Email</a><button type="button" class="acct" data-fb="1">Send feedback</button><a href="privacy.html">Privacy</a><span>© The Dark Blue Book · v0.3.3</span></footer>
+<footer class="foot" aria-label="Contact"><a href="https://wa.me/61439790410" target="_blank" rel="noopener">WhatsApp</a><a href="https://www.linkedin.com/groups/2023604/" target="_blank" rel="noopener">LinkedIn</a><a href="https://www.facebook.com/darkbluebook" target="_blank" rel="noopener">Facebook</a><a href="mailto:editor@darkbluebook.com">Email</a><button type="button" class="acct" data-fb="1">Send feedback</button><a href="privacy.html">Privacy</a><span>© The Dark Blue Book · v0.3.4</span></footer>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
 <script>
@@ -409,6 +412,7 @@ function render(){
   if(mode==='account')return formAccount();
   if(mode==='apps')return listApps();
   if(mode==='review')return formReview();
+  if(mode==='orgprof')return formOrgProfile();
   const tools=canEdit?`<div class="acts"><button type="button" class="btn" data-new="entity">New entry</button><button type="button" class="btn" data-new="link">New link</button>${sel?'<button type="button" class="btn" data-editent="1">Edit this entry</button>':''}<button type="button" class="btn" data-reports="1">Reports${openReports?' ('+openReports+')':''}</button><button type="button" class="btn" data-apps="1">Applications${pendingApps?' ('+pendingApps+')':''}</button></div>`:'';
   const m=msg?`<div class="msg">${esc(msg)}</div>`:'';
   if(sel){const e=E.get(sel),mine=L.filter(l=>l.from===sel||l.to===sel).sort((a,b)=>(active(b)-active(a))||((yr(b.start)||0)-(yr(a.start)||0)));let h='';
@@ -417,7 +421,7 @@ function render(){
       if(g.length)h+=`<details class="grp"${h?'':' open'}><summary><b style="border-color:var(--c-${c})"></b>${c==='ppl'&&e.type==='person'?'Role':CATS[c]} <span class="cnt">${g.length}</span></summary><ul class="rel">${g.map(l=>row(l,sel)).join('')}</ul></details>`}
     if(past.length)h+=`<details class="grp"><summary><b style="border-color:var(--muted)"></b>Past <span class="cnt">${past.length}</span></summary><ul class="rel">${past.map(l=>row(l,sel)).join('')}</ul></details>`;
     panel.innerHTML=`<div><div class="kind"><i style="background:${tvar(e)}"></i>${esc(kindLabel(e))}${e.sectors.length?`<span class="sec">${esc(e.sectors.join(' \u00b7 '))}</span>`:''}${e.origin==='member'?'<span class="chip mem">added by member</span>':''}${e.country?`<span class="cc">${esc(e.country)}</span>`:''}</div>${canEdit&&e.origin==='member'?`<div class="owner"><span>Added by a member${e.sectorNote?': “'+esc(e.sectorNote)+'”':''}. Check it, then</span><button type="button" class="btn" data-promote="entities" data-pid="${esc(e.id)}">Mark as checked</button></div>`:''}
-      <h2>${esc(e.name)}</h2>${e.note?`<p class="note">${esc(e.note)}</p>`:''}</div>${profileBlock(e)}${m}
+      <h2>${esc(e.name)}</h2>${e.note?`<p class="note">${esc(e.note)}</p>`:''}</div>${profileBlock(e)}${orgProfileBlock(e)}${m}
       ${h||'<p class="note">No links recorded yet.</p>'}${(t=>t?`<details class="tld"><summary>Timeline</summary>${t}</details>`:'')(timeline(mine,sel))}${tools}<div class="acts"><button type="button" class="btn" data-go="">Back to overview</button>${window.claude?'':'<button type="button" class="btn" data-copy="1">Copy link</button>'}<button type="button" class="btn" data-report="1">Report an error</button></div>`;
     return}
   const vis=new Set(visibleLinks().map(l=>l.id)),A=scope?L.filter(l=>vis.has(l.id)):L.filter(active);
@@ -1018,6 +1022,71 @@ panel.addEventListener('change',e=>{const id=e.target.id;
   if(id==='rl-cur'||id==='re-cur'){const u=document.getElementById(id==='rl-cur'?'rl-until':'re-until');u.closest('label').hidden=e.target.value!=='past'}});
 panel.addEventListener('submit',e=>{const f=e.target.id;if(f==='frl'){e.preventDefault();e.stopImmediatePropagation();addRole()}else if(f==='fre'){e.preventDefault();e.stopImmediatePropagation();saveRoleEdit()}},true);
 
+/* ---------- organisation profiles (0.3.4) ---------- */
+let odraft=null,logoBusy='';
+const logoUrl=p=>p?`${SB_URL}/storage/v1/object/public/logos/${p}`:'';
+const hasOrgProfile=e=>e&&e.type==='org'&&!!(e.logo||e.about||e.website||e.linkedin||e.instagram||e.otherSocial||e.contactEmail);
+function orgProfileBlock(e){if(e.type!=='org')return'';
+  const links=[];if(e.website&&extUrl(e.website)){let h='Website';try{h=new URL(extUrl(e.website)).hostname.replace(/^www\./,'')}catch(x){}links.push(`<a href="${esc(extUrl(e.website))}" target="_blank" rel="noopener">${esc(h)} ↗</a>`)}
+  if(e.linkedin&&extUrl(e.linkedin))links.push(`<a href="${esc(extUrl(e.linkedin))}" target="_blank" rel="noopener">LinkedIn ↗</a>`);
+  if(e.instagram&&extUrl(e.instagram,'ig'))links.push(`<a href="${esc(extUrl(e.instagram,'ig'))}" target="_blank" rel="noopener">Instagram ↗</a>`);
+  if(e.otherSocial&&extUrl(e.otherSocial)){let h='Link';try{h=new URL(extUrl(e.otherSocial)).hostname.replace(/^www\./,'')}catch(x){}links.push(`<a href="${esc(extUrl(e.otherSocial))}" target="_blank" rel="noopener">${esc(h)} ↗</a>`)}
+  if(e.contactEmail)links.push(`<a href="mailto:${esc(e.contactEmail)}">${esc(e.contactEmail)}</a>`);
+  const edit=canEdit?`<div class="acts"><button type="button" class="btn" data-orgprof="${esc(e.id)}">${hasOrgProfile(e)?'Edit profile':'Add a profile'}</button></div>`:'';
+  if(!hasOrgProfile(e))return edit;
+  return`<section class="prof org">${e.logo?`<img class="logo" src="${esc(logoUrl(e.logo))}" alt="${esc(e.name)} logo" loading="lazy">`:''}<div class="pbody">
+    ${e.about?`<p class="pbio">${esc(e.about)}</p>`:''}${links.length?`<p class="plinks">${links.join('')}</p>`:''}${edit}</div></section>`}
+function formOrgProfile(){const e=E.get(editing);if(!e){mode='view';return render()}
+  const d=odraft||(odraft={about:e.about||'',website:e.website||'',linkedin:e.linkedin||'',instagram:e.instagram||'',other_social:e.otherSocial||'',contact_email:e.contactEmail||''});
+  panel.innerHTML=`<form id="fo" novalidate><div><div class="kind"><i style="background:${tvar(e)}"></i>${esc(kindLabel(e))}</div><h2>${esc(e.name)}: profile</h2>
+    <p class="note">Shown at the top of the entry, to everyone. Fill in what you have; empty parts don’t show.</p></div>
+    ${msg?`<div class="msg">${esc(msg)}</div>`:''}
+    <section class="photo">${e.logo?`<img class="logo big" src="${esc(logoUrl(e.logo))}" alt="">`:'<span class="logo big ph">No logo</span>'}<div class="pcol">
+      <div class="acts"><label class="btn" for="of-file">${e.logo?'Change logo':'Add a logo'}</label>${e.logo?'<button type="button" class="btn bad" data-rmlogo="1">Remove</button>':''}</div>
+      <input type="file" id="of-file" accept="image/png,image/jpeg,image/webp,image/svg+xml" hidden>
+      <p class="who">${logoBusy?esc(logoBusy):'PNG with a transparent background works best. It’s fitted inside a square, not cropped.'}</p></div></section>
+    <label>About<textarea id="of-about" rows="5" maxlength="500">${esc(d.about)}</textarea><span class="hint"><span id="of-aboutn">${d.about.length}</span>/500</span></label>
+    <label>Website<input id="of-website" type="url" maxlength="300" placeholder="https://…" value="${esc(d.website)}"></label>
+    <div class="two"><label>LinkedIn<input id="of-linkedin" maxlength="300" placeholder="https://www.linkedin.com/company/…" value="${esc(d.linkedin)}"></label>
+    <label>Instagram<input id="of-instagram" maxlength="300" placeholder="@handle" value="${esc(d.instagram)}"></label></div>
+    <div class="two"><label>Other social<input id="of-other_social" maxlength="300" value="${esc(d.other_social)}"></label>
+    <label>Public contact email<input id="of-contact_email" type="email" maxlength="200" placeholder="info@…" value="${esc(d.contact_email)}"><span class="hint">Shown to everyone.</span></label></div>
+    <div class="acts"><button class="btn go">Save profile</button><button type="button" class="btn" data-go="${esc(e.id)}">Back to the entry</button></div></form>`}
+function collectOrg(){if(!odraft||!document.getElementById('fo'))return;['about','website','linkedin','instagram','other_social','contact_email'].forEach(k=>{const x=document.getElementById('of-'+k);if(x)odraft[k]=x.value.trim()})}
+async function saveOrgProfile(){collectOrg();const d=odraft;
+  if(d.contact_email&&!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(d.contact_email)){msg='Check the contact email.';return render()}
+  for(const k of ['website','linkedin','other_social'])if(d[k]&&!extUrl(d[k])){msg='Check the '+(k==='other_social'?'other social link':k==='linkedin'?'LinkedIn link':'website')+': it should be a web address.';return render()}
+  try{await api('PATCH','entities?id=eq.'+encodeURIComponent(editing),{about:d.about,website:d.website,linkedin:d.linkedin,instagram:d.instagram,other_social:d.other_social,contact_email:d.contact_email.toLowerCase()});
+    const id=editing;odraft=null;await reload();msg='Profile saved.';sel=id;mode='view';editing=null}
+  catch(e){msg='Not saved. '+String(e.message).slice(0,160)}render()}
+/* logo: fitted inside a 400px square, transparency kept (PNG); JPEG only if the PNG is too big */
+async function fitLogo(file){let src;try{src=await createImageBitmap(file)}catch(e){src=await new Promise((ok,no)=>{const i=new Image();i.onload=()=>ok(i);i.onerror=no;i.src=URL.createObjectURL(file)})}
+  const w=src.width||400,h=src.height||400,k=Math.min(400/w,400/h,4),cw=Math.max(1,Math.round(w*k)),ch=Math.max(1,Math.round(h*k)),c=document.createElement('canvas');c.width=cw;c.height=ch;
+  const x=c.getContext('2d');x.imageSmoothingQuality='high';x.drawImage(src,0,0,cw,ch);
+  const png=await new Promise(r=>c.toBlob(r,'image/png'));if(png&&png.size<=290000)return{blob:png,ext:'png',type:'image/png'};
+  const j=document.createElement('canvas');j.width=cw;j.height=ch;const jx=j.getContext('2d');jx.fillStyle='#fff';jx.fillRect(0,0,cw,ch);jx.drawImage(c,0,0);
+  const jpg=await new Promise(r=>j.toBlob(r,'image/jpeg',.88));if(jpg&&jpg.size<=290000)return{blob:jpg,ext:'jpg',type:'image/jpeg'};throw new Error('too_big')}
+async function uploadLogo(file){if(!file)return;collectOrg();if(!/^image\//.test(file.type)){msg='That file isn’t an image.';return render()}
+  const e=E.get(editing),old=e.logo;logoBusy='Uploading…';msg='';render();
+  try{const f=await fitLogo(file),path=`${e.id}/${Date.now()}.${f.ext}`,t=await token();
+    const r=await fetch(`${SB_URL}/storage/v1/object/logos/${path}`,{method:'POST',headers:{apikey:SB_KEY,Authorization:'Bearer '+t,'Content-Type':f.type,'x-upsert':'false','Cache-Control':'31536000'},body:f.blob});
+    if(!r.ok)throw new Error('upload '+r.status+' '+(await r.text()).slice(0,120));
+    await api('PATCH','entities?id=eq.'+encodeURIComponent(e.id),{logo_path:path});e.logo=path;
+    if(old)fetch(`${SB_URL}/storage/v1/object/logos/${old}`,{method:'DELETE',headers:{apikey:SB_KEY,Authorization:'Bearer '+t}}).catch(()=>{});
+    msg='Logo added.'}
+  catch(x){msg=/too_big/.test(x.message)?'That logo couldn’t be made small enough. Try a simpler PNG.':'The logo wasn’t uploaded. ('+String(x.message).slice(0,100)+')'}
+  logoBusy='';render()}
+async function removeLogo(){const e=E.get(editing),old=e.logo;if(!old)return;collectOrg();
+  try{await api('PATCH','entities?id=eq.'+encodeURIComponent(e.id),{logo_path:null});e.logo='';const t=await token();
+    fetch(`${SB_URL}/storage/v1/object/logos/${old}`,{method:'DELETE',headers:{apikey:SB_KEY,Authorization:'Bearer '+t}}).catch(()=>{});msg='Logo removed.'}
+  catch(x){msg='Not removed. '+String(x.message).slice(0,120)}render()}
+panel.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;const d=b.dataset;
+  if(d.orgprof){e.stopImmediatePropagation();editing=d.orgprof;odraft=null;msg='';mode='orgprof';render();panel.scrollTop=0;return}
+  if(d.rmlogo){e.stopImmediatePropagation();return removeLogo()}},true);
+panel.addEventListener('change',e=>{if(e.target.id==='of-file')uploadLogo(e.target.files[0])});
+panel.addEventListener('input',e=>{if(e.target.id==='of-about'){const n=document.getElementById('of-aboutn');if(n)n.textContent=e.target.value.length}});
+panel.addEventListener('submit',e=>{if(e.target.id==='fo'){e.preventDefault();e.stopImmediatePropagation();saveOrgProfile()}},true);
+
 /* ---------- header ---------- */
 document.querySelectorAll('.lens button').forEach(b=>b.addEventListener('click',()=>{lens=b.dataset.lens;
   document.querySelectorAll('.lens button').forEach(x=>x.setAttribute('aria-pressed',x===b));try{localStorage.setItem('dbb-lens',lens)}catch(e){}needFit=true;build()}));
@@ -1049,9 +1118,9 @@ async function fetchAll(table,cols,order='id'){const out=[];for(let from=0;;from
   const r=await fetch(`${SB_URL}/rest/v1/${table}?select=${cols}&order=${order}`,{headers:{apikey:SB_KEY,Range:`${from}-${from+999}`,'Range-Unit':'items'}});
   if(!r.ok)throw new Error(table+' '+r.status);const rows=await r.json();out.push(...rows);if(rows.length<1000)return out}}
 async function start(){
-  try{const [es,ls,fs]=await Promise.all([fetchAll('entities','id,name,type,sectors,level,country,note,origin,sector_note'),fetchAll('links','id,from_id,to_id,role,cat,context_id,start_date,end_date,source,note,created_at,origin'),fetchAll('features','slot,position,entity_id,headline,link','slot,position').catch(()=>[])]);
+  try{const [es,ls,fs]=await Promise.all([fetchAll('entities','id,name,type,sectors,level,country,note,origin,sector_note,logo_path,about,website,linkedin,instagram,other_social,contact_email'),fetchAll('links','id,from_id,to_id,role,cat,context_id,start_date,end_date,source,note,created_at,origin'),fetchAll('features','slot,position,entity_id,headline,link','slot,position').catch(()=>[])]);
     FEAT=fs;await loadProfiles();
-    db={};E=new Map(es.map(x=>[x.id,norm({id:x.id,name:x.name,type:x.type,sectors:x.sectors||[],level:x.level||'',country:x.country||'',note:x.note||'',origin:x.origin||'editorial',sectorNote:x.sector_note||''})]));
+    db={};E=new Map(es.map(x=>[x.id,norm({id:x.id,name:x.name,type:x.type,sectors:x.sectors||[],level:x.level||'',country:x.country||'',note:x.note||'',origin:x.origin||'editorial',sectorNote:x.sector_note||'',logo:x.logo_path||'',about:x.about||'',website:x.website||'',linkedin:x.linkedin||'',instagram:x.instagram||'',otherSocial:x.other_social||'',contactEmail:x.contact_email||''})]));
     L=ls.map(l=>({id:l.id,from:l.from_id,to:l.to_id,role:l.role,cat:l.cat,context:l.context_id||'',start:l.start_date||'',end:l.end_date||'',source:l.source||'',note:l.note||'',created:l.created_at||'',origin:l.origin||'editorial'}));
     loaded={e:true,l:true};fillScope();MAXY=Math.max(NOW,...L.map(l=>yr(l.start)).filter(v=>v!=null));syncWhen();await checkAuth();if(justConfirmed&&mode==='view'&&!sel)mode='account';else if(freshSignin&&!checkDone()&&mode==='view'&&!location.hash)mode='account';freshSignin=false;yrEl.min=Math.max(YR_FLOOR,Math.min(NOW-1,...L.map(l=>yr(l.start)||NOW)));build();render()}
   catch(e){db=null;loaded={e:true,l:true};$('#blank').hidden=false;$('#blank').firstElementChild.textContent='The book could not be loaded. Please try again in a moment.'}

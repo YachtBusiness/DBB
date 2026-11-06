@@ -2,6 +2,14 @@
 
 Version plan: 0.1 public map live · 0.2 editing moves to Supabase · 0.3 sign-in, applications and claims · 0.4 paid tiers, organisation editing, contact details · 1.0 membership network opens · 1.x events and intros. Small fixes in between are 0.x.1, 0.x.2 and so on.
 
+## 0.3.4 (preview, 6 November 2026)
+
+Organisation profiles.
+
+- Organisation entries can have a profile at the top of the entry: logo, a short description (About, up to 500 characters), website, LinkedIn, Instagram, another social link and a public contact email. Empty parts don't show, so organisations without a profile look as before.
+- Editors: "Add a profile" or "Edit profile" on any organisation. Logos are fitted inside a 400px square in the browser (not cropped), keeping transparency, and stored in Supabase Storage; only editors can add or remove them.
+- Organisations only for now: yacht clubs, teams and events will need their own kinds of profile. Owners and claims come with paid organisation editing in 0.4; until then editors look after organisation profiles.
+
 ## 0.3.3 (6 November 2026)
 
 Member roles and member content.
