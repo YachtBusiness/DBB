@@ -13,6 +13,7 @@ Member profiles.
 - Members' entries on the map now show their profile: photo, "Member since", bio and links, as their switches allow. Members see "Edit your profile" on their own entry.
 - The owner can make a member an editor, or remove the role, from the member's entry.
 - Send feedback fills in a signed-in member's name.
+- Photo guidance (added after release): a clear, recent photo of your face, head and shoulders; not a logo, boat, animal or group shot.
 - Closed reports are deleted automatically 12 months after being closed (monthly job), as the privacy notice says.
 
 ## 0.3.1 (6 November 2026)
