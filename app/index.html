@@ -184,6 +184,28 @@ label.inl{flex-direction:row;align-items:baseline;gap:8px;color:var(--ink);font-
 li.rvrole{display:flex!important;flex-direction:column;gap:8px}
 a.btn{text-decoration:none;color:inherit}a.btn.go{color:var(--surface)}
 @media (min-width:861px){.join{margin-left:auto}}
+.av{display:block;width:72px;height:72px;border-radius:50%;object-fit:cover;flex:none;background:var(--wash)}
+.av.big{width:112px;height:112px}
+.av.ph{display:grid;place-items:center;color:color-mix(in srgb,var(--muted) 45%,transparent);border:2px dashed var(--line);background:var(--bg)}
+.av.ph svg{width:62%;height:62%}
+.prof{display:flex;gap:14px;align-items:flex-start}.pbody{min-width:0;display:flex;flex-direction:column;gap:6px}
+.badge{align-self:flex-start;font-size:11px;letter-spacing:.06em;text-transform:uppercase;font-weight:600;color:var(--t-person);border:1px solid currentColor;border-radius:999px;padding:1px 8px}
+.pbio{margin:0;white-space:pre-wrap;overflow-wrap:anywhere}.plinks{margin:0;display:flex;flex-wrap:wrap;gap:4px 14px;font-size:13px}.plinks a{color:var(--t-team)}
+.owner{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;font-size:13px;background:var(--wash);border-radius:6px;padding:8px 10px}
+.photo{display:flex;gap:16px;align-items:center}.pcol{display:flex;flex-direction:column;gap:6px;min-width:0}.pcol .who{margin:0}
+label.btn{display:inline-block;flex-direction:row;color:var(--ink);font-size:14px}
+.check{border:1px solid var(--line);border-left:3px solid var(--t-person);border-radius:6px;padding:10px 12px}
+.ch-head{display:flex;align-items:baseline;gap:10px}.ch-head .cnt{color:var(--muted);font-size:12px}.ch-head .linky{margin-left:auto}
+.check ul{list-style:none;margin:8px 0 0;padding:0;display:flex;flex-direction:column;gap:6px}
+.check li{display:flex;align-items:center;gap:8px;font-size:13.5px}.check li .linky{font-size:13.5px;color:var(--ink)}
+.check li.done .linky{color:var(--muted);text-decoration:line-through}
+.tk{width:18px;height:18px;border:1.5px solid var(--line);border-radius:4px;display:grid;place-items:center;font-size:12px;color:var(--surface)}
+.check li.done .tk{background:var(--t-person);border-color:var(--t-person)}
+.sr{position:absolute;left:-9999px}
+.togs{display:flex;flex-direction:column;border-top:1px solid var(--line)}
+.tog{flex-direction:row;align-items:flex-start;gap:10px;padding:9px 0;border-bottom:1px solid var(--line);color:var(--ink);font-size:13.5px}
+.tog input{width:auto;margin-top:3px}.tog .tl{display:flex;flex-direction:column}.tog .tl span{color:var(--muted);font-size:12.5px}
+.tog input:disabled+.tl{opacity:.75}
 @media (max-width:860px){
   .join{order:0;gap:10px}.join .lg{display:none}.join .sm{display:inline}.join .apply{padding:5px 12px}
   .menu-btn{display:inline-block}.foot{display:none}
@@ -200,10 +222,10 @@ a.btn{text-decoration:none;color:inherit}a.btn.go{color:var(--surface)}
 </style>
 
 <header class="top">
-  <div class="brand"><h1>The Dark Blue Book</h1><span>The who's who of yacht racing <small id="ver" style="opacity:.6;margin-left:6px">v0.3.1</small></span></div>
+  <div class="brand"><h1>The Dark Blue Book</h1><span>The who's who of yacht racing <small id="ver" style="opacity:.6;margin-left:6px">v0.3.2</small></span></div>
   <div class="join"><button type="button" class="apply" data-join="1"><span class="lg">Apply</span><span class="sm">Join</span></button><button type="button" class="acct" data-acct="1">Sign in</button></div>
   <button type="button" class="menu-btn" id="menuBtn" aria-label="Contact and links" aria-expanded="false" aria-controls="menu"><svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="M2 4h14M2 9h14M2 14h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
-  <nav class="menu" id="menu" hidden aria-label="Contact"><a href="https://wa.me/61439790410" target="_blank" rel="noopener">WhatsApp</a><a href="https://www.linkedin.com/groups/2023604/" target="_blank" rel="noopener">LinkedIn</a><a href="https://www.facebook.com/darkbluebook" target="_blank" rel="noopener">Facebook</a><a href="mailto:editor@darkbluebook.com">Email</a><button type="button" class="acct" data-fb="1">Send feedback</button><a href="privacy.html">Privacy</a><small>© The Dark Blue Book · v0.3.1</small></nav>
+  <nav class="menu" id="menu" hidden aria-label="Contact"><a href="https://wa.me/61439790410" target="_blank" rel="noopener">WhatsApp</a><a href="https://www.linkedin.com/groups/2023604/" target="_blank" rel="noopener">LinkedIn</a><a href="https://www.facebook.com/darkbluebook" target="_blank" rel="noopener">Facebook</a><a href="mailto:editor@darkbluebook.com">Email</a><button type="button" class="acct" data-fb="1">Send feedback</button><a href="privacy.html">Privacy</a><small>© The Dark Blue Book · v0.3.2</small></nav>
   <div class="lens" role="group" aria-label="What to show">
     <button type="button" data-lens="all" aria-pressed="true">Everything</button>
     <button type="button" data-lens="money" aria-pressed="false">Money</button>
@@ -221,7 +243,7 @@ a.btn{text-decoration:none;color:inherit}a.btn.go{color:var(--surface)}
   </section>
   <aside id="panel" aria-live="polite"></aside>
 </main>
-<footer class="foot" aria-label="Contact"><a href="https://wa.me/61439790410" target="_blank" rel="noopener">WhatsApp</a><a href="https://www.linkedin.com/groups/2023604/" target="_blank" rel="noopener">LinkedIn</a><a href="https://www.facebook.com/darkbluebook" target="_blank" rel="noopener">Facebook</a><a href="mailto:editor@darkbluebook.com">Email</a><button type="button" class="acct" data-fb="1">Send feedback</button><a href="privacy.html">Privacy</a><span>© The Dark Blue Book · v0.3.1</span></footer>
+<footer class="foot" aria-label="Contact"><a href="https://wa.me/61439790410" target="_blank" rel="noopener">WhatsApp</a><a href="https://www.linkedin.com/groups/2023604/" target="_blank" rel="noopener">LinkedIn</a><a href="https://www.facebook.com/darkbluebook" target="_blank" rel="noopener">Facebook</a><a href="mailto:editor@darkbluebook.com">Email</a><button type="button" class="acct" data-fb="1">Send feedback</button><a href="privacy.html">Privacy</a><span>© The Dark Blue Book · v0.3.2</span></footer>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
 <script>
@@ -379,7 +401,7 @@ function render(){
       if(g.length)h+=`<details class="grp"${h?'':' open'}><summary><b style="border-color:var(--c-${c})"></b>${c==='ppl'&&e.type==='person'?'Role':CATS[c]} <span class="cnt">${g.length}</span></summary><ul class="rel">${g.map(l=>row(l,sel)).join('')}</ul></details>`}
     if(past.length)h+=`<details class="grp"><summary><b style="border-color:var(--muted)"></b>Past <span class="cnt">${past.length}</span></summary><ul class="rel">${past.map(l=>row(l,sel)).join('')}</ul></details>`;
     panel.innerHTML=`<div><div class="kind"><i style="background:${tvar(e)}"></i>${esc(kindLabel(e))}${e.sectors.length?`<span class="sec">${esc(e.sectors.join(' \u00b7 '))}</span>`:''}${e.country?`<span class="cc">${esc(e.country)}</span>`:''}</div>
-      <h2>${esc(e.name)}</h2>${e.note?`<p class="note">${esc(e.note)}</p>`:''}</div>${m}
+      <h2>${esc(e.name)}</h2>${e.note?`<p class="note">${esc(e.note)}</p>`:''}</div>${profileBlock(e)}${m}
       ${h||'<p class="note">No links recorded yet.</p>'}${(t=>t?`<details class="tld"><summary>Timeline</summary>${t}</details>`:'')(timeline(mine,sel))}${tools}<div class="acts"><button type="button" class="btn" data-go="">Back to overview</button>${window.claude?'':'<button type="button" class="btn" data-copy="1">Copy link</button>'}<button type="button" class="btn" data-report="1">Report an error</button></div>`;
     return}
   const vis=new Set(visibleLinks().map(l=>l.id)),A=scope?L.filter(l=>vis.has(l.id)):L.filter(active);
@@ -452,12 +474,12 @@ async function remove(kind){try{const id=encodeURIComponent(editing);
   mode='view';editing=null;msg='';await reload();syncHash()}catch(e){fail(e)}}
 
 /* ---------- sign-in (Supabase Auth, magic link) ---------- */
-const AUTH_KEY='dbb-auth';let auth=null,who='';
+const AUTH_KEY='dbb-auth';let auth=null,who='',freshSignin=false;
 try{auth=JSON.parse(localStorage.getItem(AUTH_KEY)||'null')}catch(e){}
 function saveAuth(a){auth=a;try{a?localStorage.setItem(AUTH_KEY,JSON.stringify(a)):localStorage.removeItem(AUTH_KEY)}catch(e){}}
 (function takeHash(){const h=location.hash.slice(1);if(!/(^|&)(access_token|error_description)=/.test(h))return;
   const p=new URLSearchParams(h);
-  if(p.get('access_token'))saveAuth({access_token:p.get('access_token'),refresh_token:p.get('refresh_token'),expires_at:Date.now()/1000+(+p.get('expires_in')||3600)});
+  if(p.get('access_token')){saveAuth({access_token:p.get('access_token'),refresh_token:p.get('refresh_token'),expires_at:Date.now()/1000+(+p.get('expires_in')||3600)});freshSignin=true}
   else msg='Sign-in failed: '+(p.get('error_description')||'unknown error').replace(/\+/g,' ')+'. Ask for a new link.';
   try{history.replaceState(null,'',location.pathname+location.search)}catch(e){}})();
 async function token(){if(!auth)return null;
@@ -471,8 +493,8 @@ async function api(method,path,body){const t=await token();if(!t)throw new Error
 async function checkAuth(){canEdit=false;who='';const t=await token().catch(()=>null);
   if(t){try{const u=await fetch(`${SB_URL}/auth/v1/user`,{headers:{apikey:SB_KEY,Authorization:'Bearer '+t}});
       if(!u.ok){saveAuth(null)}else{const uj=await u.json();who=uj.email||'';uid=uj.id||'';
-        const r=await fetch(`${SB_URL}/rest/v1/editors?select=user_id`,{headers:{apikey:SB_KEY,Authorization:'Bearer '+t}});canEdit=r.ok&&(await r.json()).length>0;if(canEdit){await countReports();await countApps();await loadAudit()}await loadMe()}}catch(e){}}
-  if(!auth)ME=null;
+        const r=await fetch(`${SB_URL}/rest/v1/editors?select=user_id`,{headers:{apikey:SB_KEY,Authorization:'Bearer '+t}});canEdit=r.ok&&(await r.json()).length>0;if(canEdit){await countReports();await countApps();await loadAudit()}await loadRoles();await loadMe()}}catch(e){}}
+  if(!auth){ME=null;EDITOR_ROLES=[];IS_OWNER=false;MEMBERS_BY_ENTITY=new Map()}
   document.querySelectorAll('[data-acct]').forEach(b=>{b.textContent=acctLabel();b.title=auth?'Your account':'Sign in'});
   document.querySelectorAll('[data-join]').forEach(b=>b.hidden=!!ME||(canEdit&&!!auth))}
 function formSignin(){panel.innerHTML=`<form id="fs"><h2>Sign in</h2>${msg?`<div class="msg">${esc(msg)}</div>`:''}
@@ -541,7 +563,7 @@ function formReport(){const e=rkind==='error'&&sel?E.get(sel):null;if(rkind==='e
     <label>What’s wrong<select id="fr-link">${opt('','The entry itself (name, kind, country, note)',rlink)}${mine.length?'<option disabled>──────────</option>':''}${mine.map(l=>opt(l.id,linkLabel(l,sel),rlink)).join('')}</select></label>`
       :`<p class="note">Something missing, wrong or annoying? Ideas welcome too. It goes straight to the editors.</p>`}
     <label>${e?'Details':'Your feedback'}<textarea id="fr-msg" rows="5" required minlength="3" maxlength="2000"></textarea></label>
-    <div class="two"><label>Your name (optional)<input id="fr-name" maxlength="120" autocomplete="name"></label>
+    <div class="two"><label>Your name (optional)<input id="fr-name" maxlength="120" autocomplete="name" value="${esc(ME&&ME.name||'')}"></label>
     <label>Your email<input id="fr-email" type="email" required maxlength="200" autocomplete="email" value="${esc(who)}"></label></div>
     <label class="hp" aria-hidden="true">Leave this empty<input id="fr-web" tabindex="-1" autocomplete="off"></label>
     <p class="who">We use your email only to reply about this. See the <a href="privacy.html" target="_blank" rel="noopener">privacy notice</a>.</p>
@@ -687,11 +709,7 @@ let justConfirmed=false;
 function acctLabel(){return !auth?'Sign in':ME&&ME.name?firstName(ME.name):'Account'}
 function formAccount(){const m=msg?`<div class="msg">${esc(msg)}</div>`:'';const out=`<button type="button" class="btn" data-signout="1">Sign out</button>`;
   if(!ME){panel.innerHTML=`<div><h2>${canEdit?'Editor account':'Your account'}</h2><p class="note">Signed in as ${esc(who)}${canEdit?', editor':''}.</p></div>${m}${canEdit?'':`<p class="note">There’s no application for this account yet.</p>`}<div class="acts">${canEdit?'':'<button type="button" class="btn go" data-apply="1">Apply to join</button>'}${out}<button type="button" class="btn" data-cancel="1">Back to the map</button></div>`;return}
-  if(ME.status==='member'){const e=ME.entity_id&&E.get(ME.entity_id);
-    panel.innerHTML=`<div><h2>Welcome aboard, ${esc(firstName(ME.name))}</h2><p class="note">You’re a member of The Dark Blue Book${ME.accepted_at?' since '+esc(fmtDate(ME.accepted_at)):''}.</p></div>${m}
-      ${e?`<div class="acts"><button type="button" class="btn go" data-go="${esc(e.id)}">See yourself on the map</button></div>`:''}
-      <p class="note">Your profile is on its way: a photo, your bio, and which contact details other members can see. Until then, anything missing or wrong? Use Send feedback.</p>
-      <div class="acts">${out}<button type="button" class="btn" data-cancel="1">Back to the map</button></div>`;return}
+  if(ME.status==='member')return formProfile();
   const roles=(ME.roles||[]).map(r=>{const o=r.entity_id&&E.get(r.entity_id);return`<li><span class="role">${esc(r.role)}</span> ${esc(o?o.name:r.other_name)}${r.current?'':' <span class="role">(past'+(r.until?', until '+esc(r.until):'')+')</span>'}</li>`}).join('');
   panel.innerHTML=`<div><h2>Your application is being reviewed</h2><p class="note">${justConfirmed?'Thanks, your email is confirmed. ':''}Applied ${esc(fmtDate(ME.applied_at))}. The editors will be in touch if they have a question, and you’ll get an email when it’s decided.</p></div>${m}
     <dl class="appl"><dt>Name</dt><dd>${esc(ME.name)}</dd><dt>Nationality</dt><dd>${esc(nationName(ME.nationality))}</dd><dt>Roles</dt><dd><ul class="chips">${roles}</ul></dd>${ME.linkedin?`<dt>LinkedIn</dt><dd>${esc(ME.linkedin)}</dd>`:''}</dl>
@@ -786,7 +804,7 @@ panel.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)retu
   if(d.notme){collect();draft.notme.push(d.notme);document.getElementById('fa-match').innerHTML=matchBox();return}
   if(d.unclaim){collect();draft.notme.push(draft.claim);draft.claim='';formApply();return}
   if(d.apply){draft=null;mode='apply';msg='';return render()}
-  if(d.account){draft=null;mode='account';msg='';return render()}
+  if(d.account){draft=null;pdraft=null;mode='account';msg='';return render()}
   if(d.editapp){draft=null;mode='apply';msg='';return render()}
   if(d.signout)return signOut();
   if(d.withdraw){b.outerHTML='<button type="button" class="btn bad" data-withdrawyes="1">Yes, withdraw and delete my details</button><button type="button" class="btn" data-account="1">Keep it</button>';return}
@@ -800,6 +818,114 @@ panel.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)retu
 panel.addEventListener('submit',e=>{const f=e.target.id;if(f==='fa'){e.preventDefault();e.stopImmediatePropagation();sendApplication()}else if(f==='fv'){e.preventDefault();e.stopImmediatePropagation();acceptApp()}else if(f==='fn'){e.preventDefault();e.stopImmediatePropagation();saveNote()}},true);
 document.addEventListener('click',e=>{const b=e.target.closest('[data-join]');if(!b)return;$('#menu').hidden=true;
   if(ME&&ME.status!=='member'){mode='account'}else if(ME){mode='account'}else{draft=null;mode='apply'}msg='';render();panel.scrollIntoView({behavior:'smooth',block:'start'})});
+
+/* ---------- profiles (0.3.2) ---------- */
+let PROFILES=new Map(),EDITOR_ROLES=[],IS_OWNER=false,MEMBERS_BY_ENTITY=new Map(),pdraft=null,photoBusy='';
+const photoUrl=p=>p?`${SB_URL}/storage/v1/object/public/avatars/${p}`:'';
+const SILHOUETTE=`<svg viewBox="0 0 80 80" aria-hidden="true"><circle cx="40" cy="30" r="13" fill="currentColor"/><path d="M14 72c2-15 13-23 26-23s24 8 26 23" fill="currentColor"/></svg>`;
+const avatar=(path,name,cls='')=>path?`<img class="av ${cls}" src="${esc(photoUrl(path))}" alt="${esc(name)}" width="400" height="400" loading="lazy">`:`<span class="av ph ${cls}" role="img" aria-label="No photo yet">${SILHOUETTE}</span>`;
+const monthYear=d=>d?new Date(d).toLocaleDateString('en-GB',{month:'short',year:'numeric'}):'';
+async function loadProfiles(){try{const r=await fetch(`${SB_URL}/rest/v1/rpc/public_profiles`,{method:'POST',headers:{apikey:SB_KEY,'Content-Type':'application/json'},body:'{}'});PROFILES=new Map((r.ok?await r.json():[]).map(p=>[p.entity_id,p]))}catch(e){PROFILES=new Map()}}
+async function loadRoles(){EDITOR_ROLES=[];IS_OWNER=false;MEMBERS_BY_ENTITY=new Map();if(!canEdit)return;
+  try{EDITOR_ROLES=await rpc('member_roles',{});IS_OWNER=EDITOR_ROLES.some(r=>r.user_id===uid&&r.role==='owner');
+    if(IS_OWNER)(await apiGet('members?select=user_id,entity_id,name&status=eq.member')).forEach(m=>{if(m.entity_id)MEMBERS_BY_ENTITY.set(m.entity_id,m)})}catch(e){}}
+const linkHref=(u,kind)=>extUrl(u,kind==='ig'?'ig':'');
+function profileLinks(p){const out=[];if(p.linkedin&&linkHref(p.linkedin))out.push(`<a href="${esc(linkHref(p.linkedin))}" target="_blank" rel="noopener">LinkedIn ↗</a>`);
+  if(p.instagram&&linkHref(p.instagram,'ig'))out.push(`<a href="${esc(linkHref(p.instagram,'ig'))}" target="_blank" rel="noopener">Instagram ↗</a>`);
+  if(p.other_social&&linkHref(p.other_social)){let h='Website';try{h=new URL(linkHref(p.other_social)).hostname.replace(/^www\./,'')}catch(e){}out.push(`<a href="${esc(linkHref(p.other_social))}" target="_blank" rel="noopener">${esc(h)} ↗</a>`)}
+  return out.join('')}
+/* the member's profile, shown on their entry */
+function profileBlock(e){const p=PROFILES.get(e.id);let h='';
+  if(p){const mine=ME&&ME.entity_id===e.id,links=profileLinks(p);
+    h+=`<section class="prof">${avatar(p.photo_path,p.name)}<div class="pbody"><span class="badge">Member${p.member_since?' since '+esc(monthYear(p.member_since)):''}</span>
+      ${p.bio?`<p class="pbio">${esc(p.bio)}</p>`:''}${links?`<p class="plinks">${links}</p>`:''}${mine?'<div class="acts"><button type="button" class="btn" data-account="1">Edit your profile</button></div>':''}</div></section>`}
+  const m=IS_OWNER&&MEMBERS_BY_ENTITY.get(e.id);
+  if(m&&m.user_id!==uid){const role=(EDITOR_ROLES.find(r=>r.user_id===m.user_id)||{}).role;
+    h+=role==='owner'?'':`<div class="owner"><span>Editor access: <strong>${role==='editor'?'yes':'no'}</strong></span>${role==='editor'?`<button type="button" class="btn bad" data-seteditor="0" data-uid="${esc(m.user_id)}">Remove editor</button>`:`<button type="button" class="btn" data-seteditor="1" data-uid="${esc(m.user_id)}">Make editor</button>`}</div>`}
+  return h}
+async function setEditor(u,on,b){b.disabled=true;try{await rpc('set_editor',{p_user:u,p_on:on});await loadRoles();msg=on?'They’re an editor now. They’ll see the editor tools next time they sign in or reload.':'Editor access removed.'}
+  catch(e){msg='Not changed: '+String(e.message).slice(0,140)}render()}
+
+/* checklist */
+const CHECK=[['photo','Add a photo'],['visible','Check what’s visible'],['bio','Review your bio'],['map','See yourself on the map']];
+const ticked=k=>k==='photo'?!!ME.photo_path:!!(ME.checklist||{})[k];
+const checkDone=()=>!ME||ME.status!=='member'||!!(ME.checklist||{}).dismissed||CHECK.every(([k])=>ticked(k));
+async function markDone(keys){try{const c={};keys.forEach(k=>c[k]=true);await rpc('update_profile',{p:{checklist:c}});ME.checklist=Object.assign({},ME.checklist,c)}catch(e){}}
+function checklist(){if(checkDone())return'';const n=CHECK.filter(([k])=>ticked(k)).length;
+  return`<section class="check"><div class="ch-head"><strong>Finish your profile</strong><span class="cnt">${n} of ${CHECK.length}</span><button type="button" class="linky" data-dismiss="1">Dismiss</button></div>
+    <ul>${CHECK.map(([k,t])=>`<li class="${ticked(k)?'done':''}"><span class="tk" aria-hidden="true">${ticked(k)?'✓':''}</span>${k==='map'?`<button type="button" class="linky" data-seeme="1">${t}</button>`:k==='photo'&&!ticked(k)?`<label class="linky" for="pf-file">${t}</label>`:`<button type="button" class="linky" data-goto="pf-${k}">${t}</button>`}${ticked(k)?' <span class="sr">done</span>':''}</li>`).join('')}</ul></section>`}
+
+/* the member's own profile page */
+function profDraft(){return{bio:ME.bio||'',linkedin:ME.linkedin||'',instagram:ME.instagram||'',other_social:ME.other_social||'',contact_email:ME.contact_email||'',phone:ME.phone||'',
+  show_photo:ME.show_photo!==false,show_linkedin:ME.show_linkedin!==false,show_social:ME.show_social!==false,show_email:!!ME.show_email,show_phone:!!ME.show_phone}}
+const tog=(id,on,label,who,locked)=>`<label class="tog"><input type="checkbox" id="pf-${id}"${on?' checked':''}${locked?' disabled':''}><span class="tl"><strong>${label}</strong><span>${who}</span></span></label>`;
+function formProfile(){const d=pdraft||(pdraft=profDraft()),e=ME.entity_id&&E.get(ME.entity_id);
+  const roles=e?L.filter(l=>(l.from===e.id||l.to===e.id)&&E.has(l.from)&&E.has(l.to)).sort((a,b)=>ended(a)-ended(b)):[];
+  panel.innerHTML=`<form id="fp" novalidate><div><h2>Your profile</h2><p class="note">Member since ${esc(fmtDate(ME.accepted_at))}.</p></div>
+    ${msg?`<div class="msg">${esc(msg)}</div>`:''}${checklist()}
+    <section class="photo" id="pf-photo">${avatar(ME.photo_path,ME.name,'big')}<div class="pcol">
+      <div class="acts"><label class="btn" for="pf-file">${ME.photo_path?'Change photo':'Add a photo'}</label>${ME.photo_path?'<button type="button" class="btn bad" data-rmphoto="1">Remove</button>':''}</div>
+      <input type="file" id="pf-file" accept="image/*" hidden>
+      <p class="who">${photoBusy?esc(photoBusy):'A head-and-shoulders photo works best. It’s cropped to a square and made small before upload, which also removes location and camera details.'}</p></div></section>
+    <dl class="appl"><dt>Name</dt><dd>${esc(ME.name)}</dd><dt>Nationality</dt><dd>${esc(nationName(ME.nationality))}</dd></dl>
+    <p class="who">Your name and nationality are always shown. To change them, use <button type="button" class="linky" data-fb="1">Send feedback</button>.</p>
+    <label id="pf-bio">Bio<textarea id="pf-biot" rows="5" maxlength="500">${esc(d.bio)}</textarea><span class="hint"><span id="pf-bion">${d.bio.length}</span>/500. Shown on your profile.</span></label>
+    <h3>Links and contact details</h3>
+    <label>LinkedIn<input id="pf-linkedin" type="url" maxlength="300" placeholder="https://www.linkedin.com/in/…" value="${esc(d.linkedin)}"></label>
+    <div class="two"><label>Instagram<input id="pf-instagram" maxlength="300" placeholder="@handle" value="${esc(d.instagram)}"></label>
+    <label>Other social or website<input id="pf-other_social" maxlength="300" value="${esc(d.other_social)}"></label></div>
+    <div class="two"><label>Contact email<input id="pf-contact_email" type="email" maxlength="200" placeholder="for members to reach you" value="${esc(d.contact_email)}"><span class="hint">Separate from your sign-in email, which is never shown.</span></label>
+    <label>WhatsApp or mobile<input id="pf-phone" type="tel" maxlength="40" value="${esc(d.phone)}"></label></div>
+    <h3 id="pf-visible">Who sees what</h3>
+    <div class="togs">
+      ${tog('always',true,'Name, nationality and roles','Everyone, always: they’re part of the book.',true)}
+      ${tog('show_photo',d.show_photo,'Photo','Everyone, on your profile. The map keeps its dots.')}
+      ${tog('show_linkedin',d.show_linkedin,'LinkedIn','Everyone')}
+      ${tog('show_social',d.show_social,'Instagram and other social','Everyone')}
+      ${tog('show_email',d.show_email,'Contact email','Paid members only, once paid membership starts. Nobody sees it yet.')}
+      ${tog('show_phone',d.show_phone,'WhatsApp or mobile','Paid members only, once paid membership starts. Nobody sees it yet.')}
+    </div>
+    <div class="acts"><button class="btn go" id="pf-save">Save profile</button>${e?'<button type="button" class="btn" data-seeme="1">See yourself on the map</button>':''}</div>
+    ${roles.length?`<h3>Your roles in the book</h3><ul class="rel">${roles.map(l=>row(l,e.id)).join('')}</ul><p class="who">Adding and editing your own roles is coming soon. Until then, use Send feedback or Report an error on your entry.</p>`:''}
+    <div class="acts"><button type="button" class="btn" data-signout="1">Sign out</button><button type="button" class="btn" data-cancel="1">Back to the map</button></div></form>`}
+function collectProfile(){if(!pdraft||!document.getElementById('fp'))return;const g=id=>{const x=document.getElementById('pf-'+id);return x?x.value.trim():''};
+  pdraft.bio=g('biot');['linkedin','instagram','other_social','contact_email','phone'].forEach(k=>pdraft[k]=g(k));
+  ['show_photo','show_linkedin','show_social','show_email','show_phone'].forEach(k=>{const x=document.getElementById('pf-'+k);if(x)pdraft[k]=x.checked})}
+async function saveProfile(){collectProfile();const d=pdraft;
+  if(d.contact_email&&!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(d.contact_email)){msg='Check the contact email.';return render()}
+  const b=document.getElementById('pf-save');b.disabled=true;b.textContent='Saving…';
+  try{await rpc('update_profile',{p:{...d,checklist:{visible:true,bio:true}}});await loadMe();await loadProfiles();pdraft=null;msg='Profile saved.'}
+  catch(e){msg=/contact_email/.test(e.message)?'Check the contact email.':/members_(bio|linkedin|instagram|other_social|phone)_check/.test(e.message)?'One of the fields is too long.':'Not saved. '+String(e.message).slice(0,140)}
+  render();panel.scrollTop=0}
+/* photo: square-crop to 400px JPEG in the browser, upload to the member's own folder, then drop the old file */
+async function resizePhoto(file){let src;try{src=await createImageBitmap(file,{imageOrientation:'from-image'})}catch(e){src=await new Promise((ok,no)=>{const i=new Image();i.onload=()=>ok(i);i.onerror=no;i.src=URL.createObjectURL(file)})}
+  const w=src.width,h=src.height,s=Math.min(w,h),c=document.createElement('canvas');c.width=c.height=400;const x=c.getContext('2d');x.imageSmoothingQuality='high';
+  x.drawImage(src,(w-s)/2,(h-s)/2.6,s,s,0,0,400,400);
+  for(const q of [.85,.75,.6]){const b=await new Promise(r=>c.toBlob(r,'image/jpeg',q));if(b&&b.size<=240000)return b}throw new Error('too_big')}
+async function uploadPhoto(file){if(!file)return;collectProfile();if(!/^image\//.test(file.type)){msg='That file isn’t an image.';return render()}
+  photoBusy='Uploading…';msg='';render();const old=ME.photo_path;
+  try{const blob=await resizePhoto(file),path=`${uid}/${Date.now()}.jpg`,t=await token();
+    const r=await fetch(`${SB_URL}/storage/v1/object/avatars/${path}`,{method:'POST',headers:{apikey:SB_KEY,Authorization:'Bearer '+t,'Content-Type':'image/jpeg','x-upsert':'false','Cache-Control':'31536000'},body:blob});
+    if(!r.ok)throw new Error('upload '+r.status+' '+(await r.text()).slice(0,120));
+    await rpc('update_profile',{p:{photo_path:path}});ME.photo_path=path;
+    if(old)fetch(`${SB_URL}/storage/v1/object/avatars/${old}`,{method:'DELETE',headers:{apikey:SB_KEY,Authorization:'Bearer '+t}}).catch(()=>{});
+    await loadProfiles();msg='Photo added.'}
+  catch(e){msg=/too_big/.test(e.message)?'That photo couldn’t be made small enough. Try another.':'The photo wasn’t uploaded. Try a JPEG or PNG. ('+String(e.message).slice(0,100)+')'}
+  photoBusy='';render()}
+async function removePhoto(){const old=ME.photo_path;if(!old)return;collectProfile();
+  try{await rpc('update_profile',{p:{photo_path:''}});ME.photo_path=null;const t=await token();
+    fetch(`${SB_URL}/storage/v1/object/avatars/${old}`,{method:'DELETE',headers:{apikey:SB_KEY,Authorization:'Bearer '+t}}).catch(()=>{});await loadProfiles();msg='Photo removed.'}
+  catch(e){msg='Not removed. '+String(e.message).slice(0,120)}render()}
+function seeMe(){const id=ME&&ME.entity_id;if(!id||!E.has(id))return;markDone(['map']);reveal(id);pick(id)}
+panel.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;const d=b.dataset;
+  if(d.seeme){e.stopImmediatePropagation();return seeMe()}
+  if(d.dismiss){e.stopImmediatePropagation();collectProfile();markDone(['dismissed']).then(render);return}
+  if(d.goto){e.stopImmediatePropagation();const t=document.getElementById(d.goto);if(t){t.scrollIntoView({behavior:'smooth',block:'start'});const f=t.querySelector('textarea,input:not([disabled])');if(f)f.focus({preventScroll:true})}return}
+  if(d.rmphoto){e.stopImmediatePropagation();return removePhoto()}
+  if(d.seteditor!==undefined){e.stopImmediatePropagation();return setEditor(d.uid,d.seteditor==='1',b)}},true);
+panel.addEventListener('change',e=>{if(e.target.id==='pf-file')uploadPhoto(e.target.files[0])});
+panel.addEventListener('input',e=>{if(e.target.id==='pf-biot'){const n=document.getElementById('pf-bion');if(n)n.textContent=e.target.value.length}});
+panel.addEventListener('submit',e=>{if(e.target.id==='fp'){e.preventDefault();e.stopImmediatePropagation();saveProfile()}},true);
 
 /* ---------- header ---------- */
 document.querySelectorAll('.lens button').forEach(b=>b.addEventListener('click',()=>{lens=b.dataset.lens;
@@ -832,10 +958,10 @@ async function fetchAll(table,cols,order='id'){const out=[];for(let from=0;;from
   if(!r.ok)throw new Error(table+' '+r.status);const rows=await r.json();out.push(...rows);if(rows.length<1000)return out}}
 async function start(){
   try{const [es,ls,fs]=await Promise.all([fetchAll('entities','id,name,type,sectors,level,country,note'),fetchAll('links','id,from_id,to_id,role,cat,context_id,start_date,end_date,source,note,created_at'),fetchAll('features','slot,position,entity_id,headline,link','slot,position').catch(()=>[])]);
-    FEAT=fs;
+    FEAT=fs;await loadProfiles();
     db={};E=new Map(es.map(x=>[x.id,norm({id:x.id,name:x.name,type:x.type,sectors:x.sectors||[],level:x.level||'',country:x.country||'',note:x.note||''})]));
     L=ls.map(l=>({id:l.id,from:l.from_id,to:l.to_id,role:l.role,cat:l.cat,context:l.context_id||'',start:l.start_date||'',end:l.end_date||'',source:l.source||'',note:l.note||'',created:l.created_at||''}));
-    loaded={e:true,l:true};fillScope();MAXY=Math.max(NOW,...L.map(l=>yr(l.start)).filter(v=>v!=null));syncWhen();await checkAuth();if(justConfirmed&&mode==='view'&&!sel)mode='account';yrEl.min=Math.max(YR_FLOOR,Math.min(NOW-1,...L.map(l=>yr(l.start)||NOW)));build();render()}
+    loaded={e:true,l:true};fillScope();MAXY=Math.max(NOW,...L.map(l=>yr(l.start)).filter(v=>v!=null));syncWhen();await checkAuth();if(justConfirmed&&mode==='view'&&!sel)mode='account';else if(freshSignin&&!checkDone()&&mode==='view'&&!location.hash)mode='account';freshSignin=false;yrEl.min=Math.max(YR_FLOOR,Math.min(NOW-1,...L.map(l=>yr(l.start)||NOW)));build();render()}
   catch(e){db=null;loaded={e:true,l:true};$('#blank').hidden=false;$('#blank').firstElementChild.textContent='The book could not be loaded. Please try again in a moment.'}
 }
 try{const s=localStorage.getItem('dbb-lens');if(s&&LENS[s]!==undefined&&s!=='all'){lens=s;document.querySelectorAll('.lens button').forEach(x=>x.setAttribute('aria-pressed',x.dataset.lens===s))}}catch(e){}

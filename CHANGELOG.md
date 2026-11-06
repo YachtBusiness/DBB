@@ -2,6 +2,19 @@
 
 Version plan: 0.1 public map live · 0.2 editing moves to Supabase · 0.3 sign-in, applications and claims · 0.4 paid tiers, organisation editing, contact details · 1.0 membership network opens · 1.x events and intros. Small fixes in between are 0.x.1, 0.x.2 and so on.
 
+## 0.3.2 (preview, 6 November 2026)
+
+Member profiles.
+
+- Your profile: signed-in members open their profile from their name at the top right. Photo, bio, LinkedIn, Instagram, other social or website, a contact email (separate from the sign-in email) and WhatsApp or mobile.
+- Who sees what, one switch per field: name, nationality and roles always; photo, LinkedIn and other social on by default, for everyone; contact email and WhatsApp off by default, and for paid members only once paid membership starts (nobody sees them before then).
+- Finish your profile: a checklist above the profile (add a photo, check what's visible, review your bio, see yourself on the map) that goes once done or dismissed. Members signing in by link land on their profile until it's done.
+- Photos are cropped to a 400px square JPEG in the browser before upload, which also strips location and camera data, and stored in Supabase Storage. Members can only add or remove their own. A plain silhouette stands in until there's a photo.
+- Members' entries on the map now show their profile: photo, "Member since", bio and links, as their switches allow. Members see "Edit your profile" on their own entry.
+- The owner can make a member an editor, or remove the role, from the member's entry.
+- Send feedback fills in a signed-in member's name.
+- Closed reports are deleted automatically 12 months after being closed (monthly job), as the privacy notice says.
+
 ## 0.3.1 (6 November 2026)
 
 Privacy.
