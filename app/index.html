@@ -866,7 +866,7 @@ function formProfile(){const d=pdraft||(pdraft=profDraft()),e=ME.entity_id&&E.ge
     <section class="photo" id="pf-photo">${avatar(ME.photo_path,ME.name,'big')}<div class="pcol">
       <div class="acts"><label class="btn" for="pf-file">${ME.photo_path?'Change photo':'Add a photo'}</label>${ME.photo_path?'<button type="button" class="btn bad" data-rmphoto="1">Remove</button>':''}</div>
       <input type="file" id="pf-file" accept="image/*" hidden>
-      <p class="who">${photoBusy?esc(photoBusy):'Use a clear, recent photo of you: your face, head and shoulders. Not a logo, boat, animal or group shot. It’s cropped to a square and made small before upload, which also removes location and camera details.'}</p></div></section>
+      <p class="who">${photoBusy?esc(photoBusy):'Use a clear, recent photo of you: your face, head and shoulders. Not a logo, boat, animal or group shot.'}</p></div></section>
     <dl class="appl"><dt>Name</dt><dd>${esc(ME.name)}</dd><dt>Nationality</dt><dd>${esc(nationName(ME.nationality))}</dd></dl>
     <p class="who">Your name and nationality are always shown. To change them, use <button type="button" class="linky" data-fb="1">Send feedback</button>.</p>
     <label id="pf-bio">Bio<textarea id="pf-biot" rows="5" maxlength="500">${esc(d.bio)}</textarea><span class="hint"><span id="pf-bion">${d.bio.length}</span>/500. Shown on your profile.</span></label>
