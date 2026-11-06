@@ -10,7 +10,7 @@ Member roles and member content.
 - If it isn't in the book, members add it: team, yacht club, organisation or event, with an optional country and, for organisations, an optional sector. "Other" is now a twelfth sector, with a short "What does the business do?" that only editors see. Before adding, the app suggests close matches already in the book ("Did you mean…").
 - Members never set a source. Every member-added link reads "added by member" and is never a link. Web addresses, emails and handles are refused in anything a member types (roles, names), so links stay on profiles.
 - Member content on the map: dotted lines for member-added links, a dashed ring for member-added entries, and "added by member" in entry panels. It's shown by default; "Added by members: shown/hidden" in the legend switches it off.
-- Editors: "Checked" on a member-added link and "Mark as checked" on a member-added entry make them editorial. Editors can still edit or remove anything.
+- Editors: "Mark as checked" on a member-added entry makes it editorial. Editors can still edit or remove anything. (A "Checked" button on members' roles was removed after release: a member's own roles stay theirs to change. Verified roles may come back as a paid feature.)
 - Limits: 20 new roles and 10 new entries per member per day. A member-added entry is removed with the last role that uses it.
 
 ## 0.3.2 (6 November 2026)

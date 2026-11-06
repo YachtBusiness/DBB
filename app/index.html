@@ -382,7 +382,7 @@ function src(l){if(l.origin==='member')return'<span class="chip mem">added by me
 function row(l,me){const out=l.from===me,o=E.get(out?l.to:l.from);if(!o)return'';
   const who=`<button type="button" class="ent" data-go="${esc(o.id)}">${esc(o.name)}</button>`,role=`<span class="role">${esc(l.role)}</span>`;
   const ctx=l.context&&E.get(l.context)?`<span>in ${esc(E.get(l.context).name)}</span>`:'',w=when(l);
-  return`<li class="${ended(l)?'past':ahead(l)?'soon':''}"><div class="rl">${out?role+who:who+role}</div>${canEdit?`<button type="button" class="mini" data-editlink="${esc(l.id)}">Edit</button>`:''}${canEdit&&l.origin==='member'?`<button type="button" class="mini" data-promote="links" data-pid="${esc(l.id)}" title="Mark as checked: becomes editorial">Checked</button>`:''}
+  return`<li class="${ended(l)?'past':ahead(l)?'soon':''}"><div class="rl">${out?role+who:who+role}</div>${canEdit?`<button type="button" class="mini" data-editlink="${esc(l.id)}">Edit</button>`:''}
     <div class="meta">${ctx}${w?`<span>${esc(w)}</span>`:''}${l.note?`<span>${esc(l.note)}</span>`:''}${src(l)}</div></li>`}
 function timeline(mine,me){const d=mine.filter(l=>yr(l.start)!=null||yr(l.end)!=null);if(d.length<2)return'';
   const ys=d.flatMap(l=>[yr(l.start),yr(l.end)]).filter(v=>v!=null),min=Math.min(...ys),max=Math.max(NOW,...ys),span=max-min+1;
