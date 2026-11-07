@@ -4,6 +4,8 @@ Version plan: 0.1 public map live · 0.2 editing moves to Supabase · 0.3 sign-i
 
 ## 0.3.11 (7 November 2026)
 
+- (8 Nov) The title "The Dark Blue Book" at the top left now goes back to the overview.
+
 Calendar.
 
 - Events, editions and rounds can have dates: start, end (blank if only the start is known, the same date for a one-day event) and "not confirmed yet", which shows the month only, "dates to be confirmed". Forward-only: past events don't get dates.
