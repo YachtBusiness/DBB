@@ -5,6 +5,7 @@ Version plan: 0.1 public map live · 0.2 editing moves to Supabase · 0.3 sign-i
 ## 0.3.8 (preview, 7 November 2026)
 
 - Picking an entry from a link, search or the address now glides the map to centre it. If it's already well in view (for example a dot you just clicked), the map stays put.
+- "Latest news" on people's entries is now headed "News" ("Add news" for editors), since a link may be some time old.
 
 ## 0.3.7 (preview, 7 November 2026)
 

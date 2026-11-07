@@ -1228,14 +1228,14 @@ panel.addEventListener('submit',e=>{const f=e.target.id;if(f==='fcl'){e.preventD
 /* ---------- latest news on people's entries (0.3.6) ---------- */
 let ndraft=null;
 function newsBlock(e){if(e.type!=='person')return'';
-  if(!e.newsUrl)return canEdit?`<div class="acts"><button type="button" class="btn" data-news="${esc(e.id)}">Add latest news</button></div>`:'';
+  if(!e.newsUrl)return canEdit?`<div class="acts"><button type="button" class="btn" data-news="${esc(e.id)}">Add news</button></div>`:'';
   let host='';try{host=new URL(e.newsUrl).hostname.replace(/^www\./,'')}catch(x){}
   const d=e.newsDate?new Date(e.newsDate+'T12:00:00Z').toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}):'';
-  return`<section class="news"><h3>Latest news</h3><a href="${esc(e.newsUrl)}" target="_blank" rel="noopener">${esc(e.newsTitle||host||'Read the story')} ↗</a>
+  return`<section class="news"><h3>News</h3><a href="${esc(e.newsUrl)}" target="_blank" rel="noopener">${esc(e.newsTitle||host||'Read the story')} ↗</a>
     <p class="who">${[host,d].filter(Boolean).map(esc).join(' · ')}${canEdit?` <button type="button" class="linky" data-news="${esc(e.id)}">Edit</button>`:''}</p></section>`}
 function formNews(){const e=E.get(editing);if(!e){mode='view';return render()}
   const d=ndraft||(ndraft={url:e.newsUrl||'',title:e.newsTitle||'',date:e.newsDate||''});
-  panel.innerHTML=`<form id="fnw" novalidate><div><div class="kind"><i style="background:${tvar(e)}"></i>${esc(kindLabel(e))}</div><h2>${esc(e.name)}: latest news</h2>
+  panel.innerHTML=`<form id="fnw" novalidate><div><div class="kind"><i style="background:${tvar(e)}"></i>${esc(kindLabel(e))}</div><h2>${esc(e.name)}: news</h2>
     <p class="note">One link back to a press release or story, usually one that links to this entry. It replaces any earlier one.</p></div>
     ${msg?`<div class="msg">${esc(msg)}</div>`:''}
     <label>Link to the story<input id="nw-url" type="url" maxlength="500" placeholder="https://…" value="${esc(d.url)}"></label>
@@ -1246,7 +1246,7 @@ async function saveNews(clear){const id=editing;let body={news_url:'',news_title
   if(!clear){const url=val('nw-url'),title=val('nw-title'),date=val('nw-date');ndraft={url,title,date};
     if(!/^https?:\/\/[^\s.]+\.[^\s]+$/i.test(url)){msg='The link should be a full web address, starting https://';return render()}
     body={news_url:url,news_title:title,news_date:date}}
-  try{await api('PATCH','entities?id=eq.'+encodeURIComponent(id),body);ndraft=null;await reload();sel=id;mode='view';editing=null;msg=clear?'Latest news removed.':'Latest news saved.'}
+  try{await api('PATCH','entities?id=eq.'+encodeURIComponent(id),body);ndraft=null;await reload();sel=id;mode='view';editing=null;msg=clear?'News link removed.':'News link saved.'}
   catch(x){msg='Not saved. '+String(x.message).slice(0,140)}render()}
 panel.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;const d=b.dataset;
   if(d.news){e.stopImmediatePropagation();editing=d.news;ndraft=null;msg='';mode='news';render();panel.scrollTop=0;return}
