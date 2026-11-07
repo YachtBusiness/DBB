@@ -4,7 +4,7 @@ Version plan: 0.1 public map live · 0.2 editing moves to Supabase · 0.3 sign-i
 
 ## 0.3.10 (preview, 7 November 2026)
 
-- Editors: in the link form, Who, Of and Applies in are now search boxes instead of long dropdowns. Type the start of any word in the name (accents don't matter), then pick from up to 8 suggestions, each showing its kind and country, with the mouse, a tap, or the arrow keys and Enter. Applies in only suggests events. Swap still works.
+- Editors: in the link form, Who, Of and Applies in are now search boxes instead of long dropdowns. Type the start of any word in the name (accents don't matter), then pick from up to 8 suggestions, each showing its kind and country, with the mouse, a tap, or the arrow keys and Enter. Spaces don't matter ("sail gp" finds SailGP) and initials work ("etnz" finds Emirates Team New Zealand). Applies in only suggests events. Swap still works.
 
 ## 0.3.9 (preview, 7 November 2026)
 

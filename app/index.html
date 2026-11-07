@@ -1271,8 +1271,10 @@ function combo(id,cur,types,placeholder){COMBO_TYPES[id]=types||null;const e=cur
 const fold=s=>String(s||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-z0-9]+/g,' ').trim();
 function comboFind(q,types,max=8){const f=fold(q);if(!f)return[];const qt=f.split(' ');
   const out=[];for(const e of E.values()){if(types&&!types.includes(e.type))continue;const n=fold(e.name),nt=n.split(' ');
-    if(!qt.every(t=>nt.some(w=>w.startsWith(t))))continue;
-    out.push({e,s:(n===f?0:n.startsWith(f)?1:nt[0].startsWith(qt[0])?2:3)+e.name.length/1000})}
+    const words=qt.every(t=>nt.some(w=>w.startsWith(t))),squash=n.replace(/ /g,'').includes(f.replace(/ /g,'')),
+      initials=qt.length===1&&f.length>=2&&nt.map(w=>w[0]).join('').startsWith(f);
+    if(!words&&!squash&&!initials)continue;
+    out.push({e,s:(n===f?0:n.startsWith(f)?1:words&&nt[0].startsWith(qt[0])?2:words?3:initials?3.5:4)+e.name.length/1000})}
   return out.sort((a,b)=>a.s-b.s).slice(0,max).map(x=>x.e)}
 function comboShow(q){const id=q.dataset.combo,list=document.getElementById(id+'-list'),hits=comboFind(q.value,COMBO_TYPES[id]);
   list.innerHTML=hits.length?hits.map((e,i)=>`<li role="option" data-pick="${esc(e.id)}"${i===0?' class="on"':''}><span>${esc(e.name)}</span> <span class="role">${esc(kindLabel(e))}${e.country?' · '+esc(e.country):''}</span></li>`).join(''):(q.value.trim()?'<li class="none">Nothing in the book matches</li>':'');
