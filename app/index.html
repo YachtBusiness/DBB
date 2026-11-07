@@ -420,13 +420,15 @@ function inTheNews(){
 
 /* ---------- deep links ---------- */
 let booted=false;
-function syncHash(){const want=sel?'#'+encodeURIComponent(sel):'';if(location.hash===want)return;try{history.pushState(null,'',want||location.pathname+location.search)}catch(e){}}
+const CAL_HASH='yacht-racing-calendar';
+function syncHash(){const want=sel?'#'+encodeURIComponent(sel):mode==='calendar'?'#'+CAL_HASH:'';if(location.hash===want)return;try{history.pushState(null,'',want||location.pathname+location.search)}catch(e){}}
 function reveal(id){if(!E.has(id))return false;if(nodes.some(n=>n.id===id))return true;
   if(lens!=='all'){lens='all';document.querySelectorAll('.lens button').forEach(x=>x.setAttribute('aria-pressed',x.dataset.lens==='all'))}
   if(scope){scope='';scEl.value=''}needFit=true;build();
   if(!nodes.some(n=>n.id===id)){allTime=true;syncWhen();needFit=true;build()}return true}
 function fromHash(){let id='';try{id=decodeURIComponent(location.hash.slice(1))}catch(e){}
-  if(id&&reveal(id))pick(id,true);else if(!id&&sel)pick(null,true)}
+  if(id===CAL_HASH){sel=null;editing=null;msg='';mode='calendar';paint();render();if(typeof showPanel==='function')showPanel();return}
+  if(id&&reveal(id))pick(id,true);else if(!id&&(sel||mode==='calendar'))pick(null,true)}
 function boot(){if(booted||!loaded.e||!loaded.l||!E.size)return;booted=true;fromHash()}
 window.addEventListener('popstate',fromHash);window.addEventListener('hashchange',fromHash);
 
@@ -594,7 +596,7 @@ panel.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)retu
   if(d.new){mode=d.new;editing=null;msg='';return render()}
   if(d.editent){mode='entity';editing=sel;msg='';return render()}
   if(d.editlink){mode='link';editing=d.editlink;msg='';return render()}
-  if(d.cancel){mode='view';editing=null;msg='';return render()}
+  if(d.cancel){const wasCal=mode==='calendar';mode='view';editing=null;msg='';render();if(wasCal)syncHash();return}
   if(d.del){b.outerHTML=`<button type="button" class="btn bad" data-delyes="${d.del}">Yes, delete for good</button><button type="button" class="btn" data-cancel="1">Keep it</button>`;return}
   if(d.delyes)return remove(d.delyes);
   if(d.auditall){auditAll=!auditAll;return render()}
@@ -1342,11 +1344,13 @@ function formCalendar(){let items=calItems();const tops=new Map();items.forEach(
     <label>When<select id="cal-range">${opt('all','Everything ahead',calRange)}${opt('3m','Next three months',calRange)}</select></label></div>
     ${groups.length?groups.map(g=>`<section class="calm"><h3>${esc(g.k)}</h3><ul class="rel">${g.r.map(calRow).join('')}</ul></section>`).join(''):'<p class="note">Nothing on the calendar for that choice.</p>'}
     <p class="who">Missing something? <button type="button" class="linky" data-fb="1">Send feedback</button>.</p>
-    <div class="acts"><button type="button" class="btn" data-cancel="1">Back to the map</button></div>`}
+    <div class="acts"><button type="button" class="btn" data-calcopy="1">Copy link</button><button type="button" class="btn" data-cancel="1">Back to the map</button></div>`}
 /* dates on an event's entry; editors also see if the event has no venue (needed for travel booking later) */
 function eventDatesBlock(e){if(e.type!=='event'||!e.startDate)return'';const p=placeOf(e),pl=placeText(e);
   return`<p class="evdates"><span class="cdate${e.provisional?' tbc':''}">${esc(fmtRange(e))}</span>${pl?` · ${esc(pl)}`:''}${canEdit&&!p.hasVenue?' <span class="chip">no venue linked</span>':''}</p>`}
 document.addEventListener('click',e=>{const b=e.target.closest('[data-cal]');if(!b)return;const m=document.getElementById('menu');if(m)m.hidden=true;sel=null;mode='calendar';msg='';render();showPanel();syncHash()});
+panel.addEventListener('click',e=>{const b=e.target.closest('[data-calcopy]');if(!b)return;const u=location.href.split('#')[0].split('?')[0]+'#'+CAL_HASH;
+  try{navigator.clipboard.writeText(u).then(()=>{b.textContent='Link copied'},()=>{b.textContent=u})}catch(x){b.textContent=u}});
 panel.addEventListener('change',e=>{if(e.target.id==='cal-series'){calSeries=e.target.value;render()}else if(e.target.id==='cal-range'){calRange=e.target.value;render()}});
 
 /* ---------- header ---------- */
