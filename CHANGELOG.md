@@ -2,7 +2,7 @@
 
 Version plan: 0.1 public map live · 0.2 editing moves to Supabase · 0.3 sign-in, applications and claims · 0.4 paid tiers, organisation editing, contact details · 1.0 membership network opens · 1.x events and intros. Small fixes in between are 0.x.1, 0.x.2 and so on.
 
-## 0.3.6 (preview, 7 November 2026)
+## 0.3.6 (7 November 2026)
 
 Latest news on people's entries.
 
@@ -10,7 +10,7 @@ Latest news on people's entries.
 - Editors add, change or remove it ("Add latest news" on any person's entry). It's up to editors which stories get one. The idea: press releases and articles that link to people's entries in the book (e.g. app.darkbluebook.com/#bond) get a link back from that entry.
 - Separate from "In the news" on the overview.
 
-## 0.3.5 (preview, 7 November 2026)
+## 0.3.5 (7 November 2026)
 
 Claims: owners and managers for organisation profiles.
 
