@@ -247,10 +247,10 @@ label.btn{display:inline-block;flex-direction:row;color:var(--ink);font-size:14p
 </style>
 
 <header class="top">
-  <div class="brand"><h1>The Dark Blue Book</h1><span>The who's who of yacht racing <small id="ver" style="opacity:.6;margin-left:6px">v0.3.7</small></span></div>
+  <div class="brand"><h1>The Dark Blue Book</h1><span>The who's who of yacht racing <small id="ver" style="opacity:.6;margin-left:6px">v0.3.8</small></span></div>
   <div class="join"><button type="button" class="apply" data-join="1">Join</button><button type="button" class="acct" data-acct="1">Sign in</button></div>
   <button type="button" class="menu-btn" id="menuBtn" aria-label="Contact and links" aria-expanded="false" aria-controls="menu"><svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="M2 4h14M2 9h14M2 14h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
-  <nav class="menu" id="menu" hidden aria-label="Contact"><a href="https://wa.me/61439790410" target="_blank" rel="noopener">WhatsApp</a><a href="https://www.linkedin.com/groups/2023604/" target="_blank" rel="noopener">LinkedIn</a><a href="https://www.facebook.com/darkbluebook" target="_blank" rel="noopener">Facebook</a><a href="mailto:editor@darkbluebook.com">Email</a><button type="button" class="acct" data-fb="1">Send feedback</button><a href="privacy.html">Privacy</a><small>© The Dark Blue Book · v0.3.7</small></nav>
+  <nav class="menu" id="menu" hidden aria-label="Contact"><a href="https://wa.me/61439790410" target="_blank" rel="noopener">WhatsApp</a><a href="https://www.linkedin.com/groups/2023604/" target="_blank" rel="noopener">LinkedIn</a><a href="https://www.facebook.com/darkbluebook" target="_blank" rel="noopener">Facebook</a><a href="mailto:editor@darkbluebook.com">Email</a><button type="button" class="acct" data-fb="1">Send feedback</button><a href="privacy.html">Privacy</a><small>© The Dark Blue Book · v0.3.8</small></nav>
   <button type="button" class="filters-btn" id="filtersBtn" aria-expanded="false" aria-controls="filters">Filters</button>
   <div class="filters" id="filters">
   <div class="lens" role="group" aria-label="What to show">
@@ -272,7 +272,7 @@ label.btn{display:inline-block;flex-direction:row;color:var(--ink);font-size:14p
   </section>
   <aside id="panel" aria-live="polite"></aside>
 </main>
-<footer class="foot" aria-label="Contact"><a href="https://wa.me/61439790410" target="_blank" rel="noopener">WhatsApp</a><a href="https://www.linkedin.com/groups/2023604/" target="_blank" rel="noopener">LinkedIn</a><a href="https://www.facebook.com/darkbluebook" target="_blank" rel="noopener">Facebook</a><a href="mailto:editor@darkbluebook.com">Email</a><button type="button" class="acct" data-fb="1">Send feedback</button><a href="privacy.html">Privacy</a><span>© The Dark Blue Book · v0.3.7</span></footer>
+<footer class="foot" aria-label="Contact"><a href="https://wa.me/61439790410" target="_blank" rel="noopener">WhatsApp</a><a href="https://www.linkedin.com/groups/2023604/" target="_blank" rel="noopener">LinkedIn</a><a href="https://www.facebook.com/darkbluebook" target="_blank" rel="noopener">Facebook</a><a href="mailto:editor@darkbluebook.com">Email</a><button type="button" class="acct" data-fb="1">Send feedback</button><a href="privacy.html">Privacy</a><span>© The Dark Blue Book · v0.3.8</span></footer>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
 <script>
@@ -324,6 +324,15 @@ const sim=d3.forceSimulation()
   .force('charge',d3.forceManyBody().strength(-280))
   .force('x',d3.forceX().strength(.05)).force('y',d3.forceY().strength(.08))
   .force('collide',d3.forceCollide(d=>d.r+7)).on('tick',tick);
+/* glide the map to an entry picked from a link, search or the address, unless it's already well in view */
+let centerTimer=null;
+function centerSoon(id,delay){clearTimeout(centerTimer);centerTimer=setTimeout(()=>centerOn(id),delay==null?80:delay)}
+function centerOn(id){const n=nodes.find(x=>x.id===id);if(!n||n.x==null)return;
+  const vb=svg.node().viewBox.baseVal,w=vb&&vb.width||0,h=vb&&vb.height||0;if(!w||!h)return;
+  const t=d3.zoomTransform(svg.node()),[sx,sy]=t.apply([n.x,n.y]);
+  if(Math.abs(sx)<w*.3&&Math.abs(sy)<h*.3)return;
+  const k=Math.max(t.k,.8);
+  svg.transition().duration(650).call(zoom.transform,d3.zoomIdentity.translate(-n.x*k,-n.y*k).scale(k))}
 function size(){const b=$('.chart').getBoundingClientRect();if(b.width&&b.height)svg.attr('viewBox',[-b.width/2,-b.height/2,b.width,b.height].join(' '))}
 window.addEventListener('resize',size);
 if(window.ResizeObserver)new ResizeObserver(()=>size()).observe(document.querySelector('.chart'));
@@ -378,7 +387,8 @@ function paint(){
     return'lk '+d.cat+(d.mem?' mem':d.unsrc?' unsrc':'')+(sel?(h?' hot':' dim'):'')});
 }
 function pick(id,fromHash){sel=id&&E.has(id)?id:null;mode='view';editing=null;msg='';paint();render();if(!fromHash)syncHash();
-  if(sel&&window.matchMedia('(max-width:860px)').matches){panel.scrollTop=0;setMapFull(false)}}
+  if(sel&&window.matchMedia('(max-width:860px)').matches){panel.scrollTop=0;setMapFull(false)}
+  if(sel)centerSoon(sel,fromHash?900:80)}
 
 /* ---------- overview: featured, in the news ---------- */
 let FEAT=[];

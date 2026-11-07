@@ -2,6 +2,10 @@
 
 Version plan: 0.1 public map live · 0.2 editing moves to Supabase · 0.3 sign-in, applications and claims · 0.4 paid tiers, organisation editing, contact details · 1.0 membership network opens · 1.x events and intros. Small fixes in between are 0.x.1, 0.x.2 and so on.
 
+## 0.3.8 (preview, 7 November 2026)
+
+- Picking an entry from a link, search or the address now glides the map to centre it. If it's already well in view (for example a dot you just clicked), the map stays put.
+
 ## 0.3.7 (preview, 7 November 2026)
 
 Layout.
