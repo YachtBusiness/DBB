@@ -1320,7 +1320,7 @@ function fmtRange(e){if(!e.startDate)return'';const a=dparts(e.startDate);
   if(a.y===b.y)return`${a.d} ${MON[a.m-1]} – ${b.d} ${MON[b.m-1]} ${a.y}`;
   return`${a.d} ${MON[a.m-1]} ${a.y} – ${b.d} ${MON[b.m-1]} ${b.y}`}
 const PARENT_ROLES=['round of','edition of','stage of','leg of','summit of','part of'];
-function parentOf(e){const l=L.find(l=>l.from===e.id&&PARENT_ROLES.includes(l.role)&&E.has(l.to)&&E.get(l.to).type==='event')||L.find(l=>l.from===e.id&&E.has(l.to)&&E.get(l.to).type==='event');return l?E.get(l.to):null}
+function parentOf(e){const l=L.find(l=>l.from===e.id&&PARENT_ROLES.includes(String(l.role).toLowerCase())&&l.to!==e.id&&E.has(l.to)&&E.get(l.to).type==='event');return l?E.get(l.to):null}
 function topOf(e){let p=parentOf(e),top=p,n=0;while(p&&n<4){top=p;p=parentOf(p);n++}return top}
 function venuesOf(e){return L.filter(l=>(l.from===e.id||l.to===e.id)&&E.has(l.from)&&E.has(l.to)).map(l=>E.get(l.from===e.id?l.to:l.from)).filter(x=>x.type==='venue')}
 function placeOf(e){let v=venuesOf(e);if(!v.length){const p=parentOf(e);if(p)v=venuesOf(p)}
