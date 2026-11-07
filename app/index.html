@@ -199,6 +199,9 @@ li.rvrole{display:flex!important;flex-direction:column;gap:8px}
 a.btn{text-decoration:none;color:inherit}a.btn.go{color:var(--surface)}
 @media (min-width:861px){.join{margin-left:auto}}
 .btn.wait{opacity:.6;cursor:progress}
+.cdate{font-weight:600;color:var(--ink)}.cdate.tbc{font-weight:400;font-style:italic;color:var(--muted)}
+.evdates{margin:4px 0 0;font-size:13.5px;color:var(--muted)}
+.calm{display:flex;flex-direction:column;gap:4px}.calm h3{margin:6px 0 0}
 .news{border-left:3px solid var(--t-team);padding:2px 0 2px 12px;display:flex;flex-direction:column;gap:2px}.news h3{margin:0 0 2px}.news a{font-weight:600;color:var(--ink);overflow-wrap:anywhere}.news .who{margin:0}
 .logo{display:block;width:72px;height:72px;object-fit:contain;background:#fff;border:1px solid var(--line);border-radius:8px;padding:6px;flex:none}
 .logo.big{width:112px;height:112px}
@@ -253,10 +256,10 @@ label.btn{display:inline-block;flex-direction:row;color:var(--ink);font-size:14p
 </style>
 
 <header class="top">
-  <div class="brand"><h1>The Dark Blue Book</h1><span>The who's who of yacht racing <small id="ver" style="opacity:.6;margin-left:6px">v0.3.10</small></span></div>
+  <div class="brand"><h1>The Dark Blue Book</h1><span>The who's who of yacht racing <small id="ver" style="opacity:.6;margin-left:6px">v0.3.11</small></span></div>
   <div class="join"><button type="button" class="apply" data-join="1">Join</button><button type="button" class="acct" data-acct="1">Sign in</button></div>
   <button type="button" class="menu-btn" id="menuBtn" aria-label="Contact and links" aria-expanded="false" aria-controls="menu"><svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="M2 4h14M2 9h14M2 14h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
-  <nav class="menu" id="menu" hidden aria-label="Contact"><a href="https://wa.me/61439790410" target="_blank" rel="noopener">WhatsApp</a><a href="https://www.linkedin.com/groups/2023604/" target="_blank" rel="noopener">LinkedIn</a><a href="https://www.facebook.com/darkbluebook" target="_blank" rel="noopener">Facebook</a><a href="mailto:editor@darkbluebook.com">Email</a><button type="button" class="acct" data-fb="1">Send feedback</button><a href="privacy.html">Privacy</a><small>© The Dark Blue Book · v0.3.10</small></nav>
+  <nav class="menu" id="menu" hidden aria-label="Contact"><a href="https://wa.me/61439790410" target="_blank" rel="noopener">WhatsApp</a><a href="https://www.linkedin.com/groups/2023604/" target="_blank" rel="noopener">LinkedIn</a><a href="https://www.facebook.com/darkbluebook" target="_blank" rel="noopener">Facebook</a><a href="mailto:editor@darkbluebook.com">Email</a><button type="button" class="acct" data-cal="1">Calendar</button><button type="button" class="acct" data-fb="1">Send feedback</button><a href="privacy.html">Privacy</a><small>© The Dark Blue Book · v0.3.11</small></nav>
   <button type="button" class="filters-btn" id="filtersBtn" aria-expanded="false" aria-controls="filters">Filters</button>
   <div class="filters" id="filters">
   <div class="lens" role="group" aria-label="What to show">
@@ -278,7 +281,7 @@ label.btn{display:inline-block;flex-direction:row;color:var(--ink);font-size:14p
   </section>
   <aside id="panel" aria-live="polite"></aside>
 </main>
-<footer class="foot" aria-label="Contact"><a href="https://wa.me/61439790410" target="_blank" rel="noopener">WhatsApp</a><a href="https://www.linkedin.com/groups/2023604/" target="_blank" rel="noopener">LinkedIn</a><a href="https://www.facebook.com/darkbluebook" target="_blank" rel="noopener">Facebook</a><a href="mailto:editor@darkbluebook.com">Email</a><button type="button" class="acct" data-fb="1">Send feedback</button><a href="privacy.html">Privacy</a><span>© The Dark Blue Book · v0.3.10</span></footer>
+<footer class="foot" aria-label="Contact"><a href="https://wa.me/61439790410" target="_blank" rel="noopener">WhatsApp</a><a href="https://www.linkedin.com/groups/2023604/" target="_blank" rel="noopener">LinkedIn</a><a href="https://www.facebook.com/darkbluebook" target="_blank" rel="noopener">Facebook</a><a href="mailto:editor@darkbluebook.com">Email</a><button type="button" class="acct" data-cal="1">Calendar</button><button type="button" class="acct" data-fb="1">Send feedback</button><a href="privacy.html">Privacy</a><span>© The Dark Blue Book · v0.3.11</span></footer>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
 <script>
@@ -456,6 +459,7 @@ function render(){
   if(mode==='review')return formReview();
   if(mode==='orgprof')return formOrgProfile();
   if(mode==='claim')return formClaim();
+  if(mode==='calendar')return formCalendar();
   if(mode==='news')return formNews();
   if(mode==='orgpeople')return formPeople();
   if(mode==='claims')return listClaims();
@@ -468,14 +472,14 @@ function render(){
       if(g.length)h+=`<details class="grp"${h?'':' open'}><summary><b style="border-color:var(--c-${c})"></b>${c==='ppl'&&e.type==='person'?'Role':CATS[c]} <span class="cnt">${g.length}</span></summary><ul class="rel">${g.map(l=>row(l,sel)).join('')}</ul></details>`}
     if(past.length)h+=`<details class="grp"><summary><b style="border-color:var(--muted)"></b>Past <span class="cnt">${past.length}</span></summary><ul class="rel">${past.map(l=>row(l,sel)).join('')}</ul></details>`;
     panel.innerHTML=`<div><div class="kind"><i style="background:${tvar(e)}"></i>${esc(kindLabel(e))}${e.sectors.length?`<span class="sec">${esc(e.sectors.join(' \u00b7 '))}</span>`:''}${e.origin==='member'?'<span class="chip mem">added by member</span>':''}${e.country?`<span class="cc">${esc(e.country)}</span>`:''}</div>${canEdit&&e.origin==='member'?`<div class="owner"><span>Added by a member${e.sectorNote?': “'+esc(e.sectorNote)+'”':''}. Check it, then</span><button type="button" class="btn" data-promote="entities" data-pid="${esc(e.id)}">Mark as checked</button></div>`:''}
-      <h2>${esc(e.name)}</h2>${e.note?`<p class="note">${esc(e.note)}</p>`:''}</div>${profileBlock(e)}${newsBlock(e)}${orgProfileBlock(e)}${m}
+      <h2>${esc(e.name)}</h2>${eventDatesBlock(e)}${e.note?`<p class="note">${esc(e.note)}</p>`:''}</div>${profileBlock(e)}${newsBlock(e)}${orgProfileBlock(e)}${m}
       ${h||'<p class="note">No links recorded yet.</p>'}${(t=>t?`<details class="tld"><summary>Timeline</summary>${t}</details>`:'')(timeline(mine,sel))}${tools}<div class="acts"><button type="button" class="btn" data-go="">Back to overview</button>${window.claude?'':'<button type="button" class="btn" data-copy="1">Copy link</button>'}<button type="button" class="btn" data-report="1">Report an error</button></div>`;
     return}
   const vis=new Set(visibleLinks().map(l=>l.id)),A=scope?L.filter(l=>vis.has(l.id)):L.filter(active);
   const un=A.filter(l=>!l.source).length;
   panel.innerHTML=`<p class="lede">A live, dynamic who’s who of the yacht racing business. Search or click through to see the connections.</p>
     <h3>${(scope&&E.has(scope)?E.get(scope).name+' \u00b7 ':'')+(allTime?'All time':'Year '+year)}</h3><dl class="stats"><div><dt>Entries</dt><dd>${nodes.length}</dd></div><div><dt>Links</dt><dd>${A.length}</dd></div><div><dt>Need a source</dt><dd>${un}</dd></div></dl>${m}
-    ${featured()}${inTheNews()}${canEdit?changes():''}${tools}`;
+    ${featured()}${inTheNews()}${comingUp()}${canEdit?changes():''}${tools}`;
 }
 const opt=(v,t,cur)=>`<option value="${esc(v)}"${v===cur?' selected':''}>${esc(t)}</option>`;
 function formEntity(){const e=editing?E.get(editing):{name:'',type:'person',level:'',sectors:[],country:'',note:''};
@@ -484,6 +488,10 @@ function formEntity(){const e=editing?E.get(editing):{name:'',type:'person',leve
     ${editing?`<p class="who">Id: ${esc(editing)}</p>`:`<label>Id (short, lowercase: a surname or brand, e.g. ainslie, rolex)<input id="fe-id" required pattern="[a-z0-9-]+" value=""></label>`}
     <div class="two"><label>Kind<select id="fe-type">${Object.keys(TYPES).map(k=>opt(k,TYPES[k],e.type)).join('')}</select></label>
     <label>Level (events only)<select id="fe-level">${Object.keys(LEVELS).map(k=>opt(k,LEVELS[k],e.level||'event')).join('')}</select></label></div>
+    <fieldset class="checks col" style="border:0;padding:0;margin:0"><legend style="font-size:12px;color:var(--muted);margin-bottom:4px">Dates (events only: puts it on the calendar)</legend>
+    <div class="two"><label>Start<input type="date" id="fe-start" value="${esc(e.startDate||'')}"></label><label>End<input type="date" id="fe-end" value="${esc(e.endDate||'')}"></label></div>
+    <label class="inl"><input type="checkbox" id="fe-prov"${e.provisional?' checked':''}> <span>Dates not confirmed yet: show the month only, “dates to be confirmed”</span></label>
+    <p class="who" style="margin:0">One-day event: same date twice. Only the start known (e.g. an ocean race): leave End blank. Add dates for upcoming events only.</p></fieldset>
     <fieldset class="checks" style="border:0;padding:0;margin:0"><legend style="font-size:12px;color:var(--muted);margin-bottom:4px">Sectors (organisations only)</legend>${SECTORS.map(s=>`<label><input type="checkbox" name="fe-sec" value="${esc(s)}"${e.sectors.includes(s)?' checked':''}>${esc(s)}</label>`).join('')}</fieldset>
     <div class="two">
     <label>Country<select id="fe-country">${opt('','Not known',e.country)}${(e.country&&!COUNTRIES.some(c=>c[0]===e.country)?[[e.country,e.country]]:[]).concat(COUNTRIES).map(([c,n])=>opt(c,n+' ('+c+')',e.country)).join('')}</select></label></div>
@@ -527,7 +535,8 @@ function fail(e){const t=String(e&&e.message||''),k=Object.keys(CHECKS).find(k=>
 async function reload(){await start();if(sel&&!E.has(sel))sel=null}
 async function saveEntity(){const name=val('fe-name');if(!name)return;let id=editing;
   if(!id){id=val('fe-id').toLowerCase().replace(/[^a-z0-9-]+/g,'-').replace(/^-|-$/g,'');if(!id){msg='Give the entry an id.';return render()}if(E.has(id)){msg='The id "'+id+'" is taken by '+E.get(id).name+'. Choose another.';return render()}}
-  const type=val('fe-type'),body={name,type,level:type==='event'?val('fe-level'):null,sectors:type==='org'?[...document.querySelectorAll('input[name="fe-sec"]:checked')].map(x=>x.value):[],country:val('fe-country').toUpperCase(),note:val('fe-note')};
+  const type=val('fe-type'),sd=val('fe-start'),ed=val('fe-end');if(type==='event'&&ed&&(!sd||ed<sd)){msg='The end date must be on or after the start date.';return render()}
+  const body={start_date:type==='event'&&sd?sd:null,end_date:type==='event'&&sd&&ed?ed:null,dates_provisional:type==='event'&&!!sd&&document.getElementById('fe-prov').checked,name,type,level:type==='event'?val('fe-level'):null,sectors:type==='org'?[...document.querySelectorAll('input[name="fe-sec"]:checked')].map(x=>x.value):[],country:val('fe-country').toUpperCase(),note:val('fe-note')};
   try{if(editing)await api('PATCH','entities?id=eq.'+encodeURIComponent(id),body);else await api('POST','entities',{id,...body});
     sel=id;mode='view';editing=null;msg='';await reload();syncHash()}catch(e){fail(e)}}
 async function saveLink(){if(!comboCheck('fl-from')||!comboCheck('fl-to')||!comboCheck('fl-context',true))return;const from=val('fl-from'),to=val('fl-to'),role=val('fl-role');
@@ -1296,6 +1305,50 @@ panel.addEventListener('keydown',e=>{const q=e.target;if(!q.dataset||!q.dataset.
   if(e.key==='ArrowDown'||e.key==='ArrowUp'){e.preventDefault();items.forEach(x=>x.classList.remove('on'));i=(i+(e.key==='ArrowDown'?1:-1)+items.length)%items.length;items[i].classList.add('on');items[i].scrollIntoView({block:'nearest'})}
   else if(e.key==='Enter'){e.preventDefault();comboPick(q.dataset.combo,items[Math.max(i,0)].dataset.pick)}});
 
+/* ---------- calendar (0.3.11) ---------- */
+/* Upcoming editions, rounds and events with dates. Booking-ready: each item knows its dates and place, so a travel
+   partner's "Plan your trip" can be added later. Provisional dates show by month, "dates to be confirmed". */
+let calSeries='',calRange='all';
+const todayISO=()=>new Date().toISOString().slice(0,10);
+const MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const dparts=s=>{const [y,m,d]=s.split('-').map(Number);return{y,m,d}};
+function fmtRange(e){if(!e.startDate)return'';const a=dparts(e.startDate);
+  if(e.provisional)return`${MON[a.m-1]} ${a.y} · dates to be confirmed`;
+  if(!e.endDate)return`Starts ${a.d} ${MON[a.m-1]} ${a.y}`;const b=dparts(e.endDate);
+  if(e.endDate===e.startDate)return`${a.d} ${MON[a.m-1]} ${a.y}`;
+  if(a.y===b.y&&a.m===b.m)return`${a.d}–${b.d} ${MON[a.m-1]} ${a.y}`;
+  if(a.y===b.y)return`${a.d} ${MON[a.m-1]} – ${b.d} ${MON[b.m-1]} ${a.y}`;
+  return`${a.d} ${MON[a.m-1]} ${a.y} – ${b.d} ${MON[b.m-1]} ${b.y}`}
+const PARENT_ROLES=['round of','edition of','stage of','leg of','summit of','part of'];
+function parentOf(e){const l=L.find(l=>l.from===e.id&&PARENT_ROLES.includes(l.role)&&E.has(l.to)&&E.get(l.to).type==='event')||L.find(l=>l.from===e.id&&E.has(l.to)&&E.get(l.to).type==='event');return l?E.get(l.to):null}
+function topOf(e){let p=parentOf(e),top=p,n=0;while(p&&n<4){top=p;p=parentOf(p);n++}return top}
+function venuesOf(e){return L.filter(l=>(l.from===e.id||l.to===e.id)&&E.has(l.from)&&E.has(l.to)).map(l=>E.get(l.from===e.id?l.to:l.from)).filter(x=>x.type==='venue')}
+function placeOf(e){let v=venuesOf(e);if(!v.length){const p=parentOf(e);if(p)v=venuesOf(p)}
+  return{names:v.slice(0,2).map(x=>x.name),hasVenue:v.length>0,country:e.country||(v[0]&&v[0].country)||''}}
+const placeText=e=>{const p=placeOf(e);return p.names.length?p.names.join(', '):p.country?nationName(p.country):''};
+function calItems(){const t=todayISO();return[...E.values()].filter(e=>e.type==='event'&&e.startDate&&(e.endDate||e.startDate)>=t).sort((a,b)=>a.startDate.localeCompare(b.startDate)||a.name.localeCompare(b.name))}
+function calRow(e){const p=parentOf(e),pl=placeText(e);
+  return`<li><div class="rl"><button type="button" class="ent" data-go="${esc(e.id)}">${esc(e.name)}</button></div>
+    <div class="meta"><span class="cdate${e.provisional?' tbc':''}">${esc(fmtRange(e))}</span>${pl?`<span>${esc(pl)}</span>`:''}${p?`<span>${esc(p.name)}</span>`:''}</div></li>`}
+function comingUp(){const r=calItems().slice(0,5);if(!r.length)return'';
+  return`<section class="cal"><h3><b style="border-color:var(--t-event)"></b>Coming up</h3><ul class="rel">${r.map(calRow).join('')}</ul>
+    <div class="acts"><button type="button" class="btn" data-cal="1">Full calendar</button></div></section>`}
+function formCalendar(){let items=calItems();const tops=new Map();items.forEach(e=>{const t=topOf(e)||e;tops.set(t.id,t.name)});
+  if(calSeries)items=items.filter(e=>(topOf(e)||e).id===calSeries);
+  if(calRange==='3m'){const d=new Date();d.setMonth(d.getMonth()+3);const lim=d.toISOString().slice(0,10);items=items.filter(e=>e.startDate<=lim)}
+  const groups=[];items.forEach(e=>{const a=dparts(e.startDate),k=MON[a.m-1]+' '+a.y;let g=groups[groups.length-1];if(!g||g.k!==k){g={k,r:[]};groups.push(g)}g.r.push(e)});
+  panel.innerHTML=`<div><h2>Calendar</h2><p class="note">What’s coming up in the book, as far ahead as dates are announced. Select an event to see who’s involved.</p></div>
+    <div class="two"><label>Series or event<select id="cal-series">${opt('','All',calSeries)}${[...tops].sort((a,b)=>a[1].localeCompare(b[1])).map(([id,n])=>opt(id,n,calSeries)).join('')}</select></label>
+    <label>When<select id="cal-range">${opt('all','Everything ahead',calRange)}${opt('3m','Next three months',calRange)}</select></label></div>
+    ${groups.length?groups.map(g=>`<section class="calm"><h3>${esc(g.k)}</h3><ul class="rel">${g.r.map(calRow).join('')}</ul></section>`).join(''):'<p class="note">Nothing on the calendar for that choice.</p>'}
+    <p class="who">Missing something? <button type="button" class="linky" data-fb="1">Send feedback</button>.</p>
+    <div class="acts"><button type="button" class="btn" data-cancel="1">Back to the map</button></div>`}
+/* dates on an event's entry; editors also see if the event has no venue (needed for travel booking later) */
+function eventDatesBlock(e){if(e.type!=='event'||!e.startDate)return'';const p=placeOf(e),pl=placeText(e);
+  return`<p class="evdates"><span class="cdate${e.provisional?' tbc':''}">${esc(fmtRange(e))}</span>${pl?` · ${esc(pl)}`:''}${canEdit&&!p.hasVenue?' <span class="chip">no venue linked</span>':''}</p>`}
+document.addEventListener('click',e=>{const b=e.target.closest('[data-cal]');if(!b)return;const m=document.getElementById('menu');if(m)m.hidden=true;sel=null;mode='calendar';msg='';render();showPanel();syncHash()});
+panel.addEventListener('change',e=>{if(e.target.id==='cal-series'){calSeries=e.target.value;render()}else if(e.target.id==='cal-range'){calRange=e.target.value;render()}});
+
 /* ---------- header ---------- */
 document.querySelectorAll('.lens button').forEach(b=>b.addEventListener('click',()=>{lens=b.dataset.lens;
   document.querySelectorAll('.lens button').forEach(x=>x.setAttribute('aria-pressed',x===b));try{localStorage.setItem('dbb-lens',lens)}catch(e){}needFit=true;build()}));
@@ -1327,9 +1380,9 @@ async function fetchAll(table,cols,order='id'){const out=[];for(let from=0;;from
   const r=await fetch(`${SB_URL}/rest/v1/${table}?select=${cols}&order=${order}`,{headers:{apikey:SB_KEY,Range:`${from}-${from+999}`,'Range-Unit':'items'}});
   if(!r.ok)throw new Error(table+' '+r.status);const rows=await r.json();out.push(...rows);if(rows.length<1000)return out}}
 async function start(){
-  try{const [es,ls,fs]=await Promise.all([fetchAll('entities','id,name,type,sectors,level,country,note,origin,sector_note,logo_path,about,website,linkedin,instagram,other_social,contact_email,news_url,news_title,news_date'),fetchAll('links','id,from_id,to_id,role,cat,context_id,start_date,end_date,source,note,created_at,origin'),fetchAll('features','slot,position,entity_id,headline,link','slot,position').catch(()=>[])]);
+  try{const [es,ls,fs]=await Promise.all([fetchAll('entities','id,name,type,sectors,level,country,note,origin,sector_note,logo_path,about,website,linkedin,instagram,other_social,contact_email,news_url,news_title,news_date,start_date,end_date,dates_provisional'),fetchAll('links','id,from_id,to_id,role,cat,context_id,start_date,end_date,source,note,created_at,origin'),fetchAll('features','slot,position,entity_id,headline,link','slot,position').catch(()=>[])]);
     FEAT=fs;await loadProfiles();
-    db={};E=new Map(es.map(x=>[x.id,norm({id:x.id,name:x.name,type:x.type,sectors:x.sectors||[],level:x.level||'',country:x.country||'',note:x.note||'',origin:x.origin||'editorial',sectorNote:x.sector_note||'',logo:x.logo_path||'',about:x.about||'',website:x.website||'',linkedin:x.linkedin||'',instagram:x.instagram||'',otherSocial:x.other_social||'',contactEmail:x.contact_email||'',newsUrl:x.news_url||'',newsTitle:x.news_title||'',newsDate:x.news_date||''})]));
+    db={};E=new Map(es.map(x=>[x.id,norm({id:x.id,name:x.name,type:x.type,sectors:x.sectors||[],level:x.level||'',country:x.country||'',note:x.note||'',origin:x.origin||'editorial',sectorNote:x.sector_note||'',logo:x.logo_path||'',about:x.about||'',website:x.website||'',linkedin:x.linkedin||'',instagram:x.instagram||'',otherSocial:x.other_social||'',contactEmail:x.contact_email||'',newsUrl:x.news_url||'',newsTitle:x.news_title||'',newsDate:x.news_date||'',startDate:x.start_date||'',endDate:x.end_date||'',provisional:!!x.dates_provisional})]));
     L=ls.map(l=>({id:l.id,from:l.from_id,to:l.to_id,role:l.role,cat:l.cat,context:l.context_id||'',start:l.start_date||'',end:l.end_date||'',source:l.source||'',note:l.note||'',created:l.created_at||'',origin:l.origin||'editorial'}));
     loaded={e:true,l:true};fillScope();MAXY=Math.max(NOW,...L.map(l=>yr(l.start)).filter(v=>v!=null));syncWhen();await checkAuth();if(justConfirmed&&mode==='view'&&!sel)mode='account';else if(freshSignin&&!checkDone()&&mode==='view'&&!location.hash)mode='account';freshSignin=false;yrEl.min=Math.max(YR_FLOOR,Math.min(NOW-1,...L.map(l=>yr(l.start)||NOW)));build();render()}
   catch(e){db=null;loaded={e:true,l:true};$('#blank').hidden=false;$('#blank').firstElementChild.textContent='The book could not be loaded. Please try again in a moment.'}

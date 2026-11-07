@@ -2,6 +2,16 @@
 
 Version plan: 0.1 public map live · 0.2 editing moves to Supabase · 0.3 sign-in, applications and claims · 0.4 paid tiers, organisation editing, contact details · 1.0 membership network opens · 1.x events and intros. Small fixes in between are 0.x.1, 0.x.2 and so on.
 
+## 0.3.11 (preview, 7 November 2026)
+
+Calendar.
+
+- Events, editions and rounds can have dates: start, end (blank if only the start is known, the same date for a one-day event) and "not confirmed yet", which shows the month only, "dates to be confirmed". Forward-only: past events don't get dates.
+- "Coming up" on the overview: the next five, with "Full calendar".
+- Calendar (from Coming up, the menu or the footer): everything ahead, by month, with each event's dates, place and the series or event it belongs to. Filter by series or event, and everything ahead or the next three months. Selecting an event opens its entry and centres the map on it.
+- An event's entry shows its dates and place under its name. Editors also see "no venue linked" where there's no venue on the event or its parent: the calendar is built so a travel partner can add "Plan your trip" later, which needs a venue and dates.
+- Dates were filled in from the notes for 28 upcoming events, for D to check.
+
 ## 0.3.10 (7 November 2026)
 
 - Editors: in the link form, Who, Of and Applies in are now search boxes instead of long dropdowns. Type the start of any word in the name (accents don't matter), then pick from up to 8 suggestions, each showing its kind and country, with the mouse, a tap, or the arrow keys and Enter. Spaces don't matter ("sail gp" finds SailGP) and initials work ("etnz" finds Emirates Team New Zealand). Applies in only suggests events. Swap still works.
