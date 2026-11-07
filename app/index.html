@@ -192,6 +192,7 @@ li.rvrole{display:flex!important;flex-direction:column;gap:8px}
 a.btn{text-decoration:none;color:inherit}a.btn.go{color:var(--surface)}
 @media (min-width:861px){.join{margin-left:auto}}
 .btn.wait{opacity:.6;cursor:progress}
+.news{border-left:3px solid var(--t-team);padding:2px 0 2px 12px;display:flex;flex-direction:column;gap:2px}.news h3{margin:0 0 2px}.news a{font-weight:600;color:var(--ink);overflow-wrap:anywhere}.news .who{margin:0}
 .logo{display:block;width:72px;height:72px;object-fit:contain;background:#fff;border:1px solid var(--line);border-radius:8px;padding:6px;flex:none}
 .logo.big{width:112px;height:112px}
 .logo.ph{display:grid;place-items:center;font-size:12px;color:var(--muted);background:var(--bg);border-style:dashed;padding:0}
@@ -233,10 +234,10 @@ label.btn{display:inline-block;flex-direction:row;color:var(--ink);font-size:14p
 </style>
 
 <header class="top">
-  <div class="brand"><h1>The Dark Blue Book</h1><span>The who's who of yacht racing <small id="ver" style="opacity:.6;margin-left:6px">v0.3.5</small></span></div>
+  <div class="brand"><h1>The Dark Blue Book</h1><span>The who's who of yacht racing <small id="ver" style="opacity:.6;margin-left:6px">v0.3.6</small></span></div>
   <div class="join"><button type="button" class="apply" data-join="1">Join</button><button type="button" class="acct" data-acct="1">Sign in</button></div>
   <button type="button" class="menu-btn" id="menuBtn" aria-label="Contact and links" aria-expanded="false" aria-controls="menu"><svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="M2 4h14M2 9h14M2 14h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
-  <nav class="menu" id="menu" hidden aria-label="Contact"><a href="https://wa.me/61439790410" target="_blank" rel="noopener">WhatsApp</a><a href="https://www.linkedin.com/groups/2023604/" target="_blank" rel="noopener">LinkedIn</a><a href="https://www.facebook.com/darkbluebook" target="_blank" rel="noopener">Facebook</a><a href="mailto:editor@darkbluebook.com">Email</a><button type="button" class="acct" data-fb="1">Send feedback</button><a href="privacy.html">Privacy</a><small>© The Dark Blue Book · v0.3.5</small></nav>
+  <nav class="menu" id="menu" hidden aria-label="Contact"><a href="https://wa.me/61439790410" target="_blank" rel="noopener">WhatsApp</a><a href="https://www.linkedin.com/groups/2023604/" target="_blank" rel="noopener">LinkedIn</a><a href="https://www.facebook.com/darkbluebook" target="_blank" rel="noopener">Facebook</a><a href="mailto:editor@darkbluebook.com">Email</a><button type="button" class="acct" data-fb="1">Send feedback</button><a href="privacy.html">Privacy</a><small>© The Dark Blue Book · v0.3.6</small></nav>
   <div class="lens" role="group" aria-label="What to show">
     <button type="button" data-lens="all" aria-pressed="true">Everything</button>
     <button type="button" data-lens="money" aria-pressed="false">Money</button>
@@ -254,7 +255,7 @@ label.btn{display:inline-block;flex-direction:row;color:var(--ink);font-size:14p
   </section>
   <aside id="panel" aria-live="polite"></aside>
 </main>
-<footer class="foot" aria-label="Contact"><a href="https://wa.me/61439790410" target="_blank" rel="noopener">WhatsApp</a><a href="https://www.linkedin.com/groups/2023604/" target="_blank" rel="noopener">LinkedIn</a><a href="https://www.facebook.com/darkbluebook" target="_blank" rel="noopener">Facebook</a><a href="mailto:editor@darkbluebook.com">Email</a><button type="button" class="acct" data-fb="1">Send feedback</button><a href="privacy.html">Privacy</a><span>© The Dark Blue Book · v0.3.5</span></footer>
+<footer class="foot" aria-label="Contact"><a href="https://wa.me/61439790410" target="_blank" rel="noopener">WhatsApp</a><a href="https://www.linkedin.com/groups/2023604/" target="_blank" rel="noopener">LinkedIn</a><a href="https://www.facebook.com/darkbluebook" target="_blank" rel="noopener">Facebook</a><a href="mailto:editor@darkbluebook.com">Email</a><button type="button" class="acct" data-fb="1">Send feedback</button><a href="privacy.html">Privacy</a><span>© The Dark Blue Book · v0.3.6</span></footer>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
 <script>
@@ -414,6 +415,7 @@ function render(){
   if(mode==='review')return formReview();
   if(mode==='orgprof')return formOrgProfile();
   if(mode==='claim')return formClaim();
+  if(mode==='news')return formNews();
   if(mode==='orgpeople')return formPeople();
   if(mode==='claims')return listClaims();
   if(mode==='claimrev')return formClaimReview();
@@ -425,7 +427,7 @@ function render(){
       if(g.length)h+=`<details class="grp"${h?'':' open'}><summary><b style="border-color:var(--c-${c})"></b>${c==='ppl'&&e.type==='person'?'Role':CATS[c]} <span class="cnt">${g.length}</span></summary><ul class="rel">${g.map(l=>row(l,sel)).join('')}</ul></details>`}
     if(past.length)h+=`<details class="grp"><summary><b style="border-color:var(--muted)"></b>Past <span class="cnt">${past.length}</span></summary><ul class="rel">${past.map(l=>row(l,sel)).join('')}</ul></details>`;
     panel.innerHTML=`<div><div class="kind"><i style="background:${tvar(e)}"></i>${esc(kindLabel(e))}${e.sectors.length?`<span class="sec">${esc(e.sectors.join(' \u00b7 '))}</span>`:''}${e.origin==='member'?'<span class="chip mem">added by member</span>':''}${e.country?`<span class="cc">${esc(e.country)}</span>`:''}</div>${canEdit&&e.origin==='member'?`<div class="owner"><span>Added by a member${e.sectorNote?': “'+esc(e.sectorNote)+'”':''}. Check it, then</span><button type="button" class="btn" data-promote="entities" data-pid="${esc(e.id)}">Mark as checked</button></div>`:''}
-      <h2>${esc(e.name)}</h2>${e.note?`<p class="note">${esc(e.note)}</p>`:''}</div>${profileBlock(e)}${orgProfileBlock(e)}${m}
+      <h2>${esc(e.name)}</h2>${e.note?`<p class="note">${esc(e.note)}</p>`:''}</div>${profileBlock(e)}${newsBlock(e)}${orgProfileBlock(e)}${m}
       ${h||'<p class="note">No links recorded yet.</p>'}${(t=>t?`<details class="tld"><summary>Timeline</summary>${t}</details>`:'')(timeline(mine,sel))}${tools}<div class="acts"><button type="button" class="btn" data-go="">Back to overview</button>${window.claude?'':'<button type="button" class="btn" data-copy="1">Copy link</button>'}<button type="button" class="btn" data-report="1">Report an error</button></div>`;
     return}
   const vis=new Set(visibleLinks().map(l=>l.id)),A=scope?L.filter(l=>vis.has(l.id)):L.filter(active);
@@ -1190,6 +1192,35 @@ panel.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)retu
   if(d.declineyes2){stop();return decideClaim(null,b)}},true);
 panel.addEventListener('submit',e=>{const f=e.target.id;if(f==='fcl'){e.preventDefault();e.stopImmediatePropagation();sendClaim()}else if(f==='finv'){e.preventDefault();e.stopImmediatePropagation();sendInvite()}},true);
 
+/* ---------- latest news on people's entries (0.3.6) ---------- */
+let ndraft=null;
+function newsBlock(e){if(e.type!=='person')return'';
+  if(!e.newsUrl)return canEdit?`<div class="acts"><button type="button" class="btn" data-news="${esc(e.id)}">Add latest news</button></div>`:'';
+  let host='';try{host=new URL(e.newsUrl).hostname.replace(/^www\./,'')}catch(x){}
+  const d=e.newsDate?new Date(e.newsDate+'T12:00:00Z').toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}):'';
+  return`<section class="news"><h3>Latest news</h3><a href="${esc(e.newsUrl)}" target="_blank" rel="noopener">${esc(e.newsTitle||host||'Read the story')} ↗</a>
+    <p class="who">${[host,d].filter(Boolean).map(esc).join(' · ')}${canEdit?` <button type="button" class="linky" data-news="${esc(e.id)}">Edit</button>`:''}</p></section>`}
+function formNews(){const e=E.get(editing);if(!e){mode='view';return render()}
+  const d=ndraft||(ndraft={url:e.newsUrl||'',title:e.newsTitle||'',date:e.newsDate||''});
+  panel.innerHTML=`<form id="fnw" novalidate><div><div class="kind"><i style="background:${tvar(e)}"></i>${esc(kindLabel(e))}</div><h2>${esc(e.name)}: latest news</h2>
+    <p class="note">One link back to a press release or story, usually one that links to this entry. It replaces any earlier one.</p></div>
+    ${msg?`<div class="msg">${esc(msg)}</div>`:''}
+    <label>Link to the story<input id="nw-url" type="url" maxlength="500" placeholder="https://…" value="${esc(d.url)}"></label>
+    <label>Headline<input id="nw-title" maxlength="200" value="${esc(d.title)}" placeholder="Shown as the link"></label>
+    <label>Date (optional)<input id="nw-date" type="date" value="${esc(d.date)}"></label>
+    <div class="acts"><button class="btn go">Save</button>${e.newsUrl?'<button type="button" class="btn bad" data-newsrm="1">Remove</button>':''}<button type="button" class="btn" data-go="${esc(e.id)}">Cancel</button></div></form>`}
+async function saveNews(clear){const id=editing;let body={news_url:'',news_title:'',news_date:''};
+  if(!clear){const url=val('nw-url'),title=val('nw-title'),date=val('nw-date');ndraft={url,title,date};
+    if(!/^https?:\/\/[^\s.]+\.[^\s]+$/i.test(url)){msg='The link should be a full web address, starting https://';return render()}
+    body={news_url:url,news_title:title,news_date:date}}
+  try{await api('PATCH','entities?id=eq.'+encodeURIComponent(id),body);ndraft=null;await reload();sel=id;mode='view';editing=null;msg=clear?'Latest news removed.':'Latest news saved.'}
+  catch(x){msg='Not saved. '+String(x.message).slice(0,140)}render()}
+panel.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;const d=b.dataset;
+  if(d.news){e.stopImmediatePropagation();editing=d.news;ndraft=null;msg='';mode='news';render();panel.scrollTop=0;return}
+  if(d.newsrm){e.stopImmediatePropagation();b.outerHTML='<button type="button" class="btn bad" data-newsrmyes="1">Yes, remove it</button>';return}
+  if(d.newsrmyes){e.stopImmediatePropagation();return saveNews(true)}},true);
+panel.addEventListener('submit',e=>{if(e.target.id==='fnw'){e.preventDefault();e.stopImmediatePropagation();saveNews(false)}},true);
+
 /* ---------- header ---------- */
 document.querySelectorAll('.lens button').forEach(b=>b.addEventListener('click',()=>{lens=b.dataset.lens;
   document.querySelectorAll('.lens button').forEach(x=>x.setAttribute('aria-pressed',x===b));try{localStorage.setItem('dbb-lens',lens)}catch(e){}needFit=true;build()}));
@@ -1221,9 +1252,9 @@ async function fetchAll(table,cols,order='id'){const out=[];for(let from=0;;from
   const r=await fetch(`${SB_URL}/rest/v1/${table}?select=${cols}&order=${order}`,{headers:{apikey:SB_KEY,Range:`${from}-${from+999}`,'Range-Unit':'items'}});
   if(!r.ok)throw new Error(table+' '+r.status);const rows=await r.json();out.push(...rows);if(rows.length<1000)return out}}
 async function start(){
-  try{const [es,ls,fs]=await Promise.all([fetchAll('entities','id,name,type,sectors,level,country,note,origin,sector_note,logo_path,about,website,linkedin,instagram,other_social,contact_email'),fetchAll('links','id,from_id,to_id,role,cat,context_id,start_date,end_date,source,note,created_at,origin'),fetchAll('features','slot,position,entity_id,headline,link','slot,position').catch(()=>[])]);
+  try{const [es,ls,fs]=await Promise.all([fetchAll('entities','id,name,type,sectors,level,country,note,origin,sector_note,logo_path,about,website,linkedin,instagram,other_social,contact_email,news_url,news_title,news_date'),fetchAll('links','id,from_id,to_id,role,cat,context_id,start_date,end_date,source,note,created_at,origin'),fetchAll('features','slot,position,entity_id,headline,link','slot,position').catch(()=>[])]);
     FEAT=fs;await loadProfiles();
-    db={};E=new Map(es.map(x=>[x.id,norm({id:x.id,name:x.name,type:x.type,sectors:x.sectors||[],level:x.level||'',country:x.country||'',note:x.note||'',origin:x.origin||'editorial',sectorNote:x.sector_note||'',logo:x.logo_path||'',about:x.about||'',website:x.website||'',linkedin:x.linkedin||'',instagram:x.instagram||'',otherSocial:x.other_social||'',contactEmail:x.contact_email||''})]));
+    db={};E=new Map(es.map(x=>[x.id,norm({id:x.id,name:x.name,type:x.type,sectors:x.sectors||[],level:x.level||'',country:x.country||'',note:x.note||'',origin:x.origin||'editorial',sectorNote:x.sector_note||'',logo:x.logo_path||'',about:x.about||'',website:x.website||'',linkedin:x.linkedin||'',instagram:x.instagram||'',otherSocial:x.other_social||'',contactEmail:x.contact_email||'',newsUrl:x.news_url||'',newsTitle:x.news_title||'',newsDate:x.news_date||''})]));
     L=ls.map(l=>({id:l.id,from:l.from_id,to:l.to_id,role:l.role,cat:l.cat,context:l.context_id||'',start:l.start_date||'',end:l.end_date||'',source:l.source||'',note:l.note||'',created:l.created_at||'',origin:l.origin||'editorial'}));
     loaded={e:true,l:true};fillScope();MAXY=Math.max(NOW,...L.map(l=>yr(l.start)).filter(v=>v!=null));syncWhen();await checkAuth();if(justConfirmed&&mode==='view'&&!sel)mode='account';else if(freshSignin&&!checkDone()&&mode==='view'&&!location.hash)mode='account';freshSignin=false;yrEl.min=Math.max(YR_FLOOR,Math.min(NOW-1,...L.map(l=>yr(l.start)||NOW)));build();render()}
   catch(e){db=null;loaded={e:true,l:true};$('#blank').hidden=false;$('#blank').firstElementChild.textContent='The book could not be loaded. Please try again in a moment.'}
