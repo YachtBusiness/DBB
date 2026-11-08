@@ -2,6 +2,11 @@
 
 Version plan: 0.1 public map live · 0.2 editing moves to Supabase · 0.3 sign-in, applications and claims · 0.4 paid tiers, organisation editing, contact details · 1.0 membership network opens · 1.x events and intros · later, not scheduled: a job board. Small fixes in between are 0.x.1, 0.x.2 and so on.
 
+## 0.3.13 (8 November 2026)
+
+- Buttons are now a mid blue (#779ec9) instead of the grey of the panel's heading bars. Save and other main actions stay dark; Remove and Delete keep a plain background so the red reads.
+- "All news" under In the news is a button, like "Full calendar" and the editors' changes list.
+
 ## 0.3.12 (8 November 2026)
 
 All news.
