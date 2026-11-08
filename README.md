@@ -14,3 +14,4 @@ The who's who of yacht racing: a relationship map of the people, teams, clubs, o
 2. Sign-in, applications and claims.
 3. Paid tiers (Stripe), organisation editing, contact details.
 4. Events and intros.
+5. Later, not scheduled: a job board.

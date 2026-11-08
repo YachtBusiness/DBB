@@ -1,6 +1,6 @@
 # Changelog
 
-Version plan: 0.1 public map live · 0.2 editing moves to Supabase · 0.3 sign-in, applications and claims · 0.4 paid tiers, organisation editing, contact details · 1.0 membership network opens · 1.x events and intros. Small fixes in between are 0.x.1, 0.x.2 and so on.
+Version plan: 0.1 public map live · 0.2 editing moves to Supabase · 0.3 sign-in, applications and claims · 0.4 paid tiers, organisation editing, contact details · 1.0 membership network opens · 1.x events and intros · later, not scheduled: a job board. Small fixes in between are 0.x.1, 0.x.2 and so on.
 
 ## 0.3.12 (8 November 2026)
 
