@@ -2,6 +2,13 @@
 
 Version plan: 0.1 public map live · 0.2 editing moves to Supabase · 0.3 sign-in, applications and claims · 0.4 paid tiers, organisation editing, contact details · 1.0 membership network opens · 1.x events and intros. Small fixes in between are 0.x.1, 0.x.2 and so on.
 
+## 0.3.12 (8 November 2026)
+
+All news.
+
+- "All news (n) →", a small link under In the news on the overview, opens a list of every News link on the book's entries, newest first (undated ones last). Each shows the headline (opens the story), date, site and the entries it's on; a story on several entries shows once. Copy link, or straight from app.darkbluebook.com/#yacht-racing-news.
+- Each entry still holds one News link, so adding a newer story to an entry replaces its old one in the list.
+
 ## 0.3.11 (7 November 2026)
 
 - (8 Nov) The title "The Dark Blue Book" at the top left now goes back to the overview.
