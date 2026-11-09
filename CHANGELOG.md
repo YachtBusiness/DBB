@@ -2,6 +2,11 @@
 
 Version plan: 0.1 public map live · 0.2 editing moves to Supabase · 0.3 sign-in, applications and claims · 0.4 paid tiers, organisation editing, contact details · 1.0 membership network opens · 1.x events and intros · later, not scheduled: a job board. Small fixes in between are 0.x.1, 0.x.2 and so on.
 
+## 0.3.16 (9 November 2026)
+
+- Phone menu tidied: Calendar, News, Send feedback and Privacy at the top; WhatsApp, LinkedIn, Facebook and Email folded under "Contact us" at the bottom.
+- News (app.darkbluebook.com/#yacht-racing-news) added to the phone menu and the desktop footer.
+
 ## 0.3.15 (8 November 2026)
 
 - Buttons are a lighter blue (#b3cbe8) so the dark text reads on a phone in sunlight.

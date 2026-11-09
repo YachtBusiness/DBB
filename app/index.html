@@ -162,6 +162,12 @@ label input,label select,label textarea{padding:7px 9px;border:1px solid var(--l
 .foot span{margin-left:auto;opacity:.6}
 .acct{background:none;border:0;padding:0;font:inherit;color:inherit;cursor:pointer;opacity:.85;text-align:left}.acct:hover{opacity:1;text-decoration:underline}
 .menu .acct{padding:10px 12px;border-radius:5px;opacity:1}.menu .acct:hover{background:var(--wash);text-decoration:none}
+.menu .sub{font-size:14px;color:var(--ink);border-top:1px solid var(--line);margin-top:4px;padding-top:4px;display:flex;flex-direction:column}
+.menu .sub summary{list-style:none;padding:10px 12px;border-radius:5px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:12px}.menu .sub summary::-webkit-details-marker{display:none}
+.menu .sub summary::after{content:"";width:7px;height:7px;border-right:2px solid currentColor;border-bottom:2px solid currentColor;transform:rotate(45deg) translateY(-2px);opacity:.6}.menu .sub[open] summary::after{transform:rotate(-135deg) translateY(-2px)}
+.menu .sub summary:hover,.menu .sub summary:focus-visible{background:var(--wash)}
+.menu .sub a{padding-left:24px;display:block}
+.menu .sub:not([open])+small{border-top:0}
 .who{font-size:12.5px;color:var(--muted);margin:0}
 .guide{display:flex;flex-direction:column;gap:8px;margin-top:-4px}
 .guide .say{font-family:var(--display);font-size:16px;line-height:1.35;margin:0;color:var(--ink)}
@@ -258,10 +264,10 @@ label.btn{display:inline-block;flex-direction:row;color:#0e1d3a;font-size:14px}
 </style>
 
 <header class="top">
-  <div class="brand"><h1><a href="./" class="home" id="home" title="Back to the overview">The Dark Blue Book</a></h1><span>The who's who of yacht racing <small id="ver" style="opacity:.6;margin-left:6px">v0.3.15</small></span></div>
+  <div class="brand"><h1><a href="./" class="home" id="home" title="Back to the overview">The Dark Blue Book</a></h1><span>The who's who of yacht racing <small id="ver" style="opacity:.6;margin-left:6px">v0.3.16</small></span></div>
   <div class="join"><button type="button" class="apply" data-join="1">Join</button><button type="button" class="acct" data-acct="1">Sign in</button></div>
-  <button type="button" class="menu-btn" id="menuBtn" aria-label="Contact and links" aria-expanded="false" aria-controls="menu"><svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="M2 4h14M2 9h14M2 14h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
-  <nav class="menu" id="menu" hidden aria-label="Contact"><a href="https://wa.me/61439790410" target="_blank" rel="noopener">WhatsApp</a><a href="https://www.linkedin.com/groups/2023604/" target="_blank" rel="noopener">LinkedIn</a><a href="https://www.facebook.com/darkbluebook" target="_blank" rel="noopener">Facebook</a><a href="mailto:editor@darkbluebook.com">Email</a><button type="button" class="acct" data-cal="1">Calendar</button><button type="button" class="acct" data-fb="1">Send feedback</button><a href="privacy.html">Privacy</a><small>© The Dark Blue Book · v0.3.15</small></nav>
+  <button type="button" class="menu-btn" id="menuBtn" aria-label="Menu" aria-expanded="false" aria-controls="menu"><svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="M2 4h14M2 9h14M2 14h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
+  <nav class="menu" id="menu" hidden aria-label="Menu"><button type="button" class="acct" data-cal="1">Calendar</button><button type="button" class="acct" data-allnews="1">News</button><button type="button" class="acct" data-fb="1">Send feedback</button><a href="privacy.html">Privacy</a><details class="sub"><summary>Contact us</summary><a href="https://wa.me/61439790410" target="_blank" rel="noopener">WhatsApp</a><a href="https://www.linkedin.com/groups/2023604/" target="_blank" rel="noopener">LinkedIn</a><a href="https://www.facebook.com/darkbluebook" target="_blank" rel="noopener">Facebook</a><a href="mailto:editor@darkbluebook.com">Email</a></details><small>© The Dark Blue Book · v0.3.16</small></nav>
   <button type="button" class="filters-btn" id="filtersBtn" aria-expanded="false" aria-controls="filters">Filters</button>
   <div class="filters" id="filters">
   <div class="lens" role="group" aria-label="What to show">
@@ -283,7 +289,7 @@ label.btn{display:inline-block;flex-direction:row;color:#0e1d3a;font-size:14px}
   </section>
   <aside id="panel" aria-live="polite"></aside>
 </main>
-<footer class="foot" aria-label="Contact"><a href="https://wa.me/61439790410" target="_blank" rel="noopener">WhatsApp</a><a href="https://www.linkedin.com/groups/2023604/" target="_blank" rel="noopener">LinkedIn</a><a href="https://www.facebook.com/darkbluebook" target="_blank" rel="noopener">Facebook</a><a href="mailto:editor@darkbluebook.com">Email</a><button type="button" class="acct" data-cal="1">Calendar</button><button type="button" class="acct" data-fb="1">Send feedback</button><a href="privacy.html">Privacy</a><span>© The Dark Blue Book · v0.3.15</span></footer>
+<footer class="foot" aria-label="Contact"><a href="https://wa.me/61439790410" target="_blank" rel="noopener">WhatsApp</a><a href="https://www.linkedin.com/groups/2023604/" target="_blank" rel="noopener">LinkedIn</a><a href="https://www.facebook.com/darkbluebook" target="_blank" rel="noopener">Facebook</a><a href="mailto:editor@darkbluebook.com">Email</a><button type="button" class="acct" data-cal="1">Calendar</button><button type="button" class="acct" data-allnews="1">News</button><button type="button" class="acct" data-fb="1">Send feedback</button><a href="privacy.html">Privacy</a><span>© The Dark Blue Book · v0.3.16</span></footer>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
 <script>
@@ -1373,7 +1379,7 @@ function listNews(){const r=newsItems();
   panel.innerHTML=`<div><h2>All news</h2><p class="note">Stories linked from entries in the book, newest first. Select a name to see the entry.</p></div>
     ${r.length?`<ul class="rel">${r.map(newsRow).join('')}</ul>`:'<p class="note">No news links yet.</p>'}
     <div class="acts"><button type="button" class="btn" data-newscopy="1">Copy link</button><button type="button" class="btn" data-cancel="1">Back to the map</button></div>`}
-document.addEventListener('click',e=>{const b=e.target.closest('[data-allnews]');if(!b)return;sel=null;editing=null;mode='allnews';msg='';paint();render();showPanel();syncHash()});
+document.addEventListener('click',e=>{const b=e.target.closest('[data-allnews]');if(!b)return;const m=document.getElementById('menu');if(m)m.hidden=true;sel=null;editing=null;mode='allnews';msg='';paint();render();showPanel();syncHash()});
 panel.addEventListener('click',e=>{const b=e.target.closest('[data-newscopy]');if(!b)return;const u=location.href.split('#')[0].split('?')[0]+'#'+NEWS_HASH;
   try{navigator.clipboard.writeText(u).then(()=>{b.textContent='Link copied'},()=>{b.textContent=u})}catch(x){b.textContent=u}});
 
@@ -1395,7 +1401,7 @@ q.addEventListener('input',()=>{const s=q.value.trim().toLowerCase();if(!s){hits
 hits.addEventListener('click',e=>{const b=e.target.closest('button[data-id]');if(!b)return;hits.hidden=true;q.value='';
   if(!nodes.some(n=>n.id===b.dataset.id)){if(lens!=='all')document.querySelector('.lens [data-lens="all"]').click();if(!nodes.some(n=>n.id===b.dataset.id)){allTime=true;syncWhen();needFit=true;build()}}pick(b.dataset.id)});
 document.addEventListener('click',e=>{if(!e.target.closest('.find'))hits.hidden=true;if(!e.target.closest('#menu,#menuBtn')){$('#menu').hidden=true;$('#menuBtn').setAttribute('aria-expanded','false')}});
-$('#menuBtn').addEventListener('click',()=>{const m=$('#menu');m.hidden=!m.hidden;$('#menuBtn').setAttribute('aria-expanded',String(!m.hidden))});
+$('#menuBtn').addEventListener('click',()=>{const m=$('#menu');m.hidden=!m.hidden;if(!m.hidden){const d=m.querySelector('.sub');if(d)d.open=false}$('#menuBtn').setAttribute('aria-expanded',String(!m.hidden))});
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#menu').hidden){$('#menu').hidden=true;$('#menuBtn').setAttribute('aria-expanded','false');$('#menuBtn').focus()}});
 $('#legend').innerHTML=[['person','Person'],['team','Team'],['club','Yacht club'],['event','Event'],['venue','Venue'],['class','Boat class'],['record','Record'],['sponsor','Sponsor'],['supplier','Supplier'],['owner','Owner'],['media','Media'],['org','Other organisation']].map(([k,t])=>`<span><i style="background:var(--t-${k})"></i>${t}</span>`).join('')+
   Object.keys(CATS).map(c=>`<span><b style="border-color:var(--c-${c})"></b>${CATS[c]}</span>`).join('')+'<span><b class="dash"></b>Dashed line: unverified</span><span><button type="button" id="memtog" aria-pressed="true"></button></span>';
