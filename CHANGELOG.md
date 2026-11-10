@@ -2,6 +2,15 @@
 
 Version plan: 0.1 public map live · 0.2 editing moves to Supabase · 0.3 sign-in, applications and claims · 0.4 paid features (contact details for paid members, extra profile links, job board, organisation editing, verified roles), switched on by editors before payments · 0.5 payments (Stripe, tiers, prices) · 1.0 membership network opens · 1.x events and intros. Small fixes in between are 0.x.1, 0.x.2 and so on.
 
+## 0.3.17 (10 November 2026)
+
+Organisation news and featured stories.
+
+- Organisations get a News link, like people: one story per organisation (headline, link, optional date), added by editors from the organisation's entry. It shows on the entry below the profile and in All news alongside people's stories.
+- In the news on the overview now shows the stories editors tick as Featured on All news, newest first, with no limit. Unticked stories don't show. The checkbox is for editors only.
+- When an entry's News link is replaced, the old story's tick goes with it; the new story starts unticked.
+- The separately written In the news headlines are no longer used. Today's picks that had a News link carry over as Featured (Rockwool Racing, WYRF 2026).
+
 ## 0.3.16 (9 November 2026)
 
 - Phone menu tidied: Calendar, News, Send feedback and Privacy at the top; WhatsApp, LinkedIn, Facebook and Email folded under "Contact us" at the bottom.
