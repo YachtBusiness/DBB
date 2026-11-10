@@ -2,6 +2,14 @@
 
 Version plan: 0.1 public map live · 0.2 editing moves to Supabase · 0.3 sign-in, applications and claims · 0.4 paid features (contact details for paid members, extra profile links, job board, organisation editing, verified roles), switched on by editors before payments · 0.5 payments (Stripe, tiers, prices) · 1.0 membership network opens · 1.x events and intros. Small fixes in between are 0.x.1, 0.x.2 and so on.
 
+## 0.3.18 (10 November 2026)
+
+Search log.
+
+- The search box now records, anonymously, which entry someone opens from it, and what they typed when a search finds nothing (after a two-second pause, three characters or more). No account, IP or device is stored. Editors' own searches aren't logged.
+- Editors get a Searches report (button beside Claims): most searched-for entries and searches that found nothing, over 7 days, 30 days or 12 months.
+- Searches older than 12 months are deleted monthly. Only editors can read the log. Privacy notice updated with a Searches section.
+
 ## 0.3.17 (10 November 2026)
 
 Organisation news and featured stories.

@@ -195,6 +195,7 @@ fieldset.roleset{border:1px solid var(--line);border-radius:6px;padding:10px 12p
 fieldset.roleset legend{font-size:12px;color:var(--muted);padding:0 4px;display:flex;gap:10px;align-items:baseline}
 .orgstate{margin:-6px 0 0;font-size:12px}.orgstate:empty{display:none}
 a.nhead{font-weight:600;color:var(--ink);overflow-wrap:anywhere}
+.acts .btn[aria-pressed="true"]{background:var(--navy);border-color:var(--navy);color:#fff;opacity:1;cursor:default}
 .meta .ftick{display:inline-flex;flex-direction:row;align-items:center;gap:5px;margin:0 0 0 auto;padding:0;font-size:12px;font-weight:400;color:var(--muted);white-space:nowrap;cursor:pointer}.meta .ftick input{margin:0;width:auto;accent-color:var(--navy)}.meta .ent{font-size:inherit;color:inherit}
 .linky{background:none;border:0;padding:0;color:var(--muted);text-decoration:underline;cursor:pointer;font-size:12px}
 .match{background:var(--wash);border-radius:6px;padding:10px 12px;font-size:13px}.match p{margin:0 0 6px}
@@ -265,10 +266,10 @@ label.btn{display:inline-block;flex-direction:row;color:#0e1d3a;font-size:14px}
 </style>
 
 <header class="top">
-  <div class="brand"><h1><a href="./" class="home" id="home" title="Back to the overview">The Dark Blue Book</a></h1><span>The who's who of yacht racing <small id="ver" style="opacity:.6;margin-left:6px">v0.3.17</small></span></div>
+  <div class="brand"><h1><a href="./" class="home" id="home" title="Back to the overview">The Dark Blue Book</a></h1><span>The who's who of yacht racing <small id="ver" style="opacity:.6;margin-left:6px">v0.3.18</small></span></div>
   <div class="join"><button type="button" class="apply" data-join="1">Join</button><button type="button" class="acct" data-acct="1">Sign in</button></div>
   <button type="button" class="menu-btn" id="menuBtn" aria-label="Menu" aria-expanded="false" aria-controls="menu"><svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="M2 4h14M2 9h14M2 14h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
-  <nav class="menu" id="menu" hidden aria-label="Menu"><button type="button" class="acct" data-cal="1">Calendar</button><button type="button" class="acct" data-allnews="1">News</button><button type="button" class="acct" data-fb="1">Send feedback</button><a href="privacy.html">Privacy</a><details class="sub"><summary>Contact us</summary><a href="https://wa.me/61439790410" target="_blank" rel="noopener">WhatsApp</a><a href="https://www.linkedin.com/groups/2023604/" target="_blank" rel="noopener">LinkedIn</a><a href="https://www.facebook.com/darkbluebook" target="_blank" rel="noopener">Facebook</a><a href="mailto:editor@darkbluebook.com">Email</a></details><small>© The Dark Blue Book · v0.3.17</small></nav>
+  <nav class="menu" id="menu" hidden aria-label="Menu"><button type="button" class="acct" data-cal="1">Calendar</button><button type="button" class="acct" data-allnews="1">News</button><button type="button" class="acct" data-fb="1">Send feedback</button><a href="privacy.html">Privacy</a><details class="sub"><summary>Contact us</summary><a href="https://wa.me/61439790410" target="_blank" rel="noopener">WhatsApp</a><a href="https://www.linkedin.com/groups/2023604/" target="_blank" rel="noopener">LinkedIn</a><a href="https://www.facebook.com/darkbluebook" target="_blank" rel="noopener">Facebook</a><a href="mailto:editor@darkbluebook.com">Email</a></details><small>© The Dark Blue Book · v0.3.18</small></nav>
   <button type="button" class="filters-btn" id="filtersBtn" aria-expanded="false" aria-controls="filters">Filters</button>
   <div class="filters" id="filters">
   <div class="lens" role="group" aria-label="What to show">
@@ -290,7 +291,7 @@ label.btn{display:inline-block;flex-direction:row;color:#0e1d3a;font-size:14px}
   </section>
   <aside id="panel" aria-live="polite"></aside>
 </main>
-<footer class="foot" aria-label="Contact"><a href="https://wa.me/61439790410" target="_blank" rel="noopener">WhatsApp</a><a href="https://www.linkedin.com/groups/2023604/" target="_blank" rel="noopener">LinkedIn</a><a href="https://www.facebook.com/darkbluebook" target="_blank" rel="noopener">Facebook</a><a href="mailto:editor@darkbluebook.com">Email</a><button type="button" class="acct" data-cal="1">Calendar</button><button type="button" class="acct" data-allnews="1">News</button><button type="button" class="acct" data-fb="1">Send feedback</button><a href="privacy.html">Privacy</a><span>© The Dark Blue Book · v0.3.17</span></footer>
+<footer class="foot" aria-label="Contact"><a href="https://wa.me/61439790410" target="_blank" rel="noopener">WhatsApp</a><a href="https://www.linkedin.com/groups/2023604/" target="_blank" rel="noopener">LinkedIn</a><a href="https://www.facebook.com/darkbluebook" target="_blank" rel="noopener">Facebook</a><a href="mailto:editor@darkbluebook.com">Email</a><button type="button" class="acct" data-cal="1">Calendar</button><button type="button" class="acct" data-allnews="1">News</button><button type="button" class="acct" data-fb="1">Send feedback</button><a href="privacy.html">Privacy</a><span>© The Dark Blue Book · v0.3.18</span></footer>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
 <script>
@@ -466,6 +467,7 @@ function render(){
   if(mode==='signin')return formSignin();
   if(mode==='report')return formReport();
   if(mode==='reports')return listReports();
+  if(mode==='searches')return listSearches();
   if(mode==='apply')return formApply();
   if(mode==='account')return formAccount();
   if(mode==='apps')return listApps();
@@ -478,7 +480,7 @@ function render(){
   if(mode==='orgpeople')return formPeople();
   if(mode==='claims')return listClaims();
   if(mode==='claimrev')return formClaimReview();
-  const tools=canEdit?`<div class="acts"><button type="button" class="btn" data-new="entity">New entry</button><button type="button" class="btn" data-new="link">New link</button>${sel?'<button type="button" class="btn" data-editent="1">Edit this entry</button>':''}<button type="button" class="btn" data-reports="1">Reports${openReports?' ('+openReports+')':''}</button><button type="button" class="btn" data-apps="1">Applications${pendingApps?' ('+pendingApps+')':''}</button><button type="button" class="btn" data-claims="1">Claims${pendingClaims?' ('+pendingClaims+')':''}</button></div>`:'';
+  const tools=canEdit?`<div class="acts"><button type="button" class="btn" data-new="entity">New entry</button><button type="button" class="btn" data-new="link">New link</button>${sel?'<button type="button" class="btn" data-editent="1">Edit this entry</button>':''}<button type="button" class="btn" data-reports="1">Reports${openReports?' ('+openReports+')':''}</button><button type="button" class="btn" data-apps="1">Applications${pendingApps?' ('+pendingApps+')':''}</button><button type="button" class="btn" data-claims="1">Claims${pendingClaims?' ('+pendingClaims+')':''}</button><button type="button" class="btn" data-searches="30">Searches</button></div>`:'';
   const m=msg?`<div class="msg">${esc(msg)}</div>`:'';
   if(sel){const e=E.get(sel),mine=L.filter(l=>l.from===sel||l.to===sel).sort((a,b)=>(active(b)-active(a))||((yr(b.start)||0)-(yr(a.start)||0)));let h='';
     const past=mine.filter(ended),cur=mine.filter(l=>!ended(l));
@@ -616,6 +618,7 @@ panel.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)retu
   if(d.role!==undefined&&document.getElementById('fl-role')){document.getElementById('fl-role').value=d.role;if(d.rcat)document.getElementById('fl-cat').value=d.rcat;return linkGuide()}
   if(d.report){rkind='error';rlink='';mode='report';msg='';return render()}
   if(d.reports){mode='reports';msg='';return openReportList()}
+  if(d.searches){mode='searches';msg='';return openSearches(+d.searches)}
   if(d.rshow){showDone=!showDone;return openReportList()}
   if(d.rdone)return setReport(d.rdone,'done');
   if(d.ropen)return setReport(d.ropen,'open');
@@ -674,6 +677,20 @@ async function openReportList(){panel.innerHTML='<p class="note">Loading reports
   try{REPORTS=await apiGet('reports?select=id,kind,entity_id,link_id,page,message,name,email,status,created_at&order=created_at.desc&limit=200'+(showDone?'':'&status=eq.open'));msg=''}
   catch(e){REPORTS=[];msg=/401|403/.test(e.message)?'Sign in as an editor to see reports.':'Reports could not be loaded. '+e.message.slice(0,120)}
   await countReports();mode='reports';render()}
+let SEARCH=null,searchDays=30;
+async function openSearches(days){searchDays=days||30;SEARCH=null;render();
+  try{const t=await token(),r=await fetch(`${SB_URL}/rest/v1/rpc/search_report`,{method:'POST',headers:{apikey:SB_KEY,Authorization:'Bearer '+t,'Content-Type':'application/json'},body:JSON.stringify({p_days:searchDays})});
+    if(!r.ok)throw new Error(r.status+' '+(await r.text()).slice(0,140));SEARCH=await r.json()}catch(e){msg='Could not load searches. '+String(e.message).slice(0,160);SEARCH={total:0,picked:[],missed:[]}}
+  if(mode==='searches')render()}
+function listSearches(){const fmt=d=>new Date(d).toLocaleDateString('en-GB',{day:'numeric',month:'short'});
+  const per=[[7,'7 days'],[30,'30 days'],[365,'12 months']].map(([d,t])=>`<button type="button" class="btn"${d===searchDays?' aria-pressed="true" disabled':''} data-searches="${d}">${t}</button>`).join('');
+  const S=SEARCH;
+  const picked=S&&S.picked.length?`<ul class="rel">${S.picked.map(x=>{const e=E.get(x.id);return`<li><div class="rl">${e?`<button type="button" class="ent" data-go="${esc(e.id)}">${esc(e.name)}</button> <span class="role">${esc(kindLabel(e))}</span>`:'<span class="role">Entry since deleted</span>'}</div><div class="meta"><span>${x.n} ${x.n===1?'search':'searches'}</span><span>last ${fmt(x.last)}</span></div></li>`}).join('')}</ul>`:'<p class="note">None yet.</p>';
+  const missed=S&&S.missed.length?`<ul class="rel">${S.missed.map(x=>`<li><div class="rl"><strong>${esc(x.term)}</strong></div><div class="meta"><span>${x.n} ${x.n===1?'search':'searches'}</span><span>last ${fmt(x.last)}</span></div></li>`).join('')}</ul>`:'<p class="note">None yet.</p>';
+  panel.innerHTML=`<div><h2>Searches</h2><p class="note">What visitors and members search for, anonymously. Editors' own searches aren't counted.${S?` ${S.total} logged in the last ${({7:'7 days',30:'30 days',365:'12 months'})[searchDays]||searchDays+' days'}.`:''}</p></div>${msg?`<div class="msg">${esc(msg)}</div>`:''}
+    <div class="acts">${per}</div>
+    ${S?`<section><h3>Most searched for</h3>${picked}</section><section><h3>Searched for, not found</h3><p class="note">Possible gaps in the book.</p>${missed}</section>`:'<p class="note">Loading…</p>'}
+    <div class="acts"><button type="button" class="btn" data-cancel="1">Back</button></div>`}
 function listReports(){const fmt=d=>new Date(d).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
   const item=r=>{const e=r.entity_id&&E.get(r.entity_id),l=r.link_id&&L.find(x=>x.id===r.link_id);
     const about=e?`<button type="button" class="ent" data-go="${esc(e.id)}">${esc(e.name)}</button>${l?` <span class="role">link: ${esc(linkLabel(l,''))}</span>`:r.link_id?' <span class="role">link since deleted</span>':''}`
@@ -1399,10 +1416,15 @@ yrEl.addEventListener('input',()=>{year=+yrEl.value;allTime=false;syncWhen();bui
 allBtn.addEventListener('click',()=>{allTime=!allTime;syncWhen();needFit=true;build();if(mode==='view')render()});
 syncWhen();
 const q=$('#q'),hits=$('#hits');
-q.addEventListener('input',()=>{const s=q.value.trim().toLowerCase();if(!s){hits.hidden=true;return}
+/* anonymous search log (0.3.18): the entry picked, or the text when nothing is found. Editors aren't logged. */
+const loggedMiss=new Set();let missTimer=null;
+function logSearch(term,entity){if(canEdit)return;term=String(term||'').trim().slice(0,80);
+  fetch(`${SB_URL}/rest/v1/rpc/log_search`,{method:'POST',keepalive:true,headers:{apikey:SB_KEY,'Content-Type':'application/json'},body:JSON.stringify({p_term:term,p_entity:entity||null})}).catch(()=>{})}
+q.addEventListener('input',()=>{const s=q.value.trim().toLowerCase();clearTimeout(missTimer);if(!s){hits.hidden=true;return}
   const r=byName().filter(e=>e.name.toLowerCase().includes(s)||(e.note||'').toLowerCase().includes(s)).slice(0,8);
-  hits.innerHTML=r.length?r.map(e=>`<li><button type="button" data-id="${esc(e.id)}">${esc(e.name)}<small>${esc(kindLabel(e))}</small></button></li>`).join(''):'<li><button type="button" disabled>No entry by that name</button></li>';hits.hidden=false});
-hits.addEventListener('click',e=>{const b=e.target.closest('button[data-id]');if(!b)return;hits.hidden=true;q.value='';
+  hits.innerHTML=r.length?r.map(e=>`<li><button type="button" data-id="${esc(e.id)}">${esc(e.name)}<small>${esc(kindLabel(e))}</small></button></li>`).join(''):'<li><button type="button" disabled>No entry by that name</button></li>';hits.hidden=false;
+  if(!r.length&&s.length>=3)missTimer=setTimeout(()=>{const t=q.value.trim().toLowerCase();if(t!==s||loggedMiss.has(t))return;loggedMiss.add(t);logSearch(t,null)},2000)});
+hits.addEventListener('click',e=>{const b=e.target.closest('button[data-id]');if(!b)return;hits.hidden=true;clearTimeout(missTimer);logSearch(q.value,b.dataset.id);q.value='';
   if(!nodes.some(n=>n.id===b.dataset.id)){if(lens!=='all')document.querySelector('.lens [data-lens="all"]').click();if(!nodes.some(n=>n.id===b.dataset.id)){allTime=true;syncWhen();needFit=true;build()}}pick(b.dataset.id)});
 document.addEventListener('click',e=>{if(!e.target.closest('.find'))hits.hidden=true;if(!e.target.closest('#menu,#menuBtn')){$('#menu').hidden=true;$('#menuBtn').setAttribute('aria-expanded','false')}});
 $('#menuBtn').addEventListener('click',()=>{const m=$('#menu');m.hidden=!m.hidden;if(!m.hidden){const d=m.querySelector('.sub');if(d)d.open=false}$('#menuBtn').setAttribute('aria-expanded',String(!m.hidden))});
