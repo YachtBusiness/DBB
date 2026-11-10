@@ -32,14 +32,15 @@ language plpgsql security definer set search_path = '' as $$
 declare since timestamptz := now() - make_interval(days => greatest(1, least(coalesce(p_days, 30), 400)));
 begin
   if not public.is_editor() then raise exception 'editors only'; end if;
+  -- columns qualified with s.: "found" is also PL/pgSQL's built-in FOUND variable
   return jsonb_build_object(
-    'total', (select count(*) from public.search_log where at >= since),
+    'total', (select count(*) from public.search_log s where s.at >= since),
     'picked', coalesce((select jsonb_agg(x order by x.n desc, x.last desc) from (
-        select entity_id as id, count(*) as n, max(at) as last from public.search_log
-        where at >= since and entity_id is not null group by entity_id order by n desc, last desc limit 50) x), '[]'),
+        select s.entity_id as id, count(*) as n, max(s.at) as last from public.search_log s
+        where s.at >= since and s.entity_id is not null group by s.entity_id order by n desc, last desc limit 50) x), '[]'),
     'missed', coalesce((select jsonb_agg(x order by x.n desc, x.last desc) from (
-        select lower(term) as term, count(*) as n, max(at) as last from public.search_log
-        where at >= since and not found group by lower(term) order by n desc, last desc limit 50) x), '[]'));
+        select lower(s.term) as term, count(*) as n, max(s.at) as last from public.search_log s
+        where s.at >= since and not s.found group by lower(s.term) order by n desc, last desc limit 50) x), '[]'));
 end $$;
 revoke all on function public.search_report(int) from public;
 grant execute on function public.search_report(int) to authenticated;
