@@ -486,7 +486,7 @@ function render(){
       if(g.length)h+=`<details class="grp"${h?'':' open'}><summary><b style="border-color:var(--c-${c})"></b>${c==='ppl'&&e.type==='person'?'Role':CATS[c]} <span class="cnt">${g.length}</span></summary><ul class="rel">${g.map(l=>row(l,sel)).join('')}</ul></details>`}
     if(past.length)h+=`<details class="grp"><summary><b style="border-color:var(--muted)"></b>Past <span class="cnt">${past.length}</span></summary><ul class="rel">${past.map(l=>row(l,sel)).join('')}</ul></details>`;
     panel.innerHTML=`<div><div class="kind"><i style="background:${tvar(e)}"></i>${esc(kindLabel(e))}${e.sectors.length?`<span class="sec">${esc(e.sectors.join(' \u00b7 '))}</span>`:''}${e.origin==='member'?'<span class="chip mem">added by member</span>':''}${e.country?`<span class="cc">${esc(e.country)}</span>`:''}</div>${canEdit&&e.origin==='member'?`<div class="owner"><span>Added by a member${e.sectorNote?': “'+esc(e.sectorNote)+'”':''}. Check it, then</span><button type="button" class="btn" data-promote="entities" data-pid="${esc(e.id)}">Mark as checked</button></div>`:''}
-      <h2>${esc(e.name)}</h2>${eventDatesBlock(e)}${e.note?`<p class="note">${esc(e.note)}</p>`:''}</div>${profileBlock(e)}${e.type==='person'?newsBlock(e):''}${orgProfileBlock(e)}${e.type==='org'?newsBlock(e):''}${m}
+      <h2>${esc(e.name)}</h2>${eventDatesBlock(e)}${e.note?`<p class="note">${esc(e.note)}</p>`:''}</div>${profileBlock(e)}${e.type!=='org'?newsBlock(e):''}${orgProfileBlock(e)}${e.type==='org'?newsBlock(e):''}${m}
       ${h||'<p class="note">No links recorded yet.</p>'}${(t=>t?`<details class="tld"><summary>Timeline</summary>${t}</details>`:'')(timeline(mine,sel))}${tools}<div class="acts"><button type="button" class="btn" data-go="">Back to overview</button>${window.claude?'':'<button type="button" class="btn" data-copy="1">Copy link</button>'}<button type="button" class="btn" data-report="1">Report an error</button></div>`;
     return}
   const vis=new Set(visibleLinks().map(l=>l.id)),A=scope?L.filter(l=>vis.has(l.id)):L.filter(active);
@@ -1256,9 +1256,9 @@ panel.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)retu
   if(d.declineyes2){stop();return decideClaim(null,b)}},true);
 panel.addEventListener('submit',e=>{const f=e.target.id;if(f==='fcl'){e.preventDefault();e.stopImmediatePropagation();sendClaim()}else if(f==='finv'){e.preventDefault();e.stopImmediatePropagation();sendInvite()}},true);
 
-/* ---------- news on people's (0.3.6) and organisations' (0.3.17) entries ---------- */
+/* ---------- news on people's (0.3.6), organisations' and teams' (0.3.17) entries ---------- */
 let ndraft=null;
-function newsBlock(e){if(e.type!=='person'&&e.type!=='org')return'';
+function newsBlock(e){if(!['person','org','team'].includes(e.type))return'';
   if(!e.newsUrl)return canEdit?`<div class="acts"><button type="button" class="btn" data-news="${esc(e.id)}">Add news</button></div>`:'';
   let host='';try{host=new URL(e.newsUrl).hostname.replace(/^www\./,'')}catch(x){}
   const d=e.newsDate?new Date(e.newsDate+'T12:00:00Z').toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}):'';

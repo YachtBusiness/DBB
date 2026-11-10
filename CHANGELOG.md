@@ -6,7 +6,7 @@ Version plan: 0.1 public map live · 0.2 editing moves to Supabase · 0.3 sign-i
 
 Organisation news and featured stories.
 
-- Organisations get a News link, like people: one story per organisation (headline, link, optional date), added by editors from the organisation's entry. It shows on the entry below the profile and in All news alongside people's stories.
+- Organisations and teams get a News link, like people: one story each (headline, link, optional date), added by editors from the entry with "Add news". It shows on the entry (below the profile on organisations) and in All news alongside people's stories.
 - In the news on the overview now shows the stories editors tick as Featured on All news, newest first, with no limit. Unticked stories don't show. The checkbox is for editors only.
 - When an entry's News link is replaced, the old story's tick goes with it; the new story starts unticked.
 - The separately written In the news headlines are no longer used. Today's picks that had a News link carry over as Featured (Rockwool Racing, WYRF 2026).
