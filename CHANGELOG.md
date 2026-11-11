@@ -8,7 +8,8 @@ Installable and readable offline.
 
 - The app can be installed: a home-screen icon (placeholder: the foil-and-book sail) and a full-screen window. Android and desktop Chrome or Edge offer "Install app" in the menu; on iPhone, Share, then Add to Home Screen.
 - Works offline, read-only: after each online visit the device keeps the page, fonts, d3 and a copy of the public book (entries, links, stories, public profiles). Without a connection the map, entries, internal links, news, calendar and search all work from that copy, with a bar saying when it was saved. Photos and logos work offline once viewed.
-- Pages always load fresh when online, so new versions arrive straight away; the saved copy is only used offline.
+- Opens straight from the saved copy, then refreshes from the network in the background; the map is only redrawn if the book changed. Pages themselves always load fresh when online, so new versions arrive straight away.
+- Offline, the bar reads "You're offline: showing the book as saved …" with Try again, and the header shows "Offline" in place of Join and Sign in.
 - While offline, forms that send something (apply, sign in, reports, edits) say they need a connection instead of failing. Back online, the book reloads by itself.
 - Nothing signed-in or member-only is saved on the device. Privacy notice updated.
 
