@@ -2,6 +2,15 @@
 
 Version plan: 0.1 public map live · 0.2 editing moves to Supabase · 0.3 sign-in, applications and claims · 0.4 paid features (contact details for paid members, extra profile links, job board, organisation editing, verified roles), switched on by editors before payments · 0.5 payments (Stripe, tiers, prices) · 1.0 membership network opens · 1.x events and intros. Small fixes in between are 0.x.1, 0.x.2 and so on.
 
+## 0.3.22 (11 November 2026)
+
+Desktop navigation, like phones.
+
+- Desktop top bar, row 1: the title, Calendar and News (underlined when open), search, Join or your name, and the menu button. Row 2: the map filters (Everything / Money / People, series, year).
+- The menu button now shows on desktop too, with the same contents as on phones: What's new, Send feedback, Install app (where the browser offers it), Privacy and Contact us (WhatsApp, LinkedIn, Facebook, Email), then © and version. Calendar and News are in the menu on phones only, since desktop has them in the top bar.
+- The footer bar is gone; the map gets the space.
+- What's new entry added.
+
 ## 0.3.21 (11 November 2026)
 
 What's new.

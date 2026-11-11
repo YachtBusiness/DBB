@@ -160,9 +160,6 @@ label input,label select,label textarea{padding:7px 9px;border:1px solid var(--l
 .menu{position:absolute;z-index:10;right:16px;top:56px;background:var(--surface);color:var(--ink);border:1px solid var(--line);border-radius:8px;box-shadow:0 10px 30px rgb(0 0 0 / .25);padding:6px;display:flex;flex-direction:column;min-width:190px}
 .menu a{color:inherit;text-decoration:none;padding:10px 12px;border-radius:5px}.menu a:hover,.menu a:focus-visible{background:var(--wash)}
 .menu small{padding:8px 12px 4px;color:var(--muted);border-top:1px solid var(--line);margin-top:4px}
-.foot{background:var(--navy);color:var(--on-navy);display:flex;flex-wrap:wrap;align-items:center;gap:6px 18px;padding:8px 20px;font-size:12.5px}
-.foot a{color:inherit;opacity:.85;text-decoration:none}.foot a:hover{opacity:1;text-decoration:underline}
-.foot span{margin-left:auto;opacity:.6}
 .acct{background:none;border:0;padding:0;font:inherit;color:inherit;cursor:pointer;opacity:.85;text-align:left}.acct:hover{opacity:1;text-decoration:underline}
 .menu .acct{padding:10px 12px;border-radius:5px;opacity:1}.menu .acct:hover{background:var(--wash);text-decoration:none}
 .menu .sub{font-size:14px;color:var(--ink);border-top:1px solid var(--line);margin-top:4px;padding-top:4px;display:flex;flex-direction:column}
@@ -210,7 +207,17 @@ input.inline{width:12ch;padding:3px 6px;border:1px solid var(--line);border-radi
 label.inl{flex-direction:row;align-items:baseline;gap:8px;color:var(--ink);font-size:13.5px}label.inl input{width:auto}
 li.rvrole{display:flex!important;flex-direction:column;gap:8px}
 a.btn{text-decoration:none;color:#0e1d3a}a.btn.go{color:var(--surface)}
-@media (min-width:861px){.join{margin-left:auto}}
+@media (min-width:861px){
+  /* 0.3.22: row 1 title, Calendar and News, search, Join or your name, menu; row 2 the map filters */
+  .brand{order:1;margin-right:0}.topnav{order:2;margin-right:auto}.find{order:3}.join{order:4}.menu-btn{order:5;display:inline-block}
+  .filters{display:flex;order:10;flex:1 1 100%;flex-wrap:wrap;align-items:center;gap:10px 24px;padding-top:10px;border-top:1px solid color-mix(in srgb,var(--on-navy) 14%,transparent)}
+  .menu{top:62px}.menu .mo{display:none}
+  .find{flex:1 1 160px;max-width:300px;min-width:140px}
+  .top{gap:12px 18px}}
+.topnav{display:flex;gap:4px}
+.topnav button{background:none;border:0;color:var(--on-navy);font:inherit;font-size:14px;padding:6px 10px;border-radius:6px;cursor:pointer;opacity:.85}
+.topnav button:hover,.topnav button:focus-visible{opacity:1;background:color-mix(in srgb,var(--on-navy) 12%,transparent)}
+.topnav button[aria-current="page"]{opacity:1;box-shadow:inset 0 -2px 0 var(--on-navy);border-radius:0}
 .btn.wait{opacity:.6;cursor:progress}
 .cdate{font-weight:600;color:var(--ink)}.cdate.tbc{font-weight:400;font-style:italic;color:var(--muted)}
 .evdates{margin:4px 0 0;font-size:13.5px;color:var(--muted)}
@@ -244,7 +251,7 @@ label.btn{display:inline-block;flex-direction:row;color:#0e1d3a;font-size:14px}
 .tog input:disabled+.tl{opacity:.75}
 @media (max-width:860px){
   .join{order:0;gap:10px}.join .lg{display:none}.join .sm{display:inline}.join .apply{padding:5px 12px}
-  .menu-btn{display:inline-block}.foot{display:none}
+  .menu-btn{display:inline-block}.topnav{display:none}
   #scope{flex:1 1 100%;max-width:none}
   .when{flex:1 1 100%}.when input{flex:1}
   html,body{height:100%;overflow:hidden}
@@ -271,10 +278,11 @@ label.btn{display:inline-block;flex-direction:row;color:#0e1d3a;font-size:14px}
 
 <div class="offbar" id="offbar" hidden role="status"></div>
 <header class="top">
-  <div class="brand"><h1><a href="./" class="home" id="home" title="Back to the overview">The Dark Blue Book</a></h1><span>The who's who of yacht racing <a href="#update" id="ver" data-updates="1" title="What’s new" style="opacity:.6;margin-left:6px;color:inherit;font-size:smaller">v0.3.21</a></span></div>
+  <div class="brand"><h1><a href="./" class="home" id="home" title="Back to the overview">The Dark Blue Book</a></h1><span>The who's who of yacht racing <a href="#update" id="ver" data-updates="1" title="What’s new" style="opacity:.6;margin-left:6px;color:inherit;font-size:smaller">v0.3.22</a></span></div>
+  <nav class="topnav" aria-label="Sections"><button type="button" data-cal="1">Calendar</button><button type="button" data-allnews="1">News</button></nav>
   <div class="join"><button type="button" class="apply" data-join="1">Join</button><button type="button" class="acct" data-acct="1">Sign in</button><span class="offlab" id="offlab" hidden>Offline</span></div>
   <button type="button" class="menu-btn" id="menuBtn" aria-label="Menu" aria-expanded="false" aria-controls="menu"><svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="M2 4h14M2 9h14M2 14h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
-  <nav class="menu" id="menu" hidden aria-label="Menu"><button type="button" class="acct" data-cal="1">Calendar</button><button type="button" class="acct" data-allnews="1">News</button><button type="button" class="acct" data-updates="1">What’s new</button><button type="button" class="acct" data-fb="1">Send feedback</button><button type="button" class="acct" id="installBtn" hidden>Install app</button><a href="privacy.html">Privacy</a><details class="sub"><summary>Contact us</summary><a href="https://wa.me/61439790410" target="_blank" rel="noopener">WhatsApp</a><a href="https://www.linkedin.com/groups/2023604/" target="_blank" rel="noopener">LinkedIn</a><a href="https://www.facebook.com/darkbluebook" target="_blank" rel="noopener">Facebook</a><a href="mailto:editor@darkbluebook.com">Email</a></details><small>© The Dark Blue Book · v0.3.21</small></nav>
+  <nav class="menu" id="menu" hidden aria-label="Menu"><button type="button" class="acct mo" data-cal="1">Calendar</button><button type="button" class="acct mo" data-allnews="1">News</button><button type="button" class="acct" data-updates="1">What’s new</button><button type="button" class="acct" data-fb="1">Send feedback</button><button type="button" class="acct" id="installBtn" hidden>Install app</button><a href="privacy.html">Privacy</a><details class="sub"><summary>Contact us</summary><a href="https://wa.me/61439790410" target="_blank" rel="noopener">WhatsApp</a><a href="https://www.linkedin.com/groups/2023604/" target="_blank" rel="noopener">LinkedIn</a><a href="https://www.facebook.com/darkbluebook" target="_blank" rel="noopener">Facebook</a><a href="mailto:editor@darkbluebook.com">Email</a></details><small>© The Dark Blue Book · v0.3.22</small></nav>
   <button type="button" class="filters-btn" id="filtersBtn" aria-expanded="false" aria-controls="filters">Filters</button>
   <div class="filters" id="filters">
   <div class="lens" role="group" aria-label="What to show">
@@ -296,7 +304,7 @@ label.btn{display:inline-block;flex-direction:row;color:#0e1d3a;font-size:14px}
   </section>
   <aside id="panel" aria-live="polite"></aside>
 </main>
-<footer class="foot" aria-label="Contact"><a href="https://wa.me/61439790410" target="_blank" rel="noopener">WhatsApp</a><a href="https://www.linkedin.com/groups/2023604/" target="_blank" rel="noopener">LinkedIn</a><a href="https://www.facebook.com/darkbluebook" target="_blank" rel="noopener">Facebook</a><a href="mailto:editor@darkbluebook.com">Email</a><button type="button" class="acct" data-cal="1">Calendar</button><button type="button" class="acct" data-allnews="1">News</button><button type="button" class="acct" data-updates="1">What’s new</button><button type="button" class="acct" data-fb="1">Send feedback</button><a href="privacy.html">Privacy</a><span>© The Dark Blue Book · v0.3.21</span></footer>
+
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
 <script>
@@ -438,6 +446,7 @@ function inTheNews(){
 /* ---------- deep links ---------- */
 let booted=false;
 const CAL_HASH='yacht-racing-calendar',NEWS_HASH='yacht-racing-news',UPD_HASH_='update';
+function navMark(){document.querySelectorAll('.topnav [data-cal]').forEach(b=>mode==='calendar'?b.setAttribute('aria-current','page'):b.removeAttribute('aria-current'));document.querySelectorAll('.topnav [data-allnews]').forEach(b=>mode==='allnews'?b.setAttribute('aria-current','page'):b.removeAttribute('aria-current'))}
 function syncHash(){const want=sel?'#'+encodeURIComponent(sel):mode==='calendar'?'#'+CAL_HASH:mode==='allnews'?'#'+NEWS_HASH:mode==='updates'?'#'+UPD_HASH_:'';if(location.hash===want)return;try{history.pushState(null,'',want||location.pathname+location.search)}catch(e){}}
 function reveal(id){if(!E.has(id))return false;if(nodes.some(n=>n.id===id))return true;
   if(lens!=='all'){lens='all';document.querySelectorAll('.lens button').forEach(x=>x.setAttribute('aria-pressed',x.dataset.lens==='all'))}
@@ -465,7 +474,7 @@ function timeline(mine,me){const d=mine.filter(l=>yr(l.start)!=null||yr(l.end)!=
     return`<div class="r"><span>${esc(l.role)} \u00b7 ${esc(o?o.name:'')}${yr(l.end)==null?' \u2192':''}</span><div class="trk"><i style="left:${(a-min)/span*100}%;width:${(b-a+1)/span*100}%;background:var(--c-${CATS[l.cat]?l.cat:'str'})"></i></div></div>`}).join('');
   const und=mine.length-d.length;
   return`<section class="tl"><div class="ax"><span>${min}</span><span>${max}</span></div>${rows}${und?`<p class="claim">${und} undated ${und>1?'links':'link'} not shown here.</p>`:''}</section>`}
-function render(){
+function render(){navMark();
   /* phones: forms and tasks get the whole screen; the map comes back for entries and the overview */
   const mainEl=document.querySelector('main');if(mainEl)mainEl.classList.toggle('task',mode!=='view');
   if(mode==='entity')return formEntity();
@@ -1495,6 +1504,7 @@ async function start(){
    "editors" lines show only to signed-in editors. CHANGELOG.md keeps the technical detail. */
 const UPD_HASH='update';
 const UPDATES=[
+ {v:'0.3.22',d:'2026-11-11',t:'A tidier top bar on computers',i:['Calendar and News are at the top of the screen, next to the title.','Everything else (What’s new, Send feedback, Install app, Privacy and the contact links) is in the menu button at the top right, as on phones. The bar along the bottom has gone, so the map has more room.','The map filters sit in their own row under the top bar.']},
  {v:'0.3.21',d:'2026-11-11',t:'What’s new',i:['This page: what’s been added and changed, newest first. Open it from the menu, the footer or the version number next to the title.']},
  {v:'0.3.20',d:'2026-11-11',t:'Install the app, and read the book offline',i:[
    'Add The Dark Blue Book to your home screen. On Android, or Chrome or Edge on a computer, choose Install app in the menu. On iPhone, tap Share, then Add to Home Screen.',
