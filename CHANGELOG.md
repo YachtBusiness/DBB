@@ -2,6 +2,14 @@
 
 Version plan: 0.1 public map live · 0.2 editing moves to Supabase · 0.3 sign-in, applications and claims · 0.4 paid features (contact details for paid members, extra profile links, job board, organisation editing, verified roles), switched on by editors before payments · 0.5 payments (Stripe, tiers, prices) · 1.0 membership network opens · 1.x events and intros. Small fixes in between are 0.x.1, 0.x.2 and so on.
 
+## 0.3.21 (11 November 2026)
+
+What's new.
+
+- A What's new page at app.darkbluebook.com/#update: plain-English notes on what's been added and changed, newest first, with the latest version marked. Opened from the menu, the footer, or the version number next to the title (now a link). Copy link.
+- Notes for editors-only features show only to signed-in editors.
+- The notes live in the UPDATES list in app/index.html; add an entry with each release that goes live. This file keeps the technical detail.
+
 ## 0.3.20 (11 November 2026)
 
 Installable and readable offline.

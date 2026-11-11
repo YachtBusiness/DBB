@@ -35,6 +35,7 @@ body{background:var(--bg);color:var(--ink);font-family:var(--ui);font-size:14px;
 button,input,select,textarea{font:inherit;color:inherit}
 :focus-visible{outline:2px solid var(--t-team);outline-offset:2px}
 
+.upd ul{margin:6px 0 0;padding-left:20px;display:flex;flex-direction:column;gap:6px}.upd li.ed{color:var(--muted)}.upd .who{margin:2px 0 0}
 .offbar{background:#8a5a00;color:#fff;font-size:13px;padding:6px 20px;text-align:center}.offbar button{font:inherit;color:inherit;background:none;border:0;text-decoration:underline;cursor:pointer;padding:0 0 0 6px}
 .top{background:var(--navy);color:var(--on-navy);padding:12px 20px;display:flex;flex-wrap:wrap;gap:12px 24px;align-items:center}
 .brand{display:flex;flex-direction:column;min-width:0;margin-right:auto}
@@ -270,10 +271,10 @@ label.btn{display:inline-block;flex-direction:row;color:#0e1d3a;font-size:14px}
 
 <div class="offbar" id="offbar" hidden role="status"></div>
 <header class="top">
-  <div class="brand"><h1><a href="./" class="home" id="home" title="Back to the overview">The Dark Blue Book</a></h1><span>The who's who of yacht racing <small id="ver" style="opacity:.6;margin-left:6px">v0.3.20</small></span></div>
+  <div class="brand"><h1><a href="./" class="home" id="home" title="Back to the overview">The Dark Blue Book</a></h1><span>The who's who of yacht racing <a href="#update" id="ver" data-updates="1" title="What’s new" style="opacity:.6;margin-left:6px;color:inherit;font-size:smaller">v0.3.21</a></span></div>
   <div class="join"><button type="button" class="apply" data-join="1">Join</button><button type="button" class="acct" data-acct="1">Sign in</button><span class="offlab" id="offlab" hidden>Offline</span></div>
   <button type="button" class="menu-btn" id="menuBtn" aria-label="Menu" aria-expanded="false" aria-controls="menu"><svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="M2 4h14M2 9h14M2 14h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
-  <nav class="menu" id="menu" hidden aria-label="Menu"><button type="button" class="acct" data-cal="1">Calendar</button><button type="button" class="acct" data-allnews="1">News</button><button type="button" class="acct" data-fb="1">Send feedback</button><button type="button" class="acct" id="installBtn" hidden>Install app</button><a href="privacy.html">Privacy</a><details class="sub"><summary>Contact us</summary><a href="https://wa.me/61439790410" target="_blank" rel="noopener">WhatsApp</a><a href="https://www.linkedin.com/groups/2023604/" target="_blank" rel="noopener">LinkedIn</a><a href="https://www.facebook.com/darkbluebook" target="_blank" rel="noopener">Facebook</a><a href="mailto:editor@darkbluebook.com">Email</a></details><small>© The Dark Blue Book · v0.3.20</small></nav>
+  <nav class="menu" id="menu" hidden aria-label="Menu"><button type="button" class="acct" data-cal="1">Calendar</button><button type="button" class="acct" data-allnews="1">News</button><button type="button" class="acct" data-updates="1">What’s new</button><button type="button" class="acct" data-fb="1">Send feedback</button><button type="button" class="acct" id="installBtn" hidden>Install app</button><a href="privacy.html">Privacy</a><details class="sub"><summary>Contact us</summary><a href="https://wa.me/61439790410" target="_blank" rel="noopener">WhatsApp</a><a href="https://www.linkedin.com/groups/2023604/" target="_blank" rel="noopener">LinkedIn</a><a href="https://www.facebook.com/darkbluebook" target="_blank" rel="noopener">Facebook</a><a href="mailto:editor@darkbluebook.com">Email</a></details><small>© The Dark Blue Book · v0.3.21</small></nav>
   <button type="button" class="filters-btn" id="filtersBtn" aria-expanded="false" aria-controls="filters">Filters</button>
   <div class="filters" id="filters">
   <div class="lens" role="group" aria-label="What to show">
@@ -295,7 +296,7 @@ label.btn{display:inline-block;flex-direction:row;color:#0e1d3a;font-size:14px}
   </section>
   <aside id="panel" aria-live="polite"></aside>
 </main>
-<footer class="foot" aria-label="Contact"><a href="https://wa.me/61439790410" target="_blank" rel="noopener">WhatsApp</a><a href="https://www.linkedin.com/groups/2023604/" target="_blank" rel="noopener">LinkedIn</a><a href="https://www.facebook.com/darkbluebook" target="_blank" rel="noopener">Facebook</a><a href="mailto:editor@darkbluebook.com">Email</a><button type="button" class="acct" data-cal="1">Calendar</button><button type="button" class="acct" data-allnews="1">News</button><button type="button" class="acct" data-fb="1">Send feedback</button><a href="privacy.html">Privacy</a><span>© The Dark Blue Book · v0.3.20</span></footer>
+<footer class="foot" aria-label="Contact"><a href="https://wa.me/61439790410" target="_blank" rel="noopener">WhatsApp</a><a href="https://www.linkedin.com/groups/2023604/" target="_blank" rel="noopener">LinkedIn</a><a href="https://www.facebook.com/darkbluebook" target="_blank" rel="noopener">Facebook</a><a href="mailto:editor@darkbluebook.com">Email</a><button type="button" class="acct" data-cal="1">Calendar</button><button type="button" class="acct" data-allnews="1">News</button><button type="button" class="acct" data-updates="1">What’s new</button><button type="button" class="acct" data-fb="1">Send feedback</button><a href="privacy.html">Privacy</a><span>© The Dark Blue Book · v0.3.21</span></footer>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
 <script>
@@ -436,15 +437,16 @@ function inTheNews(){
 
 /* ---------- deep links ---------- */
 let booted=false;
-const CAL_HASH='yacht-racing-calendar',NEWS_HASH='yacht-racing-news';
-function syncHash(){const want=sel?'#'+encodeURIComponent(sel):mode==='calendar'?'#'+CAL_HASH:mode==='allnews'?'#'+NEWS_HASH:'';if(location.hash===want)return;try{history.pushState(null,'',want||location.pathname+location.search)}catch(e){}}
+const CAL_HASH='yacht-racing-calendar',NEWS_HASH='yacht-racing-news',UPD_HASH_='update';
+function syncHash(){const want=sel?'#'+encodeURIComponent(sel):mode==='calendar'?'#'+CAL_HASH:mode==='allnews'?'#'+NEWS_HASH:mode==='updates'?'#'+UPD_HASH_:'';if(location.hash===want)return;try{history.pushState(null,'',want||location.pathname+location.search)}catch(e){}}
 function reveal(id){if(!E.has(id))return false;if(nodes.some(n=>n.id===id))return true;
   if(lens!=='all'){lens='all';document.querySelectorAll('.lens button').forEach(x=>x.setAttribute('aria-pressed',x.dataset.lens==='all'))}
   if(scope){scope='';scEl.value=''}needFit=true;build();
   if(!nodes.some(n=>n.id===id)){allTime=true;syncWhen();needFit=true;build()}return true}
 function fromHash(){let id='';try{id=decodeURIComponent(location.hash.slice(1))}catch(e){}
+  if(id===UPD_HASH_){sel=null;editing=null;msg='';mode='updates';paint();render();if(typeof showPanel==='function')showPanel();return}
   if(id===CAL_HASH||id===NEWS_HASH){sel=null;editing=null;msg='';mode=id===CAL_HASH?'calendar':'allnews';if(id===NEWS_HASH)newsFor=null;paint();render();if(typeof showPanel==='function')showPanel();return}
-  if(id&&reveal(id))pick(id,true);else if(!id&&(sel||mode==='calendar'||mode==='allnews'))pick(null,true)}
+  if(id&&reveal(id))pick(id,true);else if(!id&&(sel||mode==='calendar'||mode==='allnews'||mode==='updates'))pick(null,true)}
 function boot(){if(booted||!loaded.e||!loaded.l||!E.size)return;booted=true;fromHash()}
 window.addEventListener('popstate',fromHash);window.addEventListener('hashchange',fromHash);
 
@@ -480,6 +482,7 @@ function render(){
   if(mode==='claim')return formClaim();
   if(mode==='calendar')return formCalendar();
   if(mode==='allnews')return listNews();
+  if(mode==='updates')return listUpdates();
   if(mode==='news')return formNews();
   if(mode==='orgpeople')return formPeople();
   if(mode==='claims')return listClaims();
@@ -614,7 +617,7 @@ panel.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)retu
   if(d.new){mode=d.new;editing=null;msg='';return render()}
   if(d.editent){mode='entity';editing=sel;msg='';return render()}
   if(d.editlink){mode='link';editing=d.editlink;msg='';return render()}
-  if(d.cancel){const wasCal=mode==='calendar'||mode==='allnews';mode='view';editing=null;msg='';render();if(wasCal)syncHash();return}
+  if(d.cancel){const wasCal=mode==='calendar'||mode==='allnews'||mode==='updates';mode='view';editing=null;msg='';render();if(wasCal)syncHash();return}
   if(d.del){b.outerHTML=`<button type="button" class="btn bad" data-delyes="${d.del}">Yes, delete for good</button><button type="button" class="btn" data-cancel="1">Keep it</button>`;return}
   if(d.delyes)return remove(d.delyes);
   if(d.auditall){auditAll=!auditAll;return render()}
@@ -1486,6 +1489,78 @@ async function start(){
     if(changed){SHOWN_SIG=sig;build()}render();saveSnap(es,ls,fs)}
   catch(e){if(SHOWN_SIG){offBar();return}db=null;loaded={e:true,l:true};$('#blank').hidden=false;$('#blank').firstElementChild.textContent='The book could not be loaded. Please try again in a moment.'}
 }
+
+/* ---------- what's new (0.3.21) ---------- */
+/* Plain-English release notes at #update, newest first. Add an entry here with each release that goes live.
+   "editors" lines show only to signed-in editors. CHANGELOG.md keeps the technical detail. */
+const UPD_HASH='update';
+const UPDATES=[
+ {v:'0.3.21',d:'2026-11-11',t:'What’s new',i:['This page: what’s been added and changed, newest first. Open it from the menu, the footer or the version number next to the title.']},
+ {v:'0.3.20',d:'2026-11-11',t:'Install the app, and read the book offline',i:[
+   'Add The Dark Blue Book to your home screen. On Android, or Chrome or Edge on a computer, choose Install app in the menu. On iPhone, tap Share, then Add to Home Screen.',
+   'Works without signal: once you’ve opened the book online, the map, entries, news, the calendar and search all work offline from the copy saved on your device. A bar at the top says when it was saved.',
+   'Opens faster: the book appears straight away from that saved copy and brings itself up to date in the background.']},
+ {v:'0.3.19',d:'2026-11-11',t:'News stories that mention more than one entry',i:[
+   'A news story can now mention several people, teams, organisations, clubs and events. It shows once on the News page and on every entry it mentions.',
+   'Entries show their three latest stories, with More news for the rest.'],
+  e:['Add a story with Add a story on the News page, or Add news on an entry. Tag everyone it mentions by typing their names.']},
+ {v:'0.3.18',d:'2026-11-10',t:'Better searches',i:[
+   'We now count, anonymously, what people search for, so we can see who’s looked up most and who’s missing from the book. Nothing about who searched is kept.'],
+  e:['A Searches report: most searched for, and searched for but not found, over 7 days, 30 days or 12 months.']},
+ {v:'0.3.17',d:'2026-11-10',t:'News for teams and organisations',i:[
+   'Teams and organisations can now have news on their entries, as people can.',
+   'In the news on the overview shows stories picked by the editors.'],
+  e:['Tick Featured beside a story on the News page to show it under In the news.']},
+ {v:'0.3.12–0.3.16',d:'2026-11-09',t:'A News page, and tidier menus',i:[
+   'News: every story in the book in one list, newest first, at app.darkbluebook.com/#yacht-racing-news.',
+   'Lighter buttons, easier to read on a phone in sunlight.',
+   'On phones, the menu puts Calendar and News first, with the contact links grouped under Contact us.',
+   'The title at the top left takes you back to the overview.']},
+ {v:'0.3.11',d:'2026-11-07',t:'Calendar of upcoming events',i:[
+   'Coming up on the overview shows the next events, with dates and place.',
+   'The full calendar lists everything ahead by month, filtered by series or for the next three months: app.darkbluebook.com/#yacht-racing-calendar.',
+   'Event entries show their dates and venue.']},
+ {v:'0.3.7–0.3.10',d:'2026-11-07',t:'A new layout',i:[
+   'On a computer, details sit on the left and the map on the right.',
+   'On phones, the map is a band across the top with details scrolling underneath. Expand map gives it the whole screen, and the filters fold away behind a Filters button. Forms get the whole screen.',
+   'The map glides to whichever entry you pick.'],
+  e:['Who, Of and Applies in on the link form are search boxes: type part of a name, or initials.']},
+ {v:'0.3.6',d:'2026-11-07',t:'News on people’s entries',i:['A person’s entry can link to a recent story about them.']},
+ {v:'0.3.5',d:'2026-11-07',t:'Claim your organisation',i:[
+   'Members can claim an organisation’s entry. Once an editor approves, owners and managers look after its profile.',
+   'Owners can invite managers, for example their PR agency, and remove them.']},
+ {v:'0.3.4',d:'2026-11-07',t:'Organisation profiles',i:['Organisations can show a logo, a short description, their website, social links and a contact email.']},
+ {v:'0.3.3',d:'2026-11-06',t:'Add your own roles',i:[
+   'Members can add their roles to any team, club, organisation or event, and add one if it isn’t in the book yet.',
+   'Members’ additions are marked on the map (dotted lines and a dashed ring) and can be hidden with the switch in the legend.']},
+ {v:'0.3.2',d:'2026-11-06',t:'Member profiles',i:[
+   'Members have a profile: photo, bio, links and contact details.',
+   'You choose what’s shown, field by field. Your contact email and WhatsApp stay hidden from everyone until paid membership starts, and then only paid members will see them.',
+   'A short checklist helps you finish your profile.']},
+ {v:'0.3.1',d:'2026-11-06',t:'Privacy',i:[
+   'A privacy notice explains what we hold and why, and how to use your rights.',
+   'Fonts now come from our own site, so your visit isn’t shared with Google.']},
+ {v:'0.3.0',d:'2026-11-06',t:'Apply to join',i:[
+   'Join at the top right: tell us who you are and your roles in the sport. If you’re already in the book, we’ll suggest your entry.',
+   'Confirm your email and follow your application. You can edit or withdraw it, and you get a welcome email once accepted.']},
+ {v:'0.2',d:'2026-11-05',t:'Report an error, and send feedback',i:[
+   'Report an error on any entry, or Send feedback from the menu. It goes straight to the editors.',
+   'Roles that haven’t started yet are marked Upcoming.',
+   'Clearer section headings in entries.'],
+  e:['Editing moved into the app: sign in with an emailed link, then add, edit and delete entries and links. The link form helps with direction and suggests the usual roles.']},
+ {v:'0.1',d:'2026-11-03',t:'The Dark Blue Book goes live',i:[
+   'The who’s who of yacht racing as a live map: about 880 people, teams, clubs, organisations, events and classes, and 1,250 connections between them.',
+   'Every entry has its own link to share. Featured and In the news on the overview.',
+   'The Year slider shows who was where, from 2010 to today. Past roles fold away under Past.']}
+];
+function listUpdates(){const fmt=d=>new Date(d+'T12:00:00Z').toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});
+  panel.innerHTML=`<div><h2>What’s new</h2><p class="note">What’s been added and changed in The Dark Blue Book, newest first. You’re using version ${esc(UPDATES[0].v)}.</p></div>
+    ${UPDATES.map((u,k)=>`<section class="upd"><h3>${esc(u.t)}</h3><p class="who">Version ${esc(u.v)} · ${esc(fmt(u.d))}${k===0?' · <strong>latest</strong>':''}</p>
+      <ul>${u.i.map(x=>`<li>${esc(x)}</li>`).join('')}${canEdit&&u.e?u.e.map(x=>`<li class="ed"><span class="role">Editors:</span> ${esc(x)}</li>`).join(''):''}</ul></section>`).join('')}
+    <div class="acts"><button type="button" class="btn" data-updcopy="1">Copy link</button><button type="button" class="btn" data-cancel="1">Back to the map</button></div>`}
+document.addEventListener('click',e=>{const b=e.target.closest('[data-updates]');if(!b)return;e.preventDefault();const m=document.getElementById('menu');if(m)m.hidden=true;sel=null;editing=null;mode='updates';msg='';paint();render();showPanel();panel.scrollTop=0;syncHash()});
+panel.addEventListener('click',e=>{const b=e.target.closest('[data-updcopy]');if(!b)return;const u=location.href.split('#')[0].split('?')[0]+'#'+UPD_HASH;
+  try{navigator.clipboard.writeText(u).then(()=>{b.textContent='Link copied'},()=>{b.textContent=u})}catch(x){b.textContent=u}});
 
 /* ---------- offline (0.3.20) ---------- */
 /* After each successful load the page saves a copy of the public book (the same data any visitor gets) on the device.
