@@ -2,6 +2,16 @@
 
 Version plan: 0.1 public map live · 0.2 editing moves to Supabase · 0.3 sign-in, applications and claims · 0.4 paid features (contact details for paid members, extra profile links, job board, organisation editing, verified roles), switched on by editors before payments · 0.5 payments (Stripe, tiers, prices) · 1.0 membership network opens · 1.x events and intros. Small fixes in between are 0.x.1, 0.x.2 and so on.
 
+## 0.3.19 (11 November 2026)
+
+News stories.
+
+- News is now made of stories: a link, headline and optional date, tagged with any number of people, teams, organisations, clubs and events. A story shows once on All news, listing everything it tags, and on each tagged entry.
+- Entries show their latest 3 stories, with "More news" opening All news filtered to that entry. Each story says who else it tags ("Also: …").
+- Editors add stories with "Add a story" on All news or "Add news" on an entry (that entry comes already tagged), and tag entries with a type-to-search picker. Adding a link that's already in the book opens that story with the new tags added. Editors can edit or delete any story.
+- Featured moves onto the story: the checkbox on All news still decides what shows under In the news.
+- The seven existing News links were copied across as stories, with their tags and Featured ticks. Entries can now have any number of stories instead of one.
+
 ## 0.3.18 (10 November 2026)
 
 Search log.
