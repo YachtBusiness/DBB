@@ -1,0 +1,16 @@
+{
+  "name": "The Dark Blue Book",
+  "short_name": "Dark Blue Book",
+  "description": "The who's who of yacht racing: the people, teams, clubs, sponsors and events of the sport, and how they connect.",
+  "id": "/",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#12264d",
+  "theme_color": "#12264d",
+  "icons": [
+    { "src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

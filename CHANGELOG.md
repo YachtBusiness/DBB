@@ -2,6 +2,16 @@
 
 Version plan: 0.1 public map live · 0.2 editing moves to Supabase · 0.3 sign-in, applications and claims · 0.4 paid features (contact details for paid members, extra profile links, job board, organisation editing, verified roles), switched on by editors before payments · 0.5 payments (Stripe, tiers, prices) · 1.0 membership network opens · 1.x events and intros. Small fixes in between are 0.x.1, 0.x.2 and so on.
 
+## 0.3.20 (11 November 2026)
+
+Installable and readable offline.
+
+- The app can be installed: a home-screen icon (placeholder: the foil-and-book sail) and a full-screen window. Android and desktop Chrome or Edge offer "Install app" in the menu; on iPhone, Share, then Add to Home Screen.
+- Works offline, read-only: after each online visit the device keeps the page, fonts, d3 and a copy of the public book (entries, links, stories, public profiles). Without a connection the map, entries, internal links, news, calendar and search all work from that copy, with a bar saying when it was saved. Photos and logos work offline once viewed.
+- Pages always load fresh when online, so new versions arrive straight away; the saved copy is only used offline.
+- While offline, forms that send something (apply, sign in, reports, edits) say they need a connection instead of failing. Back online, the book reloads by itself.
+- Nothing signed-in or member-only is saved on the device. Privacy notice updated.
+
 ## 0.3.19 (11 November 2026)
 
 News stories.

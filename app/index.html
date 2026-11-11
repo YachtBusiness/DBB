@@ -3,6 +3,7 @@
 <meta name="description" content="The who's who of yacht racing: the people, teams, clubs, sponsors and events of the sport, and how they connect.">
 <title>The Dark Blue Book</title>
 <link rel="stylesheet" href="fonts/fonts.css">
+<link rel="manifest" href="/manifest.webmanifest"><meta name="theme-color" content="#12264d"><link rel="icon" href="/icons/icon-32.png" sizes="32x32"><link rel="apple-touch-icon" href="/icons/icon-180.png"><meta name="apple-mobile-web-app-title" content="Dark Blue Book"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes">
 <style>
 /* Layout: one working screen. A chart table (the graph) with a reference page beside it, like a pilot book open next to the chart. */
 :root{
@@ -34,6 +35,7 @@ body{background:var(--bg);color:var(--ink);font-family:var(--ui);font-size:14px;
 button,input,select,textarea{font:inherit;color:inherit}
 :focus-visible{outline:2px solid var(--t-team);outline-offset:2px}
 
+.offbar{background:#8a5a00;color:#fff;font-size:13px;padding:6px 20px;text-align:center}.offbar button{font:inherit;color:inherit;background:none;border:0;text-decoration:underline;cursor:pointer;padding:0 0 0 6px}
 .top{background:var(--navy);color:var(--on-navy);padding:12px 20px;display:flex;flex-wrap:wrap;gap:12px 24px;align-items:center}
 .brand{display:flex;flex-direction:column;min-width:0;margin-right:auto}
 .brand h1{font-family:var(--display);font-weight:600;font-size:24px;line-height:1.1;margin:0;letter-spacing:.005em}
@@ -266,11 +268,12 @@ label.btn{display:inline-block;flex-direction:row;color:#0e1d3a;font-size:14px}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 
+<div class="offbar" id="offbar" hidden role="status"></div>
 <header class="top">
-  <div class="brand"><h1><a href="./" class="home" id="home" title="Back to the overview">The Dark Blue Book</a></h1><span>The who's who of yacht racing <small id="ver" style="opacity:.6;margin-left:6px">v0.3.19</small></span></div>
+  <div class="brand"><h1><a href="./" class="home" id="home" title="Back to the overview">The Dark Blue Book</a></h1><span>The who's who of yacht racing <small id="ver" style="opacity:.6;margin-left:6px">v0.3.20</small></span></div>
   <div class="join"><button type="button" class="apply" data-join="1">Join</button><button type="button" class="acct" data-acct="1">Sign in</button></div>
   <button type="button" class="menu-btn" id="menuBtn" aria-label="Menu" aria-expanded="false" aria-controls="menu"><svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="M2 4h14M2 9h14M2 14h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
-  <nav class="menu" id="menu" hidden aria-label="Menu"><button type="button" class="acct" data-cal="1">Calendar</button><button type="button" class="acct" data-allnews="1">News</button><button type="button" class="acct" data-fb="1">Send feedback</button><a href="privacy.html">Privacy</a><details class="sub"><summary>Contact us</summary><a href="https://wa.me/61439790410" target="_blank" rel="noopener">WhatsApp</a><a href="https://www.linkedin.com/groups/2023604/" target="_blank" rel="noopener">LinkedIn</a><a href="https://www.facebook.com/darkbluebook" target="_blank" rel="noopener">Facebook</a><a href="mailto:editor@darkbluebook.com">Email</a></details><small>© The Dark Blue Book · v0.3.19</small></nav>
+  <nav class="menu" id="menu" hidden aria-label="Menu"><button type="button" class="acct" data-cal="1">Calendar</button><button type="button" class="acct" data-allnews="1">News</button><button type="button" class="acct" data-fb="1">Send feedback</button><button type="button" class="acct" id="installBtn" hidden>Install app</button><a href="privacy.html">Privacy</a><details class="sub"><summary>Contact us</summary><a href="https://wa.me/61439790410" target="_blank" rel="noopener">WhatsApp</a><a href="https://www.linkedin.com/groups/2023604/" target="_blank" rel="noopener">LinkedIn</a><a href="https://www.facebook.com/darkbluebook" target="_blank" rel="noopener">Facebook</a><a href="mailto:editor@darkbluebook.com">Email</a></details><small>© The Dark Blue Book · v0.3.20</small></nav>
   <button type="button" class="filters-btn" id="filtersBtn" aria-expanded="false" aria-controls="filters">Filters</button>
   <div class="filters" id="filters">
   <div class="lens" role="group" aria-label="What to show">
@@ -292,7 +295,7 @@ label.btn{display:inline-block;flex-direction:row;color:#0e1d3a;font-size:14px}
   </section>
   <aside id="panel" aria-live="polite"></aside>
 </main>
-<footer class="foot" aria-label="Contact"><a href="https://wa.me/61439790410" target="_blank" rel="noopener">WhatsApp</a><a href="https://www.linkedin.com/groups/2023604/" target="_blank" rel="noopener">LinkedIn</a><a href="https://www.facebook.com/darkbluebook" target="_blank" rel="noopener">Facebook</a><a href="mailto:editor@darkbluebook.com">Email</a><button type="button" class="acct" data-cal="1">Calendar</button><button type="button" class="acct" data-allnews="1">News</button><button type="button" class="acct" data-fb="1">Send feedback</button><a href="privacy.html">Privacy</a><span>© The Dark Blue Book · v0.3.19</span></footer>
+<footer class="foot" aria-label="Contact"><a href="https://wa.me/61439790410" target="_blank" rel="noopener">WhatsApp</a><a href="https://www.linkedin.com/groups/2023604/" target="_blank" rel="noopener">LinkedIn</a><a href="https://www.facebook.com/darkbluebook" target="_blank" rel="noopener">Facebook</a><a href="mailto:editor@darkbluebook.com">Email</a><button type="button" class="acct" data-cal="1">Calendar</button><button type="button" class="acct" data-allnews="1">News</button><button type="button" class="acct" data-fb="1">Send feedback</button><a href="privacy.html">Privacy</a><span>© The Dark Blue Book · v0.3.20</span></footer>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
 <script>
@@ -579,7 +582,7 @@ async function token(){if(!auth)return null;
   if(auth.expires_at-60>Date.now()/1000)return auth.access_token;
   const r=await fetch(`${SB_URL}/auth/v1/token?grant_type=refresh_token`,{method:'POST',headers:{apikey:SB_KEY,'Content-Type':'application/json'},body:JSON.stringify({refresh_token:auth.refresh_token})});
   if(!r.ok){saveAuth(null);return null}const j=await r.json();saveAuth({access_token:j.access_token,refresh_token:j.refresh_token,expires_at:j.expires_at||Date.now()/1000+j.expires_in});return auth.access_token}
-async function api(method,path,body){const t=await token();if(!t)throw new Error('401 not signed in');
+async function api(method,path,body){if(!navigator.onLine)throw new Error(OFFLINE_MSG);const t=await token();if(!t)throw new Error('401 not signed in');
   const r=await fetch(`${SB_URL}/rest/v1/${path}`,{method,headers:{apikey:SB_KEY,Authorization:'Bearer '+t,'Content-Type':'application/json',Prefer:'return=representation'},body:body?JSON.stringify(body):undefined});
   const txt=await r.text();if(!r.ok)throw new Error(r.status+' '+txt);const rows=txt?JSON.parse(txt):[];
   if(method!=='DELETE'&&Array.isArray(rows)&&!rows.length)throw new Error('403 row-level security: nothing was saved');return rows}
@@ -931,7 +934,7 @@ document.addEventListener('click',e=>{const b=e.target.closest('[data-join]');if
 let PROFILES=new Map(),EDITOR_ROLES=[],IS_OWNER=false,MEMBERS_BY_ENTITY=new Map(),pdraft=null,photoBusy='';
 const photoUrl=p=>p?`${SB_URL}/storage/v1/object/public/avatars/${p}`:'';
 const SILHOUETTE=`<svg viewBox="0 0 80 80" aria-hidden="true"><circle cx="40" cy="30" r="13" fill="currentColor"/><path d="M14 72c2-15 13-23 26-23s24 8 26 23" fill="currentColor"/></svg>`;
-const avatar=(path,name,cls='')=>path?`<img class="av ${cls}" src="${esc(photoUrl(path))}" alt="${esc(name)}" width="400" height="400" loading="lazy">`:`<span class="av ph ${cls}" role="img" aria-label="No photo yet">${SILHOUETTE}</span>`;
+const avatar=(path,name,cls='')=>path?`<img class="av ${cls}" crossorigin="anonymous" src="${esc(photoUrl(path))}" alt="${esc(name)}" width="400" height="400" loading="lazy">`:`<span class="av ph ${cls}" role="img" aria-label="No photo yet">${SILHOUETTE}</span>`;
 const monthYear=d=>d?new Date(d).toLocaleDateString('en-GB',{month:'short',year:'numeric'}):'';
 async function loadProfiles(){try{const r=await fetch(`${SB_URL}/rest/v1/rpc/public_profiles`,{method:'POST',headers:{apikey:SB_KEY,'Content-Type':'application/json'},body:'{}'});PROFILES=new Map((r.ok?await r.json():[]).map(p=>[p.entity_id,p]))}catch(e){PROFILES=new Map()}}
 async function loadRoles(){EDITOR_ROLES=[];IS_OWNER=false;MEMBERS_BY_ENTITY=new Map();if(!canEdit)return;
@@ -1122,14 +1125,14 @@ function orgProfileBlock(e){if(e.type!=='org')return'';
   if(e.contactEmail)links.push(`<a href="mailto:${esc(e.contactEmail)}">${esc(e.contactEmail)}</a>`);
   const edit=(canEditOrg(e.id)?`<div class="acts"><button type="button" class="btn" data-orgprof="${esc(e.id)}">${hasOrgProfile(e)?'Edit profile':'Add a profile'}</button></div>`:'')+orgActions(e);
   if(!hasOrgProfile(e))return edit;
-  return`<section class="prof org">${e.logo?`<img class="logo" src="${esc(logoUrl(e.logo))}" alt="${esc(e.name)} logo" loading="lazy">`:''}<div class="pbody">
+  return`<section class="prof org">${e.logo?`<img class="logo" crossorigin="anonymous" src="${esc(logoUrl(e.logo))}" alt="${esc(e.name)} logo" loading="lazy">`:''}<div class="pbody">
     ${e.about?`<p class="pbio">${esc(e.about)}</p>`:''}${links.length?`<p class="plinks">${links.join('')}</p>`:''}${edit}</div></section>`}
 function formOrgProfile(){const e=E.get(editing);if(!e){mode='view';return render()}
   const d=odraft||(odraft={about:e.about||'',website:e.website||'',linkedin:e.linkedin||'',instagram:e.instagram||'',other_social:e.otherSocial||'',contact_email:e.contactEmail||''});
   panel.innerHTML=`<form id="fo" novalidate><div><div class="kind"><i style="background:${tvar(e)}"></i>${esc(kindLabel(e))}</div><h2>${esc(e.name)}: profile</h2>
     <p class="note">Shown at the top of the entry, to everyone. Fill in what you have; empty parts don’t show.</p></div>
     ${msg?`<div class="msg">${esc(msg)}</div>`:''}
-    <section class="photo">${e.logo?`<img class="logo big" src="${esc(logoUrl(e.logo))}" alt="">`:'<span class="logo big ph">No logo</span>'}<div class="pcol">
+    <section class="photo">${e.logo?`<img class="logo big" crossorigin="anonymous" src="${esc(logoUrl(e.logo))}" alt="">`:'<span class="logo big ph">No logo</span>'}<div class="pcol">
       <div class="acts"><label class="btn" for="of-file">${e.logo?'Change logo':'Add a logo'}</label>${e.logo?'<button type="button" class="btn bad" data-rmlogo="1">Remove</button>':''}</div>
       <input type="file" id="of-file" accept="image/png,image/jpeg,image/webp,image/svg+xml" hidden>
       <p class="who">${logoBusy?esc(logoBusy):'PNG with a transparent background works best. It’s fitted inside a square, not cropped.'}</p></div></section>
@@ -1464,14 +1467,37 @@ const SB_URL='https://mntfwjwjcfdanxfpipgm.supabase.co',SB_KEY='sb_publishable_X
 async function fetchAll(table,cols,order='id'){const out=[];for(let from=0;;from+=1000){
   const r=await fetch(`${SB_URL}/rest/v1/${table}?select=${cols}&order=${order}`,{headers:{apikey:SB_KEY,Range:`${from}-${from+999}`,'Range-Unit':'items'}});
   if(!r.ok)throw new Error(table+' '+r.status);const rows=await r.json();out.push(...rows);if(rows.length<1000)return out}}
-async function start(){
-  try{const [es,ls,fs]=await Promise.all([fetchAll('entities','id,name,type,sectors,level,country,note,origin,sector_note,logo_path,about,website,linkedin,instagram,other_social,contact_email,start_date,end_date,dates_provisional'),fetchAll('links','id,from_id,to_id,role,cat,context_id,start_date,end_date,source,note,created_at,origin'),fetchAll('features','slot,position,entity_id,headline,link','slot,position').catch(()=>[])]);
-    FEAT=fs;await Promise.all([loadProfiles(),loadStories()]);
+async function start(){let es,ls,fs;
+  try{try{[es,ls,fs]=await Promise.all([fetchAll('entities','id,name,type,sectors,level,country,note,origin,sector_note,logo_path,about,website,linkedin,instagram,other_social,contact_email,start_date,end_date,dates_provisional'),fetchAll('links','id,from_id,to_id,role,cat,context_id,start_date,end_date,source,note,created_at,origin'),fetchAll('features','slot,position,entity_id,headline,link','slot,position').catch(()=>[])]);
+    FEAT=fs;await Promise.all([loadProfiles(),loadStories()]);OFFLINE_AT=null;saveSnap(es,ls,fs)}
+    catch(err){const sn=await readSnap();if(!sn)throw err;({es,ls,fs}=sn);FEAT=fs;STORIES=sn.stories||[];PROFILES=new Map(sn.profiles||[]);OFFLINE_AT=sn.at}
     db={};E=new Map(es.map(x=>[x.id,norm({id:x.id,name:x.name,type:x.type,sectors:x.sectors||[],level:x.level||'',country:x.country||'',note:x.note||'',origin:x.origin||'editorial',sectorNote:x.sector_note||'',logo:x.logo_path||'',about:x.about||'',website:x.website||'',linkedin:x.linkedin||'',instagram:x.instagram||'',otherSocial:x.other_social||'',contactEmail:x.contact_email||'',startDate:x.start_date||'',endDate:x.end_date||'',provisional:!!x.dates_provisional})]));
     L=ls.map(l=>({id:l.id,from:l.from_id,to:l.to_id,role:l.role,cat:l.cat,context:l.context_id||'',start:l.start_date||'',end:l.end_date||'',source:l.source||'',note:l.note||'',created:l.created_at||'',origin:l.origin||'editorial'}));
-    loaded={e:true,l:true};fillScope();MAXY=Math.max(NOW,...L.map(l=>yr(l.start)).filter(v=>v!=null));syncWhen();await checkAuth();if(justConfirmed&&mode==='view'&&!sel)mode='account';else if(freshSignin&&!checkDone()&&mode==='view'&&!location.hash)mode='account';freshSignin=false;yrEl.min=Math.max(YR_FLOOR,Math.min(NOW-1,...L.map(l=>yr(l.start)||NOW)));build();render()}
+    loaded={e:true,l:true};fillScope();MAXY=Math.max(NOW,...L.map(l=>yr(l.start)).filter(v=>v!=null));syncWhen();if(!OFFLINE_AT)await checkAuth();offBar();if(justConfirmed&&mode==='view'&&!sel)mode='account';else if(freshSignin&&!checkDone()&&mode==='view'&&!location.hash)mode='account';freshSignin=false;yrEl.min=Math.max(YR_FLOOR,Math.min(NOW-1,...L.map(l=>yr(l.start)||NOW)));build();render()}
   catch(e){db=null;loaded={e:true,l:true};$('#blank').hidden=false;$('#blank').firstElementChild.textContent='The book could not be loaded. Please try again in a moment.'}
 }
+
+/* ---------- offline (0.3.20) ---------- */
+/* After each successful load the page saves a copy of the public book (the same data any visitor gets) on the device.
+   Offline, the book opens from that copy, read-only, with a bar saying when it was saved. Nothing signed-in is saved. */
+let OFFLINE_AT=null;const OFFLINE_MSG='You’re offline. This needs a connection; try again when you’re back online.';
+async function saveSnap(es,ls,fs){try{if(!('caches' in window))return;const c=await caches.open('dbb-data');
+  await c.put('/__book.json',new Response(JSON.stringify({at:Date.now(),es,ls,fs,stories:STORIES,profiles:[...PROFILES.entries()]}),{headers:{'Content-Type':'application/json'}}))}catch(e){}}
+async function readSnap(){try{if(!('caches' in window))return null;const r=await(await caches.open('dbb-data')).match('/__book.json');return r?await r.json():null}catch(e){return null}}
+function offBar(){const b=$('#offbar');if(!b)return;const off=!navigator.onLine||OFFLINE_AT;
+  if(!off){b.hidden=true;return}const when=OFFLINE_AT?new Date(OFFLINE_AT).toLocaleString('en-GB',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}):'';
+  b.innerHTML=navigator.onLine?`Showing the book as saved ${esc(when)}. <button type="button" id="offretry">Load the latest</button>`:`Offline${when?`: showing the book as saved ${esc(when)}`:''}. Applying, sign-in, reports and edits need a connection.`;b.hidden=false}
+window.addEventListener('offline',offBar);
+window.addEventListener('online',()=>{offBar();if(OFFLINE_AT)start()});
+document.addEventListener('click',e=>{if(e.target.id==='offretry')start()});
+/* forms that send something are stopped with a message while offline */
+document.addEventListener('submit',e=>{if(navigator.onLine)return;e.preventDefault();e.stopImmediatePropagation();const f=e.target;let m=f.querySelector('.msg.offline');
+  if(!m){m=document.createElement('div');m.className='msg offline';f.prepend(m)}m.textContent=OFFLINE_MSG},true);
+/* install: offered in the menu where the browser supports it (Android, desktop Chrome and Edge). iPhone: Share, then Add to Home Screen. */
+let installEv=null;window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();installEv=e;$('#installBtn').hidden=false});
+$('#installBtn').addEventListener('click',async()=>{if(!installEv)return;installEv.prompt();try{await installEv.userChoice}catch(x){}installEv=null;$('#installBtn').hidden=true});
+window.addEventListener('appinstalled',()=>{$('#installBtn').hidden=true});
+if('serviceWorker' in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('/sw.js').catch(()=>{}));
 try{const s=localStorage.getItem('dbb-lens');if(s&&LENS[s]!==undefined&&s!=='all'){lens=s;document.querySelectorAll('.lens button').forEach(x=>x.setAttribute('aria-pressed',x.dataset.lens===s))}}catch(e){}
 start();
 })();
