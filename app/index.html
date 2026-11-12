@@ -289,11 +289,11 @@ label.btn{display:inline-block;flex-direction:row;color:#0e1d3a;font-size:14px}
 <noscript><p style="padding:12px 20px;margin:0;background:#fff3cd;color:#12264d">The map needs JavaScript. You can still read the <a href="/news">yacht racing news</a> or the <a href="/privacy">privacy notice</a>.</p></noscript>
 <div class="offbar" id="offbar" hidden role="status"></div>
 <header class="top">
-  <div class="brand"><h1><a href="./" class="home" id="home" title="Back to the overview">The Dark Blue Book</a></h1><span>The who's who of yacht racing <a href="#update" id="ver" data-updates="1" title="What’s new" style="opacity:.6;margin-left:6px;color:inherit;font-size:smaller">v0.3.26</a></span></div>
+  <div class="brand"><h1><a href="./" class="home" id="home" title="Back to the overview">The Dark Blue Book</a></h1><span>The who's who of yacht racing <a href="#update" id="ver" data-updates="1" title="What’s new" style="opacity:.6;margin-left:6px;color:inherit;font-size:smaller">v0.3.27</a></span></div>
   <nav class="topnav" aria-label="Sections"><button type="button" data-cal="1">Calendar</button><button type="button" data-allnews="1">News</button><button type="button" data-media="1">Media</button><button type="button" data-dashboard="1" hidden>Dashboard</button></nav>
   <div class="join"><button type="button" class="apply" data-join="1">Join</button><button type="button" class="acct" data-acct="1">Sign in</button><span class="offlab" id="offlab" hidden>Offline</span></div>
   <button type="button" class="menu-btn" id="menuBtn" aria-label="Menu" aria-expanded="false" aria-controls="menu"><svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="M2 4h14M2 9h14M2 14h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
-  <nav class="menu" id="menu" hidden aria-label="Menu"><button type="button" class="acct mo" data-cal="1">Calendar</button><button type="button" class="acct mo" data-allnews="1">News</button><button type="button" class="acct mo" data-media="1">Media</button><button type="button" class="acct mo" data-dashboard="1" hidden>Dashboard</button><button type="button" class="acct" data-updates="1">What’s new</button><button type="button" class="acct" data-fb="1">Send feedback</button><button type="button" class="acct" id="installBtn" hidden>Install app</button><a href="privacy.html">Privacy</a><details class="sub"><summary>Contact us</summary><a href="https://wa.me/61439790410" target="_blank" rel="noopener">WhatsApp</a><a href="https://www.linkedin.com/groups/2023604/" target="_blank" rel="noopener">LinkedIn</a><a href="https://www.facebook.com/darkbluebook" target="_blank" rel="noopener">Facebook</a><a href="mailto:editor@darkbluebook.com">Email</a></details><small>© The Dark Blue Book · v0.3.26</small></nav>
+  <nav class="menu" id="menu" hidden aria-label="Menu"><button type="button" class="acct mo" data-cal="1">Calendar</button><button type="button" class="acct mo" data-allnews="1">News</button><button type="button" class="acct mo" data-media="1">Media</button><button type="button" class="acct mo" data-dashboard="1" hidden>Dashboard</button><button type="button" class="acct" data-updates="1">What’s new</button><button type="button" class="acct" data-fb="1">Send feedback</button><button type="button" class="acct" id="installBtn" hidden>Install app</button><a href="privacy.html">Privacy</a><details class="sub"><summary>Contact us</summary><a href="https://wa.me/61439790410" target="_blank" rel="noopener">WhatsApp</a><a href="https://www.linkedin.com/groups/2023604/" target="_blank" rel="noopener">LinkedIn</a><a href="https://www.facebook.com/darkbluebook" target="_blank" rel="noopener">Facebook</a><a href="mailto:editor@darkbluebook.com">Email</a></details><small>© The Dark Blue Book · v0.3.27</small></nav>
   <button type="button" class="filters-btn" id="filtersBtn" aria-expanded="false" aria-controls="filters">Filters</button>
   <div class="filters" id="filters">
   <div class="lens" role="group" aria-label="What to show">
@@ -508,6 +508,7 @@ function render(){navMark();
   if(mode==='updates')return listUpdates();
   if(mode==='dashboard')return listDashboard();
   if(mode==='news')return formNews();
+  if(mode==='latest')return formLatest();
   if(mode==='orgpeople')return formPeople();
   if(mode==='claims')return listClaims();
   if(mode==='claimrev')return formClaimReview();
@@ -520,7 +521,7 @@ function render(){navMark();
       if(g.length)h+=`<details class="grp"${h?'':' open'}><summary><b style="border-color:var(--c-${c})"></b>${c==='ppl'&&e.type==='person'?'Role':CATS[c]} <span class="cnt">${g.length}</span></summary><ul class="rel">${g.map(l=>row(l,sel)).join('')}</ul></details>`}
     if(past.length)h+=`<details class="grp"><summary><b style="border-color:var(--muted)"></b>Past <span class="cnt">${past.length}</span></summary><ul class="rel">${past.map(l=>row(l,sel)).join('')}</ul></details>`;
     panel.innerHTML=`<div><div class="kind"><i style="background:${tvar(e)}"></i>${esc(kindLabel(e))}${e.sectors.length?`<span class="sec">${esc(e.sectors.join(' \u00b7 '))}</span>`:''}${e.origin==='member'?'<span class="chip mem">added by member</span>':''}${e.country?`<span class="cc">${esc(e.country)}</span>`:''}</div>${canEdit&&e.origin==='member'?`<div class="owner"><span>Added by a member${e.sectorNote?': “'+esc(e.sectorNote)+'”':''}. Check it, then</span><button type="button" class="btn" data-promote="entities" data-pid="${esc(e.id)}">Mark as checked</button></div>`:''}
-      <h2>${esc(e.name)}</h2>${eventDatesBlock(e)}${e.note?`<p class="note">${esc(e.note)}</p>`:''}</div>${profileBlock(e)}${e.type!=='org'?newsBlock(e):''}${orgProfileBlock(e)}${e.type==='org'?newsBlock(e):''}${m}
+      <h2>${esc(e.name)}</h2>${eventDatesBlock(e)}${e.note?`<p class="note">${esc(e.note)}</p>`:''}</div>${profileBlock(e)}${e.type!=='org'?newsBlock(e):''}${orgProfileBlock(e)}${latestBlock(e)}${e.type==='org'?newsBlock(e):''}${m}
       ${h||'<p class="note">No links recorded yet.</p>'}${(t=>t?`<details class="tld"><summary>Timeline</summary>${t}</details>`:'')(timeline(mine,sel))}${tools}<div class="acts"><button type="button" class="btn" data-go="">Back to overview</button>${window.claude?'':'<button type="button" class="btn" data-copy="1">Copy link</button>'}<button type="button" class="btn" data-report="1">Report an error</button></div>`;
     return}
   const vis=new Set(visibleLinks().map(l=>l.id)),A=scope?L.filter(l=>vis.has(l.id)):L.filter(active);
@@ -1509,7 +1510,7 @@ const within=(p,ms)=>Promise.race([p,new Promise((_,no)=>setTimeout(()=>no(new E
 let SHOWN_SIG='';
 function sigOf(es,ls,fs){const j=JSON.stringify([es,ls,fs,STORIES,[...PROFILES.entries()]]);let h=0;for(let i=0;i<j.length;i++)h=(h*31+j.charCodeAt(i))|0;return j.length+':'+h}
 function useData(es,ls,fs){FEAT=fs;
-    db={};E=new Map(es.map(x=>[x.id,norm({id:x.id,name:x.name,type:x.type,sectors:x.sectors||[],level:x.level||'',country:x.country||'',note:x.note||'',origin:x.origin||'editorial',sectorNote:x.sector_note||'',mediaType:x.media_type||'',logo:x.logo_path||'',about:x.about||'',website:x.website||'',linkedin:x.linkedin||'',instagram:x.instagram||'',otherSocial:x.other_social||'',contactEmail:x.contact_email||'',startDate:x.start_date||'',endDate:x.end_date||'',provisional:!!x.dates_provisional})]));
+    db={};E=new Map(es.map(x=>[x.id,norm({id:x.id,name:x.name,type:x.type,sectors:x.sectors||[],level:x.level||'',country:x.country||'',note:x.note||'',origin:x.origin||'editorial',sectorNote:x.sector_note||'',mediaType:x.media_type||'',latestUrl:x.latest_url||'',latestTitle:x.latest_title||'',latestDate:x.latest_date||'',latestKind:x.latest_kind||'',logo:x.logo_path||'',about:x.about||'',website:x.website||'',linkedin:x.linkedin||'',instagram:x.instagram||'',otherSocial:x.other_social||'',contactEmail:x.contact_email||'',startDate:x.start_date||'',endDate:x.end_date||'',provisional:!!x.dates_provisional})]));
     L=ls.map(l=>({id:l.id,from:l.from_id,to:l.to_id,role:l.role,cat:l.cat,context:l.context_id||'',start:l.start_date||'',end:l.end_date||'',source:l.source||'',note:l.note||'',created:l.created_at||'',origin:l.origin||'editorial'}));
     loaded={e:true,l:true};fillScope();MAXY=Math.max(NOW,...L.map(l=>yr(l.start)).filter(v=>v!=null));syncWhen();yrEl.min=Math.max(YR_FLOOR,Math.min(NOW-1,...L.map(l=>yr(l.start)||NOW)))}
 /* 0.3.20: open straight from the saved copy when there is one, then refresh from the network in the background.
@@ -1517,7 +1518,7 @@ function useData(es,ls,fs){FEAT=fs;
 async function start(){
   if(!SHOWN_SIG){const sn=await readSnap();if(sn){STORIES=sn.stories||[];PROFILES=new Map(sn.profiles||[]);useData(sn.es,sn.ls,sn.fs);OFFLINE_AT=sn.at;SHOWN_SIG=sigOf(sn.es,sn.ls,sn.fs);offBar(true);build();render()}}
   try{if(!navigator.onLine)throw new Error('offline');
-    const [es,ls,fs]=await within(Promise.all([fetchAll('entities','id,name,type,sectors,level,country,note,origin,sector_note,logo_path,about,website,linkedin,instagram,other_social,contact_email,start_date,end_date,dates_provisional,media_type'),fetchAll('links','id,from_id,to_id,role,cat,context_id,start_date,end_date,source,note,created_at,origin'),fetchAll('features','slot,position,entity_id,headline,link','slot,position').catch(()=>[])]),20000);
+    const [es,ls,fs]=await within(Promise.all([fetchAll('entities','id,name,type,sectors,level,country,note,origin,sector_note,logo_path,about,website,linkedin,instagram,other_social,contact_email,start_date,end_date,dates_provisional,media_type,latest_url,latest_title,latest_date,latest_kind'),fetchAll('links','id,from_id,to_id,role,cat,context_id,start_date,end_date,source,note,created_at,origin'),fetchAll('features','slot,position,entity_id,headline,link','slot,position').catch(()=>[])]),20000);
     await Promise.all([loadProfiles(),loadStories()]);OFFLINE_AT=null;
     const sig=sigOf(es,ls,fs),changed=sig!==SHOWN_SIG;if(changed)useData(es,ls,fs);
     await checkAuth();offBar();if(justConfirmed&&mode==='view'&&!sel)mode='account';else if(freshSignin&&!checkDone()&&mode==='view'&&!location.hash)mode='account';freshSignin=false;
@@ -1546,7 +1547,8 @@ function listMedia(){
   const outletRow=o=>{const mine=cur.filter(l=>l.from===o.id||l.to===o.id),ppl=mine.filter(l=>other(l,o.id).type==='person'),rest=mine.filter(l=>!['person','group'].includes(other(l,o.id).type));
     ppl.forEach(l=>add(other(l,o.id),l.role,o));
     const q=[o.name,MEDIA_TYPE_ONE[o.mediaType]||'',...ppl.map(l=>other(l,o.id).name+' '+l.role),...rest.map(l=>other(l,o.id).name+' '+l.role)].join(' ').toLowerCase();
-    return`<li data-q="${esc(q)}"><div class="rl">${go(o)}</div>
+    const lt=o.latestUrl?`<div class="meta"><span><span class="role">${esc(latestLabel(o))}:</span> <a href="${esc(o.latestUrl)}" target="_blank" rel="noopener">${esc(o.latestTitle||newsHost(o.latestUrl))} ↗</a></span></div>`:'';
+    return`<li data-q="${esc(q)}"><div class="rl">${go(o)}</div>${lt}
       ${ppl.length?`<div class="meta">${ppl.map(l=>`<span>${go(other(l,o.id))} <span class="role">${esc(l.role)}</span></span>`).join('')}</div>`:''}
       ${rest.length?`<div class="meta">${rest.map(l=>`<span>${go(other(l,o.id))} <span class="role">${esc(l.role)}</span></span>`).join('')}</div>`:''}</li>`};
   const sec=(title,rows,note)=>rows.length?`<section class="msec"><h3>${esc(title)} <span class="cnt">${rows.length}</span></h3>${note?`<p class="note">${esc(note)}</p>`:''}<ul class="rel">${rows.join('')}</ul></section>`:'';
@@ -1559,6 +1561,8 @@ function listMedia(){
   panel.innerHTML=`<div><div class="kind"><i style="background:var(--t-media,var(--t-org))"></i>Cohort</div><h2>Media</h2>
     <p class="note">The outlets of yacht racing and the people who work for them: ${outlets.length} outlets and ${people.size} people. Only entries marked as media count; press and communications staff of teams, events and agencies aren’t included unless they also belong to an outlet. Freelancers with no company of their own in the book are linked to Media directly.</p></div>
     <label class="mfilter">Filter<input id="media-q" type="search" placeholder="A name, outlet, role or type" value="${esc(mediaQ)}"></label>
+    ${(()=>{const lat=outlets.filter(o=>o.latestUrl).sort((a,b)=>(b.latestDate||'').localeCompare(a.latestDate||'')).slice(0,10);
+      return lat.length?`<h3 class="mhead">Latest from the media</h3>${sec('Newest first',lat.map(o=>`<li data-q="${esc((o.name+' '+(o.latestTitle||'')).toLowerCase())}"><div class="rl"><a class="nhead" href="${esc(o.latestUrl)}" target="_blank" rel="noopener">${esc(o.latestTitle||newsHost(o.latestUrl))} ↗</a></div><div class="meta">${go(o)}<span class="role">${esc(latestLabel(o).replace('Latest ',''))}</span>${o.latestDate?`<span>${esc(newsDay(o.latestDate))}</span>`:''}</div></li>`))}`:''})()}
     <h3 class="mhead">Outlets</h3>
     ${outletHtml||'<p class="note">No media outlets yet.</p>'}
     ${freeRows.length?`<h3 class="mhead">Freelance</h3>${sec('Freelance',freeRows,'Photographers, writers and presenters with no outlet of their own in the book.')}`:''}
@@ -1574,6 +1578,37 @@ panel.addEventListener('input',e=>{if(e.target.id!=='media-q')return;mediaQ=e.ta
 panel.addEventListener('click',e=>{const b=e.target.closest('[data-mediacopy]');if(!b)return;const u=location.href.split('#')[0].split('?')[0]+'#'+MEDIA_HASH;
   try{navigator.clipboard.writeText(u).then(()=>{b.textContent='Link copied'},()=>{b.textContent=u})}catch(x){b.textContent=u}});
 document.addEventListener('click',e=>{const b=e.target.closest('[data-media]');if(!b)return;e.preventDefault();const m=document.getElementById('menu');if(m)m.hidden=true;mediaQ='';pick(MEDIA_ID);showPanel()});
+
+/* ---------- latest piece (0.3.27) ---------- */
+/* A media outlet's newest video, episode or article, set by its owners and managers (registered media) or editors.
+   Separate from News. Picking it up automatically from the outlet's feed is planned as a paid feature. */
+const LATEST_KINDS={video:'Latest video',episode:'Latest episode',article:'Latest article',gallery:'Latest gallery',other:'Latest',' ':'Latest'};
+const latestLabel=e=>LATEST_KINDS[e.latestKind]||'Latest';
+function latestBlock(e){if(!isMediaOrg(e))return'';const can=canEditOrg(e.id);
+  if(!e.latestUrl)return can?`<div class="acts"><button type="button" class="btn" data-latest="${esc(e.id)}">Add your latest piece</button></div>`:'';
+  const h=newsHost(e.latestUrl),d=newsDay(e.latestDate||'');
+  return`<section class="news latest"><h3>${esc(latestLabel(e))}</h3><div class="nitem"><a href="${esc(e.latestUrl)}" target="_blank" rel="noopener">${esc(e.latestTitle||h||'Watch or read')} ↗</a>
+    <p class="who">${[h,d].filter(Boolean).map(esc).join(' · ')}${can?` <button type="button" class="linky" data-latest="${esc(e.id)}">Edit</button>`:''}</p></div></section>`}
+function formLatest(){const e=E.get(editing);if(!e||!canEditOrg(e.id)){mode='view';editing=null;return render()}
+  panel.innerHTML=`<form id="flt" novalidate><div><h2>Latest piece: ${esc(e.name)}</h2>
+    <p class="note">Your newest video, episode or article. It shows on ${esc(e.name)}’s entry and in the Media cohort, and stays until you change it. Picking it up automatically from your channel or feed is coming for paid members.</p></div>
+    ${msg?`<div class="msg">${esc(msg)}</div>`:''}
+    <label>Link<input id="lt-url" type="url" maxlength="500" placeholder="https://…" value="${esc(e.latestUrl||'')}"></label>
+    <label>Title<input id="lt-title" maxlength="160" value="${esc(e.latestTitle||'')}" placeholder="Shown as the link"></label>
+    <div class="two"><label>What it is<select id="lt-kind">${['video','episode','article','gallery','other'].map(k=>opt(k,{video:'Video',episode:'Podcast episode',article:'Article',gallery:'Photo gallery',other:'Something else'}[k],e.latestKind||'video')).join('')}</select></label>
+    <label>Published (optional)<input id="lt-date" type="date" value="${esc(e.latestDate||'')}"></label></div>
+    <div class="acts"><button class="btn go">Save</button>${e.latestUrl?'<button type="button" class="btn bad" data-latestrm="1">Remove</button>':''}<button type="button" class="btn" data-latestcancel="1">Cancel</button></div></form>`}
+async function saveLatest(clear){const e=E.get(editing);const url=clear?'':val('lt-url').trim(),title=clear?'':val('lt-title').trim(),date=clear?null:(val('lt-date')||null),kind=clear?'':val('lt-kind');
+  if(!clear&&!/^https:\/\/[^\s.]+\.[^\s]+$/i.test(url)){msg='The link should be a full web address, starting https://';return render()}
+  try{await rpc('set_latest_piece',{p_entity:e.id,p_url:url,p_title:title,p_date:date,p_kind:kind});
+    Object.assign(e,{latestUrl:url,latestTitle:url?title:'',latestDate:url?date||'':'',latestKind:url?kind:''});
+    sel=e.id;editing=null;mode='view';msg=clear?'Latest piece removed.':'Latest piece saved.';render();panel.scrollTop=0}
+  catch(x){const m=String(x.message||'');msg=/not_manager/.test(m)?'Only the owners and managers of this outlet can set its latest piece.':/not_media/.test(m)?'Only media outlets can have a latest piece.':'Not saved. '+m.slice(0,140);render()}}
+panel.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;const d=b.dataset;
+  if(d.latest){e.stopImmediatePropagation();editing=d.latest;msg='';mode='latest';render();panel.scrollTop=0;return}
+  if(d.latestcancel){e.stopImmediatePropagation();sel=editing;editing=null;mode='view';msg='';return render()}
+  if(d.latestrm){e.stopImmediatePropagation();return saveLatest(true)}},true);
+panel.addEventListener('submit',e=>{if(e.target.id==='flt'){e.preventDefault();e.stopImmediatePropagation();saveLatest(false)}},true);
 
 /* ---------- editor dashboard (0.3.23) ---------- */
 /* One page for editors at #dashboard: every queue and check as a tile showing its latest 5, with a way to see the rest,
@@ -1641,6 +1676,7 @@ panel.addEventListener('click',e=>{const b=e.target.closest('[data-dashmore]');i
    "editors" lines show only to signed-in editors. CHANGELOG.md keeps the technical detail. */
 const UPD_HASH='update';
 const UPDATES=[
+ {v:'0.3.27',d:'2026-11-12',t:'Latest pieces from media outlets',i:['Media outlets can show their newest video, podcast episode or article on their entry and in Media. It’s set by the outlet’s own owners and managers, once they’ve claimed it.']},
  {v:'0.3.26',d:'2026-11-12',t:'Media',i:['Media, in the top bar and the menu: the outlets of yacht racing and the people who work for them in one place, like the media chapter of the printed book. Outlets are sorted by type, with an A to Z of people and a filter.','Freelance photographers, writers and presenters can be listed too.']},
  {v:'0.3.25',d:'2026-11-12',t:'News you can share anywhere',i:['A plain news page at app.darkbluebook.com/news that opens anywhere, quickly, even without JavaScript: search engines and AI tools can read it too.','An RSS feed of the news at app.darkbluebook.com/news.xml, for feed readers.']},
  {v:'0.3.24',d:'2026-11-12',t:'A sandbox for trying things out',x:1,i:['sandbox.dbb-2k3.pages.dev (and any experiment branch) runs on a copy of the book, marked SANDBOX at the top. Changes there never touch the live book. Preview still uses the live book.']},
