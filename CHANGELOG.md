@@ -2,6 +2,15 @@
 
 Version plan: 0.1 public map live · 0.2 editing moves to Supabase · 0.3 sign-in, applications and claims · 0.4 paid features (contact details for paid members, extra profile links, job board, organisation editing, verified roles), switched on by editors before payments · 0.5 payments (Stripe, tiers, prices) · 1.0 membership network opens · 1.x events and intros. Small fixes in between are 0.x.1, 0.x.2 and so on.
 
+## 0.3.24 (12 November 2026)
+
+Sandbox.
+
+- A second Supabase project, dbb-sandbox (kttiojuuynaznqrcwbyy, London), with the same structure as live, built from supabase/migrations, and the apply, welcome and notify functions. No email key is set there, so it never emails anyone.
+- It holds a copy of the public book (entries, links, Featured, stories and tags), read from the live site's public API. No members, accounts, applications, reports or searches are copied, and member account references on entries and links are blanked. Refresh with supabase/sandbox/refresh_from_live.sql: select sandbox.book_fetch(); wait a few seconds; select sandbox.book_import();
+- The app picks its database from its address: app.darkbluebook.com, preview.dbb-2k3.pages.dev and dbb-2k3.pages.dev use the live book; every other address (the sandbox branch at sandbox.dbb-2k3.pages.dev, experiment branches, one-off deployment links, local testing) uses the sandbox, labelled SANDBOX.
+- Photos and logos aren't copied, so they don't show in the sandbox.
+
 ## 0.3.23 (12 November 2026)
 
 Editor dashboard.

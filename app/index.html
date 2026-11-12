@@ -287,11 +287,11 @@ label.btn{display:inline-block;flex-direction:row;color:#0e1d3a;font-size:14px}
 
 <div class="offbar" id="offbar" hidden role="status"></div>
 <header class="top">
-  <div class="brand"><h1><a href="./" class="home" id="home" title="Back to the overview">The Dark Blue Book</a></h1><span>The who's who of yacht racing <a href="#update" id="ver" data-updates="1" title="What’s new" style="opacity:.6;margin-left:6px;color:inherit;font-size:smaller">v0.3.23</a></span></div>
+  <div class="brand"><h1><a href="./" class="home" id="home" title="Back to the overview">The Dark Blue Book</a></h1><span>The who's who of yacht racing <a href="#update" id="ver" data-updates="1" title="What’s new" style="opacity:.6;margin-left:6px;color:inherit;font-size:smaller">v0.3.24</a></span></div>
   <nav class="topnav" aria-label="Sections"><button type="button" data-cal="1">Calendar</button><button type="button" data-allnews="1">News</button><button type="button" data-dashboard="1" hidden>Dashboard</button></nav>
   <div class="join"><button type="button" class="apply" data-join="1">Join</button><button type="button" class="acct" data-acct="1">Sign in</button><span class="offlab" id="offlab" hidden>Offline</span></div>
   <button type="button" class="menu-btn" id="menuBtn" aria-label="Menu" aria-expanded="false" aria-controls="menu"><svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="M2 4h14M2 9h14M2 14h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
-  <nav class="menu" id="menu" hidden aria-label="Menu"><button type="button" class="acct mo" data-cal="1">Calendar</button><button type="button" class="acct mo" data-allnews="1">News</button><button type="button" class="acct mo" data-dashboard="1" hidden>Dashboard</button><button type="button" class="acct" data-updates="1">What’s new</button><button type="button" class="acct" data-fb="1">Send feedback</button><button type="button" class="acct" id="installBtn" hidden>Install app</button><a href="privacy.html">Privacy</a><details class="sub"><summary>Contact us</summary><a href="https://wa.me/61439790410" target="_blank" rel="noopener">WhatsApp</a><a href="https://www.linkedin.com/groups/2023604/" target="_blank" rel="noopener">LinkedIn</a><a href="https://www.facebook.com/darkbluebook" target="_blank" rel="noopener">Facebook</a><a href="mailto:editor@darkbluebook.com">Email</a></details><small>© The Dark Blue Book · v0.3.23</small></nav>
+  <nav class="menu" id="menu" hidden aria-label="Menu"><button type="button" class="acct mo" data-cal="1">Calendar</button><button type="button" class="acct mo" data-allnews="1">News</button><button type="button" class="acct mo" data-dashboard="1" hidden>Dashboard</button><button type="button" class="acct" data-updates="1">What’s new</button><button type="button" class="acct" data-fb="1">Send feedback</button><button type="button" class="acct" id="installBtn" hidden>Install app</button><a href="privacy.html">Privacy</a><details class="sub"><summary>Contact us</summary><a href="https://wa.me/61439790410" target="_blank" rel="noopener">WhatsApp</a><a href="https://www.linkedin.com/groups/2023604/" target="_blank" rel="noopener">LinkedIn</a><a href="https://www.facebook.com/darkbluebook" target="_blank" rel="noopener">Facebook</a><a href="mailto:editor@darkbluebook.com">Email</a></details><small>© The Dark Blue Book · v0.3.24</small></nav>
   <button type="button" class="filters-btn" id="filtersBtn" aria-expanded="false" aria-controls="filters">Filters</button>
   <div class="filters" id="filters">
   <div class="lens" role="group" aria-label="What to show">
@@ -326,7 +326,8 @@ document.addEventListener('submit',e=>{const f=e.target;if(f.dataset.busy){e.pre
   f.dataset.busy='1';const btns=[...f.querySelectorAll('button:not([type=button])')].filter(b=>!b.disabled);btns.forEach(b=>{b.disabled=true;b.classList.add('wait')});
   const check=()=>{if(!f.isConnected)return;if(inflight>0)return setTimeout(check,250);delete f.dataset.busy;btns.forEach(b=>{if(b.classList.contains('wait')){b.disabled=false;b.classList.remove('wait')}})};
   setTimeout(check,400)},true);
-if(location.hostname!=='app.darkbluebook.com'){document.title='[Preview] '+document.title;const v=document.getElementById('ver');if(v)v.insertAdjacentHTML('afterend','<small style="margin-left:8px;background:#e3b040;color:#12264d;border-radius:3px;padding:0 6px;font-weight:600;letter-spacing:.06em">PREVIEW</small>')}
+const LIVE_HOSTS=['app.darkbluebook.com','preview.dbb-2k3.pages.dev','dbb-2k3.pages.dev'],IS_SANDBOX=!LIVE_HOSTS.includes(location.hostname);
+if(location.hostname!=='app.darkbluebook.com'){const lab=IS_SANDBOX?'Sandbox':'Preview';document.title='['+lab+'] '+document.title;const v=document.getElementById('ver');if(v)v.insertAdjacentHTML('afterend','<small style="margin-left:8px;background:'+(IS_SANDBOX?'#7fd1b9':'#e3b040')+';color:#12264d;border-radius:3px;padding:0 6px;font-weight:600;letter-spacing:.06em" title="'+(IS_SANDBOX?'Test copy of the book: changes here don’t touch the live book':'Uses the live book')+'">'+lab.toUpperCase()+'</small>')}
 const TYPES={person:'Person',team:'Team',club:'Yacht club',org:'Organisation',event:'Event',entry:'Entry',class:'Boat class',venue:'Venue',record:'Record'};
 const LEVELS={series:'Series',event:'Event',edition:'Edition',round:'Round'};
 const SECTORS=['sponsor','supplier','owner','media','agency','organiser','governing body','class association','industry body','public body','nonprofit','other'];
@@ -1486,7 +1487,10 @@ legendMember();document.getElementById('memtog').addEventListener('click',()=>se
 
 /* ---------- data ---------- */
 render();
-const SB_URL='https://mntfwjwjcfdanxfpipgm.supabase.co',SB_KEY='sb_publishable_XfrmGdoOfFhWgK0ybagpdA_MxfVZauP';
+/* 0.3.24: live and preview use the real book; every other address (experiment branches such as
+   sandbox.dbb-2k3.pages.dev, one-off deployment links, local testing) uses the sandbox copy (Supabase project dbb-sandbox). */
+const SB_URL=IS_SANDBOX?'https://kttiojuuynaznqrcwbyy.supabase.co':'https://mntfwjwjcfdanxfpipgm.supabase.co',
+  SB_KEY=IS_SANDBOX?'sb_publishable_x3NTVTSCTWkt3aaYtsncwA__-Xd-tt2':'sb_publishable_XfrmGdoOfFhWgK0ybagpdA_MxfVZauP';
 async function fetchAll(table,cols,order='id'){const out=[];for(let from=0;;from+=1000){
   const r=await fetch(`${SB_URL}/rest/v1/${table}?select=${cols}&order=${order}`,{headers:{apikey:SB_KEY,Range:`${from}-${from+999}`,'Range-Unit':'items'}});
   if(!r.ok)throw new Error(table+' '+r.status);const rows=await r.json();out.push(...rows);if(rows.length<1000)return out}}
@@ -1576,6 +1580,7 @@ panel.addEventListener('click',e=>{const b=e.target.closest('[data-dashmore]');i
    "editors" lines show only to signed-in editors. CHANGELOG.md keeps the technical detail. */
 const UPD_HASH='update';
 const UPDATES=[
+ {v:'0.3.24',d:'2026-11-12',t:'A sandbox for trying things out',x:1,i:['sandbox.dbb-2k3.pages.dev (and any experiment branch) runs on a copy of the book, marked SANDBOX at the top. Changes there never touch the live book. Preview still uses the live book.']},
  {v:'0.3.23',d:'2026-11-12',t:'Editor dashboard',x:1,i:['Dashboard in the top bar (menu on phones): applications, claims and reports waiting, latest changes, searches, entries that need attention, and Supabase usage against the Free plan limits, all on one page. Each list shows its latest 5, with Show all for the rest.']},
  {v:'0.3.22',d:'2026-11-11',t:'A tidier top bar on computers',i:['Calendar and News are at the top of the screen, next to the title.','Everything else (What’s new, Send feedback, Install app, Privacy and the contact links) is in the menu button at the top right, as on phones. The bar along the bottom has gone, so the map has more room.','The map filters sit in their own row under the top bar.']},
  {v:'0.3.21',d:'2026-11-11',t:'What’s new',i:['This page: what’s been added and changed, newest first. Open it from the menu, the footer or the version number next to the title.']},
