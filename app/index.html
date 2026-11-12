@@ -35,6 +35,15 @@ body{background:var(--bg);color:var(--ink);font-family:var(--ui);font-size:14px;
 button,input,select,textarea{font:inherit;color:inherit}
 :focus-visible{outline:2px solid var(--t-team);outline-offset:2px}
 
+.dgrid{display:grid;grid-template-columns:1fr;gap:14px}
+main.dash aside>*{max-width:none}main.dash aside>div:first-child,main.dash aside>.msg{max-width:720px}
+@media (min-width:861px){main.dash{grid-template-columns:1fr}main.dash .chart{display:none}.dgrid{grid-template-columns:repeat(auto-fill,minmax(330px,1fr));align-items:start}}
+.dt{border:1px solid var(--line);border-radius:8px;padding:12px 14px;display:flex;flex-direction:column;gap:8px;min-width:0;background:var(--surface)}
+.dt h3{margin:0;display:flex;align-items:baseline;gap:8px;font-size:14px}.dt h3 .cnt{font-weight:400;color:var(--muted)}.dt.has h3 .cnt{color:var(--ink);font-weight:600}
+.dt .rel{max-height:none}.dt .acts{margin-top:auto}.dt .chg h3{font-size:14px}
+.dt-use .bar{display:inline-block;width:80px;height:6px;border-radius:3px;background:var(--wash);overflow:hidden;align-self:center}.dt-use .bar i{display:block;height:100%;background:var(--navy)}
+.dt-use .near{color:#9a6200;font-weight:600}.dt-use .over{color:#b3261e;font-weight:600}.dt-use.warn{border-color:#9a6200}
+.msg.bad{background:#fde7e5;color:#8c1d16}
 .upd ul{margin:6px 0 0;padding-left:20px;display:flex;flex-direction:column;gap:6px}.upd li.ed{color:var(--muted)}.upd .who{margin:2px 0 0}
 .offbar{background:#8a5a00;color:#fff;font-size:13px;padding:6px 20px;text-align:center}.offbar button{font:inherit;color:inherit;background:none;border:0;text-decoration:underline;cursor:pointer;padding:0 0 0 6px}
 .top{background:var(--navy);color:var(--on-navy);padding:12px 20px;display:flex;flex-wrap:wrap;gap:12px 24px;align-items:center}
@@ -278,11 +287,11 @@ label.btn{display:inline-block;flex-direction:row;color:#0e1d3a;font-size:14px}
 
 <div class="offbar" id="offbar" hidden role="status"></div>
 <header class="top">
-  <div class="brand"><h1><a href="./" class="home" id="home" title="Back to the overview">The Dark Blue Book</a></h1><span>The who's who of yacht racing <a href="#update" id="ver" data-updates="1" title="What’s new" style="opacity:.6;margin-left:6px;color:inherit;font-size:smaller">v0.3.22</a></span></div>
-  <nav class="topnav" aria-label="Sections"><button type="button" data-cal="1">Calendar</button><button type="button" data-allnews="1">News</button></nav>
+  <div class="brand"><h1><a href="./" class="home" id="home" title="Back to the overview">The Dark Blue Book</a></h1><span>The who's who of yacht racing <a href="#update" id="ver" data-updates="1" title="What’s new" style="opacity:.6;margin-left:6px;color:inherit;font-size:smaller">v0.3.23</a></span></div>
+  <nav class="topnav" aria-label="Sections"><button type="button" data-cal="1">Calendar</button><button type="button" data-allnews="1">News</button><button type="button" data-dashboard="1" hidden>Dashboard</button></nav>
   <div class="join"><button type="button" class="apply" data-join="1">Join</button><button type="button" class="acct" data-acct="1">Sign in</button><span class="offlab" id="offlab" hidden>Offline</span></div>
   <button type="button" class="menu-btn" id="menuBtn" aria-label="Menu" aria-expanded="false" aria-controls="menu"><svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="M2 4h14M2 9h14M2 14h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
-  <nav class="menu" id="menu" hidden aria-label="Menu"><button type="button" class="acct mo" data-cal="1">Calendar</button><button type="button" class="acct mo" data-allnews="1">News</button><button type="button" class="acct" data-updates="1">What’s new</button><button type="button" class="acct" data-fb="1">Send feedback</button><button type="button" class="acct" id="installBtn" hidden>Install app</button><a href="privacy.html">Privacy</a><details class="sub"><summary>Contact us</summary><a href="https://wa.me/61439790410" target="_blank" rel="noopener">WhatsApp</a><a href="https://www.linkedin.com/groups/2023604/" target="_blank" rel="noopener">LinkedIn</a><a href="https://www.facebook.com/darkbluebook" target="_blank" rel="noopener">Facebook</a><a href="mailto:editor@darkbluebook.com">Email</a></details><small>© The Dark Blue Book · v0.3.22</small></nav>
+  <nav class="menu" id="menu" hidden aria-label="Menu"><button type="button" class="acct mo" data-cal="1">Calendar</button><button type="button" class="acct mo" data-allnews="1">News</button><button type="button" class="acct mo" data-dashboard="1" hidden>Dashboard</button><button type="button" class="acct" data-updates="1">What’s new</button><button type="button" class="acct" data-fb="1">Send feedback</button><button type="button" class="acct" id="installBtn" hidden>Install app</button><a href="privacy.html">Privacy</a><details class="sub"><summary>Contact us</summary><a href="https://wa.me/61439790410" target="_blank" rel="noopener">WhatsApp</a><a href="https://www.linkedin.com/groups/2023604/" target="_blank" rel="noopener">LinkedIn</a><a href="https://www.facebook.com/darkbluebook" target="_blank" rel="noopener">Facebook</a><a href="mailto:editor@darkbluebook.com">Email</a></details><small>© The Dark Blue Book · v0.3.23</small></nav>
   <button type="button" class="filters-btn" id="filtersBtn" aria-expanded="false" aria-controls="filters">Filters</button>
   <div class="filters" id="filters">
   <div class="lens" role="group" aria-label="What to show">
@@ -446,16 +455,17 @@ function inTheNews(){
 /* ---------- deep links ---------- */
 let booted=false;
 const CAL_HASH='yacht-racing-calendar',NEWS_HASH='yacht-racing-news',UPD_HASH_='update';
-function navMark(){document.querySelectorAll('.topnav [data-cal]').forEach(b=>mode==='calendar'?b.setAttribute('aria-current','page'):b.removeAttribute('aria-current'));document.querySelectorAll('.topnav [data-allnews]').forEach(b=>mode==='allnews'?b.setAttribute('aria-current','page'):b.removeAttribute('aria-current'))}
-function syncHash(){const want=sel?'#'+encodeURIComponent(sel):mode==='calendar'?'#'+CAL_HASH:mode==='allnews'?'#'+NEWS_HASH:mode==='updates'?'#'+UPD_HASH_:'';if(location.hash===want)return;try{history.pushState(null,'',want||location.pathname+location.search)}catch(e){}}
+function navMark(){document.querySelectorAll('[data-dashboard]').forEach(b=>{if(b.closest('.topnav')||b.closest('.menu')){b.hidden=!canEdit;mode==='dashboard'&&b.closest('.topnav')?b.setAttribute('aria-current','page'):b.removeAttribute('aria-current')}});document.querySelectorAll('.topnav [data-cal]').forEach(b=>mode==='calendar'?b.setAttribute('aria-current','page'):b.removeAttribute('aria-current'));document.querySelectorAll('.topnav [data-allnews]').forEach(b=>mode==='allnews'?b.setAttribute('aria-current','page'):b.removeAttribute('aria-current'))}
+function syncHash(){const want=sel?'#'+encodeURIComponent(sel):mode==='calendar'?'#'+CAL_HASH:mode==='allnews'?'#'+NEWS_HASH:mode==='updates'?'#'+UPD_HASH_:mode==='dashboard'?'#dashboard':'';if(location.hash===want)return;try{history.pushState(null,'',want||location.pathname+location.search)}catch(e){}}
 function reveal(id){if(!E.has(id))return false;if(nodes.some(n=>n.id===id))return true;
   if(lens!=='all'){lens='all';document.querySelectorAll('.lens button').forEach(x=>x.setAttribute('aria-pressed',x.dataset.lens==='all'))}
   if(scope){scope='';scEl.value=''}needFit=true;build();
   if(!nodes.some(n=>n.id===id)){allTime=true;syncWhen();needFit=true;build()}return true}
 function fromHash(){let id='';try{id=decodeURIComponent(location.hash.slice(1))}catch(e){}
+  if(id==='dashboard'){sel=null;editing=null;msg='';if(typeof showPanel==='function')showPanel();openDashboard();return}
   if(id===UPD_HASH_){sel=null;editing=null;msg='';mode='updates';paint();render();if(typeof showPanel==='function')showPanel();return}
   if(id===CAL_HASH||id===NEWS_HASH){sel=null;editing=null;msg='';mode=id===CAL_HASH?'calendar':'allnews';if(id===NEWS_HASH)newsFor=null;paint();render();if(typeof showPanel==='function')showPanel();return}
-  if(id&&reveal(id))pick(id,true);else if(!id&&(sel||mode==='calendar'||mode==='allnews'||mode==='updates'))pick(null,true)}
+  if(id&&reveal(id))pick(id,true);else if(!id&&(sel||mode==='calendar'||mode==='allnews'||mode==='updates'||mode==='dashboard'))pick(null,true)}
 function boot(){if(booted||!loaded.e||!loaded.l||!E.size)return;booted=true;fromHash()}
 window.addEventListener('popstate',fromHash);window.addEventListener('hashchange',fromHash);
 
@@ -476,7 +486,7 @@ function timeline(mine,me){const d=mine.filter(l=>yr(l.start)!=null||yr(l.end)!=
   return`<section class="tl"><div class="ax"><span>${min}</span><span>${max}</span></div>${rows}${und?`<p class="claim">${und} undated ${und>1?'links':'link'} not shown here.</p>`:''}</section>`}
 function render(){navMark();
   /* phones: forms and tasks get the whole screen; the map comes back for entries and the overview */
-  const mainEl=document.querySelector('main');if(mainEl)mainEl.classList.toggle('task',mode!=='view');
+  const mainEl=document.querySelector('main');if(mainEl)mainEl.classList.toggle('task',mode!=='view');if(mainEl)mainEl.classList.toggle('dash',mode==='dashboard');
   if(mode==='entity')return formEntity();
   if(mode==='link')return formLink();
   if(mode==='signin')return formSignin();
@@ -492,11 +502,12 @@ function render(){navMark();
   if(mode==='calendar')return formCalendar();
   if(mode==='allnews')return listNews();
   if(mode==='updates')return listUpdates();
+  if(mode==='dashboard')return listDashboard();
   if(mode==='news')return formNews();
   if(mode==='orgpeople')return formPeople();
   if(mode==='claims')return listClaims();
   if(mode==='claimrev')return formClaimReview();
-  const tools=canEdit?`<div class="acts"><button type="button" class="btn" data-new="entity">New entry</button><button type="button" class="btn" data-new="link">New link</button>${sel?'<button type="button" class="btn" data-editent="1">Edit this entry</button>':''}<button type="button" class="btn" data-reports="1">Reports${openReports?' ('+openReports+')':''}</button><button type="button" class="btn" data-apps="1">Applications${pendingApps?' ('+pendingApps+')':''}</button><button type="button" class="btn" data-claims="1">Claims${pendingClaims?' ('+pendingClaims+')':''}</button><button type="button" class="btn" data-searches="30">Searches</button></div>`:'';
+  const tools=canEdit?`<div class="acts"><button type="button" class="btn" data-dashboard="1">Dashboard</button><button type="button" class="btn" data-new="entity">New entry</button><button type="button" class="btn" data-new="link">New link</button>${sel?'<button type="button" class="btn" data-editent="1">Edit this entry</button>':''}<button type="button" class="btn" data-reports="1">Reports${openReports?' ('+openReports+')':''}</button><button type="button" class="btn" data-apps="1">Applications${pendingApps?' ('+pendingApps+')':''}</button><button type="button" class="btn" data-claims="1">Claims${pendingClaims?' ('+pendingClaims+')':''}</button><button type="button" class="btn" data-searches="30">Searches</button></div>`:'';
   const m=msg?`<div class="msg">${esc(msg)}</div>`:'';
   if(sel){const e=E.get(sel),mine=L.filter(l=>l.from===sel||l.to===sel).sort((a,b)=>(active(b)-active(a))||((yr(b.start)||0)-(yr(a.start)||0)));let h='';
     const past=mine.filter(ended),cur=mine.filter(l=>!ended(l));
@@ -626,7 +637,7 @@ panel.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)retu
   if(d.new){mode=d.new;editing=null;msg='';return render()}
   if(d.editent){mode='entity';editing=sel;msg='';return render()}
   if(d.editlink){mode='link';editing=d.editlink;msg='';return render()}
-  if(d.cancel){const wasCal=mode==='calendar'||mode==='allnews'||mode==='updates';mode='view';editing=null;msg='';render();if(wasCal)syncHash();return}
+  if(d.cancel){const wasCal=mode==='calendar'||mode==='allnews'||mode==='updates'||mode==='dashboard';mode='view';editing=null;msg='';render();if(wasCal)syncHash();return}
   if(d.del){b.outerHTML=`<button type="button" class="btn bad" data-delyes="${d.del}">Yes, delete for good</button><button type="button" class="btn" data-cancel="1">Keep it</button>`;return}
   if(d.delyes)return remove(d.delyes);
   if(d.auditall){auditAll=!auditAll;return render()}
@@ -1499,11 +1510,73 @@ async function start(){
   catch(e){if(SHOWN_SIG){offBar();return}db=null;loaded={e:true,l:true};$('#blank').hidden=false;$('#blank').firstElementChild.textContent='The book could not be loaded. Please try again in a moment.'}
 }
 
+/* ---------- editor dashboard (0.3.23) ---------- */
+/* One page for editors at #dashboard: every queue and check as a tile showing its latest 5, with a way to see the rest,
+   plus Supabase usage against the Free plan limits (warning from 80%). The overview keeps its editor buttons. */
+const DASH_HASH='dashboard';
+const LIMITS={db_bytes:[500*1024**2,'Database','500 MB'],storage_bytes:[1024**3,'File storage','1 GB'],active_30d:[50000,'Active users (30 days)','50,000']};
+let DASH=null,dashOpen=new Set();
+async function openDashboard(){mode='dashboard';sel=null;editing=null;msg='';DASH=null;render();
+  const get=(p,f)=>apiGet(p).catch(()=>f);
+  const [apps,claims,reps,usage,searches]=await Promise.all([
+    get('members?select=user_id,name,applied_at&status=eq.pending&order=applied_at.desc',[]),
+    get('claims?select=id,entity_id,created_at,members(name)&order=created_at.desc',[]),
+    get('reports?select=id,kind,entity_id,message,name,created_at&status=eq.open&order=created_at.desc&limit=200',[]),
+    api('POST','rpc/usage_report',{}).catch(()=>null),
+    api('POST','rpc/search_report',{p_days:30}).catch(()=>null),
+    loadAudit()]);
+  pendingApps=apps.length;pendingClaims=claims.length;openReports=reps.length;
+  // housekeeping, from the book already loaded
+  const linked=new Set();L.forEach(l=>{linked.add(l.from);linked.add(l.to)});
+  const hasPerson=new Set();L.forEach(l=>{const a=E.get(l.from),b=E.get(l.to);if(a&&b){if(a.type==='person')hasPerson.add(b.id);if(b.type==='person')hasPerson.add(a.id)}});
+  const ents=[...E.values()].sort((a,b)=>a.name.localeCompare(b.name));
+  DASH={apps,claims,reps,usage,searches,
+    noLinks:ents.filter(e=>!linked.has(e.id)),
+    noPeople:ents.filter(e=>['team','club','org','event'].includes(e.type)&&!hasPerson.has(e.id)),
+    member:ents.filter(e=>e.origin==='member')};
+  if(mode==='dashboard')render()}
+function usageWarnings(u){if(!u)return[];return Object.entries(LIMITS).map(([k,[lim,label,pretty]])=>({k,label,pretty,v:u[k]||0,p:(u[k]||0)/lim})).filter(x=>x.p>=0.8)}
+function listDashboard(){
+  if(!canEdit){panel.innerHTML=`<div><h2>Dashboard</h2><p class="note">Sign in as an editor to see the dashboard.</p></div><div class="acts"><button type="button" class="btn" data-cancel="1">Back to the map</button></div>`;return}
+  const D=DASH;if(!D){panel.innerHTML='<div><h2>Dashboard</h2><p class="note">Loading…</p></div>';return}
+  const day=d=>d?new Date(d).toLocaleDateString('en-GB',{day:'numeric',month:'short'}):'';
+  const mb=b=>b>=1024**3?(b/1024**3).toFixed(2)+' GB':(b/1024**2).toFixed(1)+' MB';
+  const ent=id=>{const e=E.get(id);return e?`<button type="button" class="ent" data-go="${esc(id)}">${esc(e.name)}</button>`:`<strong>${esc(id||'')}</strong>`};
+  const tile=(key,title,n,rows,more,empty)=>{const all=dashOpen.has(key),shown=all?rows:rows.slice(0,5);
+    return`<section class="dt${n?' has':''}"><h3>${esc(title)} <span class="cnt">${n}</span></h3>${rows.length?`<ul class="rel">${shown.join('')}</ul>`:`<p class="note">${esc(empty||'Nothing here.')}</p>`}
+      <div class="acts">${rows.length>5?`<button type="button" class="btn" data-dashmore="${key}">${all?'Show fewer':'Show all '+rows.length}</button>`:''}${more||''}</div></section>`};
+  const li=(main,meta)=>`<li><div class="rl">${main}</div>${meta?`<div class="meta">${meta}</div>`:''}</li>`;
+  const u=D.usage,warn=usageWarnings(u);
+  const usageRows=u?[...Object.entries(LIMITS).map(([k,[lim,label,pretty]])=>{const v=u[k]||0,p=v/lim;
+      return li(`<strong>${esc(label)}</strong>`,`<span>${k.endsWith('bytes')?mb(v):v.toLocaleString('en-GB')} of ${pretty}</span><span class="${p>=1?'over':p>=0.8?'near':''}">${(p*100).toFixed(p<0.1?1:0)}%</span><span class="bar"><i style="width:${Math.min(100,p*100).toFixed(1)}%"></i></span>`)}),
+      li('<strong>Egress (data sent to visitors)</strong>','<span>Limit 5 GB a month. Not visible from here yet: check the Supabase dashboard, under Usage.</span>'),
+      li('<strong>The book</strong>',`<span>${u.entries.toLocaleString('en-GB')} entries</span><span>${u.links.toLocaleString('en-GB')} links</span><span>${u.stories} stories</span><span>${u.storage_files} files</span><span>${u.users} sign-in accounts</span>`)]:[];
+  const S=D.searches||{picked:[],missed:[]};
+  const tiles=[
+    tile('apps','Applications waiting',D.apps.length,D.apps.map(a=>li(`<strong>${esc(a.name||'(no name)')}</strong>`,`<span>applied ${day(a.applied_at)}</span>`)),'<button type="button" class="btn" data-apps="1">Open applications</button>','No applications waiting.'),
+    tile('claims','Claims waiting',D.claims.length,D.claims.map(c=>li(`${ent(c.entity_id)}`,`<span>${esc((c.members&&c.members.name)||'member')}</span><span>${day(c.created_at)}</span>`)),'<button type="button" class="btn" data-claims="1">Open claims</button>','No claims waiting.'),
+    tile('reps','Open reports and feedback',D.reps.length,D.reps.map(r=>li(`${r.entity_id?ent(r.entity_id)+' ':''}<span class="role">${esc(r.kind==='feedback'?'feedback':'error report')}</span>`,`<span>${esc((r.message||'').slice(0,90))}${(r.message||'').length>90?'…':''}</span><span>${day(r.created_at)}</span>`)),'<button type="button" class="btn" data-reports="1">Open reports</button>','No open reports.'),
+    `<section class="dt dt-chg">${AUDIT.length?changes().replace('<section class="chg">','<div class="chg">').replace(/<\/section>$/,'</div>'):'<h3>Latest changes</h3><p class="note">No changes yet.</p>'}</section>`,
+    tile('picked','Most searched for (30 days)',S.picked.length,S.picked.map(x=>li(ent(x.id),`<span>${x.n} ${x.n===1?'search':'searches'}</span>`)),'<button type="button" class="btn" data-searches="30">Full search report</button>','No searches yet.'),
+    tile('missed','Searched for, not found (30 days)',S.missed.length,S.missed.map(x=>li(`<strong>${esc(x.term)}</strong>`,`<span>${x.n} ${x.n===1?'search':'searches'}</span>`)),'','Nothing missed.'),
+    tile('member','Member-added entries to check',D.member.length,D.member.map(e=>li(ent(e.id)+` <span class="role">${esc(kindLabel(e))}</span>`)),'','All member additions checked.'),
+    tile('nolinks','Entries with no links',D.noLinks.length,D.noLinks.map(e=>li(ent(e.id)+` <span class="role">${esc(kindLabel(e))}</span>`)),'','Every entry has a link.'),
+    tile('nopeople','Teams, clubs, organisations and events with no people',D.noPeople.length,D.noPeople.map(e=>li(ent(e.id)+` <span class="role">${esc(kindLabel(e))}</span>`)),'','All have people linked.'),
+    `<section class="dt dt-use${warn.length?' warn':''}"><h3>Supabase usage <span class="cnt">Free plan</span></h3>${u?`<ul class="rel">${usageRows.join('')}</ul><p class="note">As of ${new Date(u.at).toLocaleString('en-GB',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'})}. Warnings from 80% of a limit.</p>`:'<p class="note">Usage could not be loaded.</p>'}</section>`];
+  panel.innerHTML=`<div><h2>Dashboard</h2><p class="note">Editors only. Each list shows its latest 5.</p></div>${msg?`<div class="msg">${esc(msg)}</div>`:''}
+    ${warn.length?`<div class="msg ${warn.some(x=>x.p>=1)?'bad':''}">${warn.map(x=>`${esc(x.label)} is at ${(x.p*100).toFixed(0)}% of the Free plan’s ${x.pretty}${x.p>=1?': over the limit':''}.`).join(' ')} See Supabase usage below.</div>`:''}
+    <div class="acts"><button type="button" class="btn go" data-new="entity">New entry</button><button type="button" class="btn" data-new="link">New link</button><button type="button" class="btn" data-news="new">Add a story</button><button type="button" class="btn" data-dashboard="1">Refresh</button></div>
+    <div class="dgrid">${tiles.join('')}</div>
+    <div class="acts"><button type="button" class="btn" data-cancel="1">Back to the map</button></div>`}
+document.addEventListener('click',e=>{const b=e.target.closest('[data-dashboard]');if(!b)return;e.preventDefault();const m=document.getElementById('menu');if(m)m.hidden=true;dashOpen.clear();paint();showPanel();openDashboard().then(()=>{panel.scrollTop=0});syncHash()});
+panel.addEventListener('click',e=>{const b=e.target.closest('[data-dashmore]');if(!b)return;const k=b.dataset.dashmore;dashOpen.has(k)?dashOpen.delete(k):dashOpen.add(k);render()});
+
 /* ---------- what's new (0.3.21) ---------- */
 /* Plain-English release notes at #update, newest first. Add an entry here with each release that goes live.
    "editors" lines show only to signed-in editors. CHANGELOG.md keeps the technical detail. */
 const UPD_HASH='update';
 const UPDATES=[
+ {v:'0.3.23',d:'2026-11-12',t:'Editor dashboard',x:1,i:['Dashboard in the top bar (menu on phones): applications, claims and reports waiting, latest changes, searches, entries that need attention, and Supabase usage against the Free plan limits, all on one page. Each list shows its latest 5, with Show all for the rest.']},
  {v:'0.3.22',d:'2026-11-11',t:'A tidier top bar on computers',i:['Calendar and News are at the top of the screen, next to the title.','Everything else (What’s new, Send feedback, Install app, Privacy and the contact links) is in the menu button at the top right, as on phones. The bar along the bottom has gone, so the map has more room.','The map filters sit in their own row under the top bar.']},
  {v:'0.3.21',d:'2026-11-11',t:'What’s new',i:['This page: what’s been added and changed, newest first. Open it from the menu, the footer or the version number next to the title.']},
  {v:'0.3.20',d:'2026-11-11',t:'Install the app, and read the book offline',i:[
@@ -1564,8 +1637,9 @@ const UPDATES=[
    'The Year slider shows who was where, from 2010 to today. Past roles fold away under Past.']}
 ];
 function listUpdates(){const fmt=d=>new Date(d+'T12:00:00Z').toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});
+  const UPS=UPDATES.filter(u=>!u.x||canEdit);
   panel.innerHTML=`<div><h2>What’s new</h2><p class="note">What’s been added and changed in The Dark Blue Book, newest first. You’re using version ${esc(UPDATES[0].v)}.</p></div>
-    ${UPDATES.map((u,k)=>`<section class="upd"><h3>${esc(u.t)}</h3><p class="who">Version ${esc(u.v)} · ${esc(fmt(u.d))}${k===0?' · <strong>latest</strong>':''}</p>
+    ${UPS.map((u,k)=>`<section class="upd"><h3>${esc(u.t)}</h3><p class="who">Version ${esc(u.v)} · ${esc(fmt(u.d))}${k===0?' · <strong>latest</strong>':''}${u.x?' · <span class="role">editors only</span>':''}</p>
       <ul>${u.i.map(x=>`<li>${esc(x)}</li>`).join('')}${canEdit&&u.e?u.e.map(x=>`<li class="ed"><span class="role">Editors:</span> ${esc(x)}</li>`).join(''):''}</ul></section>`).join('')}
     <div class="acts"><button type="button" class="btn" data-updcopy="1">Copy link</button><button type="button" class="btn" data-cancel="1">Back to the map</button></div>`}
 document.addEventListener('click',e=>{const b=e.target.closest('[data-updates]');if(!b)return;e.preventDefault();const m=document.getElementById('menu');if(m)m.hidden=true;sel=null;editing=null;mode='updates';msg='';paint();render();showPanel();panel.scrollTop=0;syncHash()});

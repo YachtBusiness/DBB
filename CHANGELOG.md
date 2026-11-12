@@ -2,6 +2,15 @@
 
 Version plan: 0.1 public map live · 0.2 editing moves to Supabase · 0.3 sign-in, applications and claims · 0.4 paid features (contact details for paid members, extra profile links, job board, organisation editing, verified roles), switched on by editors before payments · 0.5 payments (Stripe, tiers, prices) · 1.0 membership network opens · 1.x events and intros. Small fixes in between are 0.x.1, 0.x.2 and so on.
 
+## 0.3.23 (12 November 2026)
+
+Editor dashboard.
+
+- A dashboard for editors at app.darkbluebook.com/#dashboard, linked as Dashboard in the top bar on desktop, in the menu on phones, and first in the overview's editor buttons (which otherwise stay as they were). On desktop it uses the full width, without the map.
+- Tiles, each showing its latest 5 with Show all: applications waiting, claims waiting, open reports and feedback, latest changes, most searched for and searched-for-not-found (30 days), member-added entries to check, entries with no links, and teams, clubs, organisations and events with no people. Each queue tile opens its full list. Quick actions: New entry, New link, Add a story, Refresh.
+- Supabase usage against the Free plan: database size (500 MB), file storage (1 GB) and active users over 30 days (50,000), with a warning across the top from 80% and red when over. Egress (5 GB a month) isn't visible from inside the database; the tile says to check the Supabase dashboard. New editors-only database function usage_report().
+- What's new entries can be marked editors-only; this one is.
+
 ## 0.3.22 (11 November 2026)
 
 Desktop navigation, like phones.
