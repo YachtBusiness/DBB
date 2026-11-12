@@ -10,6 +10,7 @@ Sandbox.
 - It holds a copy of the public book (entries, links, Featured, stories and tags), read from the live site's public API. No members, accounts, applications, reports or searches are copied, and member account references on entries and links are blanked. Refresh with supabase/sandbox/refresh_from_live.sql: select sandbox.book_fetch(); wait a few seconds; select sandbox.book_import();
 - The app picks its database from its address: app.darkbluebook.com, preview.dbb-2k3.pages.dev and dbb-2k3.pages.dev use the live book; every other address (the sandbox branch at sandbox.dbb-2k3.pages.dev, experiment branches, one-off deployment links, local testing) uses the sandbox, labelled SANDBOX.
 - Photos and logos aren't copied, so they don't show in the sandbox.
+- Two sandbox test accounts with passwords, so editor and member views can be tried without email: editor@example.com (owner) and member@example.com (member, with a crew role on Rockwool Racing). On sandbox addresses only, the sign-in form has a password field; live and preview sign-in are unchanged (emailed link only).
 
 ## 0.3.23 (12 November 2026)
 

@@ -620,8 +620,14 @@ async function checkAuth(){canEdit=false;who='';const t=await token().catch(()=>
 function formSignin(){panel.innerHTML=`<form id="fs"><h2>Sign in</h2>${msg?`<div class="msg">${esc(msg)}</div>`:''}
   <p class="note">For members, applicants and editors. Enter your email and we’ll send you a sign-in link. Open it on this device.</p>
   <label>Email<input id="fs-email" type="email" required autocomplete="email"></label>
-  <div class="acts"><button class="btn go">Send link</button><button type="button" class="btn" data-cancel="1">Cancel</button></div><p class="who">Not a member yet? <button type="button" class="linky" data-apply="1">Apply to join</button></p></form>`}
+  ${IS_SANDBOX?'<label>Password (sandbox test accounts only)<input id="fs-pw" type="password" autocomplete="current-password"></label><p class="note">Sandbox: sign in as editor@example.com or member@example.com with the test password. Leave it blank to get an emailed link instead.</p>':''}
+  <div class="acts"><button class="btn go">${IS_SANDBOX?'Sign in':'Send link'}</button><button type="button" class="btn" data-cancel="1">Cancel</button></div><p class="who">Not a member yet? <button type="button" class="linky" data-apply="1">Apply to join</button></p></form>`}
 async function sendLink(){const email=val('fs-email');if(!email)return;
+  /* sandbox only: password sign-in for the test accounts */
+  const pw=IS_SANDBOX&&document.getElementById('fs-pw')?document.getElementById('fs-pw').value:'';
+  if(pw){const r=await fetch(`${SB_URL}/auth/v1/token?grant_type=password`,{method:'POST',headers:{apikey:SB_KEY,'Content-Type':'application/json'},body:JSON.stringify({email,password:pw})}).catch(()=>null);
+    if(r&&r.ok){const j=await r.json();saveAuth({access_token:j.access_token,refresh_token:j.refresh_token,expires_at:j.expires_at||Date.now()/1000+j.expires_in});await checkAuth();mode='view';msg='Signed in as '+email+' (sandbox).';paint();render();return}
+    msg='Wrong email or password for a sandbox test account.';return render()}
   const r=await fetch(`${SB_URL}/auth/v1/otp?redirect_to=${encodeURIComponent(location.origin+location.pathname)}`,{method:'POST',headers:{apikey:SB_KEY,'Content-Type':'application/json'},body:JSON.stringify({email,create_user:false})}).catch(()=>null);
   if(r&&r.ok){panel.innerHTML=`<div><h2>Check your email</h2><p class="note">If ${esc(email)} has an account, a sign-in link is on its way. It works once and expires after an hour.</p><div class="acts"><button type="button" class="btn" data-cancel="1">Back</button></div></div>`;return}
   let t='';try{const j=await r.json();t=j.msg||j.error_description||j.message||''}catch(e){}msg=r&&r.status===429?'Too many sign-in emails. Wait a few minutes and try again.':/signups? not allowed|not found|not authori[sz]ed/i.test(t)?'There’s no account for '+email+'. To join, apply below; you’ll confirm your email as part of it.':'The link could not be sent. Please try again in a moment.'+(t?' ('+t+')':'');render()}
