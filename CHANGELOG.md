@@ -2,6 +2,19 @@
 
 Version plan: 0.1 public map live · 0.2 editing moves to Supabase · 0.3 sign-in, applications and claims · 0.4 paid features (contact details for paid members, extra profile links, job board, organisation editing, verified roles), switched on by editors before payments · 0.5 payments (Stripe, tiers, prices) · 1.0 membership network opens · 1.x events and intros. Small fixes in between are 0.x.1, 0.x.2 and so on.
 
+## 0.3.26 (sandbox, 12 November 2026)
+
+The Media chapter. On the sandbox only until it ships; needs migration 20261112000002_media_chapter.sql on live first.
+
+- Media in the top bar (desktop) and menu (phones), at #yacht-racing-media. It builds itself from the book:
+  - outlets: organisations with the media sector, sorted by a new optional media type (magazine, website or blog, YouTube channel, podcast, TV and video, film, publisher, photo agency, media or PR agency, social media, other), each with its people and partnerships;
+  - people holding a media role on any link, wherever it points, in four groups: photographers and video; presenters and commentators; writers and editors; press and communications;
+  - freelancers linked to the Media entry, listed as freelance.
+  A filter narrows it by name, outlet, role, team or event.
+- A new kind of entry, Group (chapter). Groups and their links aren't drawn on the map; opening one shows its chapter. Media (#media) is the first.
+- Media type on the entry form for media organisations.
+- The sandbox refresh keeps the sandbox's own entries (test accounts, Media).
+
 ## 0.3.25 (12 November 2026)
 
 News readable by search engines, AI tools and feed readers.

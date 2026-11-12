@@ -34,10 +34,12 @@ begin
   alter table public.links disable trigger user;
   alter table public.stories disable trigger user;
   truncate public.story_entities, public.stories, public.features, public.links cascade;
-  delete from public.entities;
+  -- keep the sandbox's own entries: test accounts' people and the Media group
+  delete from public.entities where id not like 'test-%' and id <> 'media';
   -- created_by points at member accounts, which aren't copied: blank it
-  insert into public.entities select (jsonb_populate_record(null::public.entities, j || '{"created_by":null}')).*
-    from sandbox.fetch f join net._http_response r on r.id = f.req, jsonb_array_elements(r.content::jsonb) j where f.tbl = 'entities';
+  insert into public.entities select (jsonb_populate_record(null::public.entities, '{"media_type":""}'::jsonb || j || '{"created_by":null}')).*
+    from sandbox.fetch f join net._http_response r on r.id = f.req, jsonb_array_elements(r.content::jsonb) j where f.tbl = 'entities'
+    on conflict (id) do nothing;
   -- only links whose ends are in the copy (anything pointing at a draft or hidden entry is skipped)
   insert into public.links
     select (jsonb_populate_record(null::public.links,
@@ -50,6 +52,11 @@ begin
     jsonb_populate_recordset(null::public.stories, r.content::jsonb) x where f.tbl = 'stories';
   insert into public.story_entities select x.* from sandbox.fetch f join net._http_response r on r.id = f.req,
     jsonb_populate_recordset(null::public.story_entities, r.content::jsonb) x where f.tbl = 'story_entities' and x.entity_id in (select id from public.entities);
+  -- the test accounts' roles
+  insert into public.links (from_id, to_id, role, cat, source)
+    select t.id, 'den', 'crew', 'ppl', 'Member application' from public.entities t
+    where t.id in ('test-member','test-editor') and exists (select 1 from public.entities where id='den')
+    on conflict do nothing;
   alter table public.entities enable trigger user;
   alter table public.links enable trigger user;
   alter table public.stories enable trigger user;
