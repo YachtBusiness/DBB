@@ -3,3 +3,9 @@
 /manifest.webmanifest
   Content-Type: application/manifest+json
   Cache-Control: no-cache
+
+# preview, sandbox and experiment addresses stay out of search engines; only app.darkbluebook.com is indexed
+https://:sub.dbb-2k3.pages.dev/*
+  X-Robots-Tag: noindex
+https://dbb-2k3.pages.dev/*
+  X-Robots-Tag: noindex

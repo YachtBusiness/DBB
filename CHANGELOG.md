@@ -2,6 +2,17 @@
 
 Version plan: 0.1 public map live · 0.2 editing moves to Supabase · 0.3 sign-in, applications and claims · 0.4 paid features (contact details for paid members, extra profile links, job board, organisation editing, verified roles), switched on by editors before payments · 0.5 payments (Stripe, tiers, prices) · 1.0 membership network opens · 1.x events and intros. Small fixes in between are 0.x.1, 0.x.2 and so on.
 
+## 0.3.25 (12 November 2026)
+
+News readable by search engines, AI tools and feed readers.
+
+- app.darkbluebook.com/news: every story as plain HTML built on Cloudflare's side (app/_worker.js), so it can be read without JavaScript. Each story links to the source and to the entries it tags in the app. Includes schema.org NewsArticle data and a canonical link. Cached for 10 minutes.
+- app.darkbluebook.com/news.xml: the same stories as an RSS feed (latest 100).
+- Only /news and /news.xml run the worker (_routes.json); everything else is still static.
+- robots.txt and sitemap.xml added (/, /news, /privacy). Preview, sandbox and other pages.dev addresses send noindex, so only app.darkbluebook.com is indexed.
+- The app links the RSS feed in its head, links the plain page and feed from All news, and tells visitors without JavaScript where the news is.
+- The offline service worker leaves /news to the network, so it never replaces the app's saved page.
+
 ## 0.3.24 (12 November 2026)
 
 Sandbox.
