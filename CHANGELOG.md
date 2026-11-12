@@ -4,14 +4,12 @@ Version plan: 0.1 public map live · 0.2 editing moves to Supabase · 0.3 sign-i
 
 ## 0.3.26 (sandbox, 12 November 2026)
 
-The Media chapter. On the sandbox only until it ships; needs migration 20261112000002_media_chapter.sql on live first.
+The Media cohort. On the sandbox only until it ships; needs migration 20261112000002_media_chapter.sql on live first.
 
-- Media in the top bar (desktop) and menu (phones), at #yacht-racing-media. It builds itself from the book:
-  - outlets: organisations with the media sector, sorted by a new optional media type (magazine, website or blog, YouTube channel, podcast, TV and video, film, publisher, photo agency, media or PR agency, social media, other), each with its people and partnerships;
-  - people holding a media role on any link, wherever it points, in four groups: photographers and video; presenters and commentators; writers and editors; press and communications;
-  - freelancers linked to the Media entry, listed as freelance.
-  A filter narrows it by name, outlet, role, team or event.
-- A new kind of entry, Group (chapter). Groups and their links aren't drawn on the map; opening one shows its chapter. Media (#media) is the first.
+- Media in the top bar (desktop) and menu (phones), at #yacht-racing-media, like the media chapter of the printed book.
+- Rule (decided 12 Nov 2026): only entries with the media sector ticked count, and the people linked to them. People who work for a team, event, club or agency (press officers, comms leads, an event's presenter) don't appear unless they also belong to a media outlet. A person becomes media through an outlet: e.g. Shirley Robertson once her podcast is in the book.
+- Outlets sorted by a new optional media type (magazine, website or blog, YouTube channel, podcast, TV and video, film, publisher, photographer or photo agency, media agency, social media, other), each with its people and partnerships; a Freelance list (people linked to the Media cohort itself, for freelancers with no company of their own in the book); and an A to Z of everyone. A filter narrows it.
+- A new kind of entry, Cohort (stored as type 'group'). Cohorts and their links aren't drawn on the map; opening one shows its page. Media (#media) is the first.
 - Media type on the entry form for media organisations.
 - The sandbox refresh keeps the sandbox's own entries (test accounts, Media).
 

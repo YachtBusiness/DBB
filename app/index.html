@@ -330,7 +330,7 @@ document.addEventListener('submit',e=>{const f=e.target;if(f.dataset.busy){e.pre
   setTimeout(check,400)},true);
 const LIVE_HOSTS=['app.darkbluebook.com','preview.dbb-2k3.pages.dev','dbb-2k3.pages.dev'],IS_SANDBOX=!LIVE_HOSTS.includes(location.hostname);
 if(location.hostname!=='app.darkbluebook.com'){const lab=IS_SANDBOX?'Sandbox':'Preview';document.title='['+lab+'] '+document.title;const v=document.getElementById('ver');if(v)v.insertAdjacentHTML('afterend','<small style="margin-left:8px;background:'+(IS_SANDBOX?'#7fd1b9':'#e3b040')+';color:#12264d;border-radius:3px;padding:0 6px;font-weight:600;letter-spacing:.06em" title="'+(IS_SANDBOX?'Test copy of the book: changes here don’t touch the live book':'Uses the live book')+'">'+lab.toUpperCase()+'</small>')}
-const TYPES={person:'Person',team:'Team',club:'Yacht club',org:'Organisation',event:'Event',entry:'Entry',class:'Boat class',venue:'Venue',record:'Record',group:'Group (chapter)'};
+const TYPES={person:'Person',team:'Team',club:'Yacht club',org:'Organisation',event:'Event',entry:'Entry',class:'Boat class',venue:'Venue',record:'Record',group:'Cohort'};
 const LEVELS={series:'Series',event:'Event',edition:'Edition',round:'Round'};
 const SECTORS=['sponsor','supplier','owner','media','agency','organiser','governing body','class association','industry body','public body','nonprofit','other'];
 const LEGACY={series:{type:'event',level:'series'},edition:{type:'event',level:'edition'},host:{type:'venue'},brand:{type:'org',sectors:['sponsor']},supplier:{type:'org',sectors:['supplier']},media:{type:'org',sectors:['media']},investor:{type:'org',sectors:['owner']}};
@@ -541,7 +541,7 @@ function formEntity(){const e=editing?E.get(editing):{name:'',type:'person',leve
     <label class="inl"><input type="checkbox" id="fe-prov"${e.provisional?' checked':''}> <span>Dates not confirmed yet: show the month only, “dates to be confirmed”</span></label>
     <p class="who" style="margin:0">One-day event: same date twice. Only the start known (e.g. an ocean race): leave End blank. Add dates for upcoming events only.</p></fieldset>
     <fieldset class="checks" style="border:0;padding:0;margin:0"><legend style="font-size:12px;color:var(--muted);margin-bottom:4px">Sectors (organisations only)</legend>${SECTORS.map(s=>`<label><input type="checkbox" name="fe-sec" value="${esc(s)}"${e.sectors.includes(s)?' checked':''}>${esc(s)}</label>`).join('')}</fieldset>
-    <label>Media type (media organisations only: sorts the Media chapter)<select id="fe-mtype">${opt('','Not set',e.mediaType||'')}${Object.keys(MEDIA_TYPE_ONE).map(k=>opt(k,MEDIA_TYPE_ONE[k],e.mediaType||'')).join('')}</select></label>
+    <label>Media type (media organisations only: sorts the Media cohort)<select id="fe-mtype">${opt('','Not set',e.mediaType||'')}${Object.keys(MEDIA_TYPE_ONE).map(k=>opt(k,MEDIA_TYPE_ONE[k],e.mediaType||'')).join('')}</select></label>
     <div class="two">
     <label>Country<select id="fe-country">${opt('','Not known',e.country)}${(e.country&&!COUNTRIES.some(c=>c[0]===e.country)?[[e.country,e.country]]:[]).concat(COUNTRIES).map(([c,n])=>opt(c,n+' ('+c+')',e.country)).join('')}</select></label></div>
     <label>Note<textarea id="fe-note" rows="3">${esc(e.note)}</textarea></label>
@@ -1525,21 +1525,14 @@ async function start(){
   catch(e){if(SHOWN_SIG){offBar();return}db=null;loaded={e:true,l:true};$('#blank').hidden=false;$('#blank').firstElementChild.textContent='The book could not be loaded. Please try again in a moment.'}
 }
 
-/* ---------- the Media chapter (0.3.26) ---------- */
-/* Like the printed book's media chapter. It builds itself from the book:
-   1. outlets: organisations with the media sector, sorted by media type, each with its people and partnerships;
-   2. people holding a media role on any link (photographer, writer, presenter, press officer...), wherever it points;
-   3. freelancers, linked to the Media group because there's nothing else to attach them to.
-   Groups (type 'group') aren't drawn on the map; opening one shows this chapter. */
+/* ---------- the Media cohort (0.3.26) ---------- */
+/* Like the printed book's media chapter. Only entries with the media sector ticked count, and the people linked to them:
+   people who work for a team, event, club or agency (press officers, comms leads, presenters for an event) don't appear
+   unless they also belong to a media outlet. Freelancers with no company of their own in the book are linked to the
+   Media cohort itself. Cohorts (type 'group') aren't drawn on the map; opening one shows this page. */
 const MEDIA_ID='media',MEDIA_HASH='yacht-racing-media';
-const MEDIA_TYPES={magazine:'Magazines',website:'Websites and blogs',youtube:'YouTube channels',podcast:'Podcasts',tv:'TV and video',film:'Film',publisher:'Publishers','photo agency':'Photo agencies',agency:'Media and PR agencies',social:'Social media',other:'Other outlets','':'Other outlets'};
-const MEDIA_TYPE_ONE={magazine:'magazine',website:'website or blog',youtube:'YouTube channel',podcast:'podcast',tv:'TV and video',film:'film',publisher:'publisher','photo agency':'photo agency',agency:'media or PR agency',social:'social media',other:'other'};
-const MEDIA_KINDS=[
-  ['photo','Photographers and video',/photograph|videograph|\bvideo\b|camera|cinematograph|film-?maker|\bdrone\b/i],
-  ['voice','Presenters and commentators',/\bpresenter\b|commentator|broadcaster|podcast|\banchor\b|\bpundit\b/i],
-  ['words','Writers and editors',/journalist|reporter|correspondent|writer|\beditor\b|editor-in-chief|contributor|columnist|\bauthor\b|content (creator|writer)|publisher|editorial/i],
-  ['press','Press and communications',/press (officer|contact|office)|\bcommunications?\b|\bcomms\b|\bpr\b|media (manager|officer|director|advisor)|media,|media and|marketing, media/i]];
-const mediaKind=role=>{for(const [k,,re] of MEDIA_KINDS)if(re.test(role||''))return k;return null};
+const MEDIA_TYPES={magazine:'Magazines',website:'Websites and blogs',youtube:'YouTube channels',podcast:'Podcasts',tv:'TV and video',film:'Film',publisher:'Publishers','photo agency':'Photographers and photo agencies',agency:'Media agencies',social:'Social media',other:'Other outlets','':'Other outlets'};
+const MEDIA_TYPE_ONE={magazine:'magazine',website:'website or blog',youtube:'YouTube channel',podcast:'podcast',tv:'TV and video',film:'film',publisher:'publisher','photo agency':'photographer or photo agency',agency:'media agency',social:'social media',other:'other'};
 const isMediaOrg=e=>e&&e.type==='org'&&e.sectors.includes('media');
 let mediaQ='';
 function listMedia(){
@@ -1549,28 +1542,28 @@ function listMedia(){
   const groups=new Map();outlets.forEach(o=>{const t=MEDIA_TYPES[o.mediaType||'']?o.mediaType||'':'';if(!groups.has(t))groups.set(t,[]);groups.get(t).push(o)});
   const order=Object.keys(MEDIA_TYPES).filter(k=>k!=='');order.push('');
   const go=e=>`<button type="button" class="ent" data-go="${esc(e.id)}">${esc(e.name)}</button>`;
-  const outletRow=o=>{const mine=cur.filter(l=>l.from===o.id||l.to===o.id),ppl=mine.filter(l=>other(l,o.id).type==='person'),rest=mine.filter(l=>other(l,o.id).type!=='person'&&other(l,o.id).type!=='group');
-    const q=[o.name,...ppl.map(l=>other(l,o.id).name+' '+l.role),...rest.map(l=>other(l,o.id).name+' '+l.role)].join(' ').toLowerCase();
+  const people=new Map();const add=(p,role,at)=>{if(!people.has(p.id))people.set(p.id,{p,roles:[]});people.get(p.id).roles.push({role,at})};
+  const outletRow=o=>{const mine=cur.filter(l=>l.from===o.id||l.to===o.id),ppl=mine.filter(l=>other(l,o.id).type==='person'),rest=mine.filter(l=>!['person','group'].includes(other(l,o.id).type));
+    ppl.forEach(l=>add(other(l,o.id),l.role,o));
+    const q=[o.name,MEDIA_TYPE_ONE[o.mediaType]||'',...ppl.map(l=>other(l,o.id).name+' '+l.role),...rest.map(l=>other(l,o.id).name+' '+l.role)].join(' ').toLowerCase();
     return`<li data-q="${esc(q)}"><div class="rl">${go(o)}</div>
       ${ppl.length?`<div class="meta">${ppl.map(l=>`<span>${go(other(l,o.id))} <span class="role">${esc(l.role)}</span></span>`).join('')}</div>`:''}
       ${rest.length?`<div class="meta">${rest.map(l=>`<span>${go(other(l,o.id))} <span class="role">${esc(l.role)}</span></span>`).join('')}</div>`:''}</li>`};
-  // people with media roles, by kind; freelancers via the Media group
-  const byKind=new Map(MEDIA_KINDS.map(([k])=>[k,new Map()]));byKind.set('other',new Map());
-  cur.forEach(l=>{const a=E.get(l.from),b=E.get(l.to),p=a.type==='person'?a:b.type==='person'?b:null;if(!p)return;const at=p===a?b:a;
-    const k=mediaKind(l.role)||(at.id===MEDIA_ID?'other':null);if(!k)return;
-    const m=byKind.get(k);if(!m.has(p.id))m.set(p.id,{p,roles:[]});m.get(p.id).roles.push({role:l.role,at})});
-  const personRow=({p,roles})=>{const q=(p.name+' '+roles.map(r=>r.role+' '+r.at.name).join(' ')).toLowerCase();
-    return`<li data-q="${esc(q)}"><div class="rl">${go(p)}</div><div class="meta">${roles.map(r=>`<span><span class="role">${esc(r.role)}</span> ${r.at.id===MEDIA_ID?'<span class="role">freelance</span>':go(r.at)}</span>`).join('')}</div></li>`};
   const sec=(title,rows,note)=>rows.length?`<section class="msec"><h3>${esc(title)} <span class="cnt">${rows.length}</span></h3>${note?`<p class="note">${esc(note)}</p>`:''}<ul class="rel">${rows.join('')}</ul></section>`:'';
-  const ppl=k=>[...byKind.get(k).values()].sort((a,b)=>a.p.name.localeCompare(b.p.name)).map(personRow);
-  const nOut=outlets.length,nPpl=new Set([...byKind.values()].flatMap(m=>[...m.keys()])).size;
-  panel.innerHTML=`<div><div class="kind"><i style="background:var(--t-media,var(--t-org))"></i>Chapter</div><h2>Media</h2>
-    <p class="note">Outlets, photographers, writers, presenters and press officers across yacht racing: ${nOut} outlets and ${nPpl} people, built from the book. Event media partnerships and contracted media are linked as usual; freelancers with nothing else to link to are linked to Media.</p></div>
-    <label class="mfilter">Filter<input id="media-q" type="search" placeholder="A name, outlet, role, team or event" value="${esc(mediaQ)}"></label>
+  const outletHtml=order.filter(t=>groups.has(t)).map(t=>sec(MEDIA_TYPES[t],groups.get(t).map(outletRow))).join('');
+  // freelancers: people linked to the Media cohort itself
+  const free=cur.filter(l=>l.from===MEDIA_ID||l.to===MEDIA_ID).map(l=>({l,p:other(l,MEDIA_ID)})).filter(x=>x.p.type==='person');
+  free.forEach(({l,p})=>add(p,l.role,null));
+  const freeRows=free.sort((a,b)=>a.p.name.localeCompare(b.p.name)).map(({l,p})=>`<li data-q="${esc((p.name+' '+l.role+' freelance').toLowerCase())}"><div class="rl">${go(p)}</div><div class="meta"><span class="role">${esc(l.role||'freelance')}</span></div></li>`);
+  const index=[...people.values()].sort((a,b)=>a.p.name.localeCompare(b.p.name)).map(({p,roles})=>`<li data-q="${esc((p.name+' '+roles.map(r=>r.role+' '+(r.at?r.at.name:'freelance')).join(' ')).toLowerCase())}"><div class="rl">${go(p)}</div><div class="meta">${roles.map(r=>`<span><span class="role">${esc(r.role)}</span> ${r.at?go(r.at):'<span class="role">freelance</span>'}</span>`).join('')}</div></li>`);
+  panel.innerHTML=`<div><div class="kind"><i style="background:var(--t-media,var(--t-org))"></i>Cohort</div><h2>Media</h2>
+    <p class="note">The outlets of yacht racing and the people who work for them: ${outlets.length} outlets and ${people.size} people. Only entries marked as media count; press and communications staff of teams, events and agencies aren’t included unless they also belong to an outlet. Freelancers with no company of their own in the book are linked to Media directly.</p></div>
+    <label class="mfilter">Filter<input id="media-q" type="search" placeholder="A name, outlet, role or type" value="${esc(mediaQ)}"></label>
     <h3 class="mhead">Outlets</h3>
-    ${order.filter(t=>groups.has(t)).map(t=>sec(MEDIA_TYPES[t],groups.get(t).map(outletRow))).join('')}
-    <h3 class="mhead">People</h3>
-    ${MEDIA_KINDS.map(([k,t])=>sec(t,ppl(k))).join('')}${sec('Other media, freelance',ppl('other'))}
+    ${outletHtml||'<p class="note">No media outlets yet.</p>'}
+    ${freeRows.length?`<h3 class="mhead">Freelance</h3>${sec('Freelance',freeRows,'Photographers, writers and presenters with no outlet of their own in the book.')}`:''}
+    <h3 class="mhead">People, A to Z</h3>
+    ${sec('Everyone',index)}
     <p class="note" id="media-none" hidden>Nothing matches that filter.</p>
     <div class="acts"><button type="button" class="btn" data-mediacopy="1">Copy link</button><button type="button" class="btn" data-cancel="1">Back to the map</button></div>`;
   mediaFilter()}
@@ -1648,7 +1641,7 @@ panel.addEventListener('click',e=>{const b=e.target.closest('[data-dashmore]');i
    "editors" lines show only to signed-in editors. CHANGELOG.md keeps the technical detail. */
 const UPD_HASH='update';
 const UPDATES=[
- {v:'0.3.26',d:'2026-11-12',t:'The Media chapter',i:['Media, in the top bar and the menu: the outlets, photographers, writers, presenters and press officers of yacht racing in one place, like the media chapter of the printed book. Outlets are sorted by type, people by what they do, with a filter.','Freelancers who aren’t tied to one team or event can be listed in the chapter too.']},
+ {v:'0.3.26',d:'2026-11-12',t:'Media',i:['Media, in the top bar and the menu: the outlets of yacht racing and the people who work for them in one place, like the media chapter of the printed book. Outlets are sorted by type, with an A to Z of people and a filter.','Freelance photographers, writers and presenters can be listed too.']},
  {v:'0.3.25',d:'2026-11-12',t:'News you can share anywhere',i:['A plain news page at app.darkbluebook.com/news that opens anywhere, quickly, even without JavaScript: search engines and AI tools can read it too.','An RSS feed of the news at app.darkbluebook.com/news.xml, for feed readers.']},
  {v:'0.3.24',d:'2026-11-12',t:'A sandbox for trying things out',x:1,i:['sandbox.dbb-2k3.pages.dev (and any experiment branch) runs on a copy of the book, marked SANDBOX at the top. Changes there never touch the live book. Preview still uses the live book.']},
  {v:'0.3.23',d:'2026-11-12',t:'Editor dashboard',x:1,i:['Dashboard in the top bar (menu on phones): applications, claims and reports waiting, latest changes, searches, entries that need attention, and Supabase usage against the Free plan limits, all on one page. Each list shows its latest 5, with Show all for the rest.']},
