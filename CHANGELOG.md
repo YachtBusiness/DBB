@@ -2,6 +2,10 @@
 
 Version plan: 0.1 public map live · 0.2 editing moves to Supabase · 0.3 sign-in, applications and claims · 0.4 paid features (contact details for paid members, extra profile links, job board, organisation editing, verified roles), switched on by editors before payments · 0.5 payments (Stripe, tiers, prices) · 1.0 membership network opens · 1.x events and intros. Small fixes in between are 0.x.1, 0.x.2 and so on.
 
+## 0.3.29 (13 November 2026)
+
+- A fourth lens above the map, Media, next to Everything, Money and People: only links that touch a media title (media sector ticked), so the titles, the people who work for them and their partnerships. Remembered like the other lenses.
+
 ## 0.3.28 (13 November 2026)
 
 - Media page: a plainer introduction for visitors ("The magazines, websites, channels and podcasts covering yacht racing, and the people behind them"). The rules for what counts as media now show to editors only.
