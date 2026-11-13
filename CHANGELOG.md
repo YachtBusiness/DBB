@@ -2,6 +2,10 @@
 
 Version plan: 0.1 public map live · 0.2 editing moves to Supabase · 0.3 sign-in, applications and claims · 0.4 paid features (contact details for paid members, extra profile links, job board, organisation editing, verified roles), switched on by editors before payments · 0.5 payments (Stripe, tiers, prices) · 1.0 membership network opens · 1.x events and intros. Small fixes in between are 0.x.1, 0.x.2 and so on.
 
+## 0.3.28 (13 November 2026)
+
+- Media page: a plainer introduction for visitors ("The magazines, websites, channels and podcasts covering yacht racing, and the people behind them"). The rules for what counts as media now show to editors only.
+
 ## 0.3.27 (13 November 2026)
 
 Latest piece. Migration 20261112000003_latest_piece.sql applied to live 13 Nov 2026.
