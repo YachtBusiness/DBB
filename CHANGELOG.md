@@ -2,16 +2,16 @@
 
 Version plan: 0.1 public map live · 0.2 editing moves to Supabase · 0.3 sign-in, applications and claims · 0.4 paid features (contact details for paid members, extra profile links, job board, organisation editing, verified roles), switched on by editors before payments · 0.5 payments (Stripe, tiers, prices) · 1.0 membership network opens · 1.x events and intros. Small fixes in between are 0.x.1, 0.x.2 and so on.
 
-## 0.3.27 (sandbox, 12 November 2026)
+## 0.3.27 (13 November 2026)
 
-Latest piece. On the sandbox only until it ships; needs migration 20261112000003_latest_piece.sql on live.
+Latest piece. Migration 20261112000003_latest_piece.sql applied to live 13 Nov 2026.
 
 - Media outlets (media sector ticked) can show their newest video, podcast episode, article or gallery: link, title, kind and optional date. Shown on the outlet's entry as "Latest video" (etc.) and in the Media cohort, under the outlet and in a "Latest from the media" list at the top, newest first.
 - Only registered media can set it: the outlet's owners and managers (after a claim) and editors, through set_latest_piece(), which also refuses non-media entries and anything but an https link. Entered by hand, free; picking it up automatically from the outlet's feed is planned as a paid feature.
 
-## 0.3.26 (sandbox, 12 November 2026)
+## 0.3.26 (13 November 2026)
 
-The Media cohort. On the sandbox only until it ships; needs migration 20261112000002_media_chapter.sql on live first.
+The Media cohort. Migration 20261112000002_media_chapter.sql applied to live 13 Nov 2026. Titles start untagged on live; editors add tags.
 
 - Media in the top bar (desktop) and menu (phones), at #yacht-racing-media, like the media chapter of the printed book.
 - Rule (decided 12 Nov 2026): only entries with the media sector ticked count, and the people linked to them. People who work for a team, event, club or agency (press officers, comms leads, an event's presenter) don't appear unless they also belong to a media outlet. A person becomes media through an outlet: e.g. Shirley Robertson once her podcast is in the book.
