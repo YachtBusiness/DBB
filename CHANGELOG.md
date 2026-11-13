@@ -2,9 +2,9 @@
 
 Version plan: 0.1 public map live · 0.2 editing moves to Supabase · 0.3 sign-in, applications and claims · 0.4 paid features (contact details for paid members, extra profile links, job board, organisation editing, verified roles), switched on by editors before payments · 0.5 payments (Stripe, tiers, prices) · 1.0 membership network opens · 1.x events and intros. Small fixes in between are 0.x.1, 0.x.2 and so on.
 
-## 0.3.30 (sandbox, 13 November 2026)
+## 0.3.30 (13 November 2026)
 
-Freelance photographers. Needs migration 20261113000001_freelance_photographers.sql on live.
+Freelance photographers. Migration 20261113000001_freelance_photographers.sql applied to live 13 Nov 2026.
 
 - Photographers are the one standalone media role (decided 13 Nov 2026): writers come in as contributors to a title, presenters and commentators are commercial arrangements, videographers work through companies.
 - A "Freelance photographer" box on a person's entry form (stored as the media sector plus the photographer tag; the database allows nothing else on people). Their entry reads "Freelance photographer".
