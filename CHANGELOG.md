@@ -2,6 +2,16 @@
 
 Version plan: 0.1 public map live · 0.2 editing moves to Supabase · 0.3 sign-in, applications and claims · 0.4 paid features (contact details for paid members, extra profile links, job board, organisation editing, verified roles), switched on by editors before payments · 0.5 payments (Stripe, tiers, prices) · 1.0 membership network opens · 1.x events and intros. Small fixes in between are 0.x.1, 0.x.2 and so on.
 
+## 0.3.30 (sandbox, 13 November 2026)
+
+Freelance photographers. Needs migration 20261113000001_freelance_photographers.sql on live.
+
+- Photographers are the one standalone media role (decided 13 Nov 2026): writers come in as contributors to a title, presenters and commentators are commercial arrangements, videographers work through companies.
+- A "Freelance photographer" box on a person's entry form (stored as the media sector plus the photographer tag; the database allows nothing else on people). Their entry reads "Freelance photographer".
+- Media page: a Photographers list with each photographer's clients, and the Photographer filter covers them alongside photo-agency titles.
+- The Media map view includes freelance photographers, even with no links.
+- Linking someone to the Media cohort still works but is no longer needed.
+
 ## 0.3.29 (13 November 2026)
 
 - A fourth lens above the map, Media, next to Everything, Money and People: only links that touch a media title (media sector ticked), so the titles, the people who work for them and their partnerships. Remembered like the other lenses.
