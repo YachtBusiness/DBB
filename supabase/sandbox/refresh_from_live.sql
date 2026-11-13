@@ -37,7 +37,7 @@ begin
   -- keep the sandbox's own entries: test accounts' people and the Media group
   delete from public.entities where id not like 'test-%' and id <> 'media';
   -- created_by points at member accounts, which aren't copied: blank it
-  insert into public.entities select (jsonb_populate_record(null::public.entities, '{"media_type":""}'::jsonb || j || '{"created_by":null}')).*
+  insert into public.entities select (jsonb_populate_record(null::public.entities, '{"media_tags":[]}'::jsonb || j || '{"created_by":null}')).*
     from sandbox.fetch f join net._http_response r on r.id = f.req, jsonb_array_elements(r.content::jsonb) j where f.tbl = 'entities'
     on conflict (id) do nothing;
   -- only links whose ends are in the copy (anything pointing at a draft or hidden entry is skipped)

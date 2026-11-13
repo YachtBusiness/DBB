@@ -38,7 +38,9 @@ button,input,select,textarea{font:inherit;color:inherit}
 .dgrid{display:grid;grid-template-columns:1fr;gap:14px}
 main.dash aside>*{max-width:none}main.dash aside>div:first-child,main.dash aside>.msg{max-width:720px}
 @media (min-width:861px){main.dash{grid-template-columns:1fr}main.dash .chart{display:none}.dgrid{grid-template-columns:repeat(auto-fill,minmax(330px,1fr));align-items:start}}
-.mfilter{max-width:420px}aside h3.mhead{background:none;border:0;padding:0;font-family:Georgia,'Times New Roman',serif;font-size:22px;font-weight:600;letter-spacing:0;text-transform:none;color:var(--ink);margin:14px 0 -4px}.msec .meta{flex-wrap:wrap}.msec .meta>span{display:inline-flex;gap:4px;align-items:baseline}
+.mfilter{max-width:420px}.mtag{display:inline-block;margin-left:6px;font-size:11px;padding:1px 7px;border-radius:999px;background:var(--wash);color:var(--muted);vertical-align:middle}
+.mchips{display:flex;flex-wrap:wrap;gap:6px}.mchip{font:inherit;font-size:13px;padding:4px 10px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer}.mchip span{color:var(--muted)}.mchip[aria-pressed="true"]{background:var(--navy);border-color:var(--navy);color:#fff}.mchip[aria-pressed="true"] span{color:inherit;opacity:.75}
+aside h3.mhead{background:none;border:0;padding:0;font-family:Georgia,'Times New Roman',serif;font-size:22px;font-weight:600;letter-spacing:0;text-transform:none;color:var(--ink);margin:14px 0 -4px}.msec .meta{flex-wrap:wrap}.msec .meta>span{display:inline-flex;gap:4px;align-items:baseline}
 .dt{border:1px solid var(--line);border-radius:8px;padding:12px 14px;display:flex;flex-direction:column;gap:8px;min-width:0;background:var(--surface)}
 .dt h3{margin:0;display:flex;align-items:baseline;gap:8px;font-size:14px}.dt h3 .cnt{font-weight:400;color:var(--muted)}.dt.has h3 .cnt{color:var(--ink);font-weight:600}
 .dt .rel{max-height:none}.dt .acts{margin-top:auto}.dt .chg h3{font-size:14px}
@@ -542,7 +544,7 @@ function formEntity(){const e=editing?E.get(editing):{name:'',type:'person',leve
     <label class="inl"><input type="checkbox" id="fe-prov"${e.provisional?' checked':''}> <span>Dates not confirmed yet: show the month only, “dates to be confirmed”</span></label>
     <p class="who" style="margin:0">One-day event: same date twice. Only the start known (e.g. an ocean race): leave End blank. Add dates for upcoming events only.</p></fieldset>
     <fieldset class="checks" style="border:0;padding:0;margin:0"><legend style="font-size:12px;color:var(--muted);margin-bottom:4px">Sectors (organisations only)</legend>${SECTORS.map(s=>`<label><input type="checkbox" name="fe-sec" value="${esc(s)}"${e.sectors.includes(s)?' checked':''}>${esc(s)}</label>`).join('')}</fieldset>
-    <label>Media type (media organisations only: sorts the Media cohort)<select id="fe-mtype">${opt('','Not set',e.mediaType||'')}${Object.keys(MEDIA_TYPE_ONE).map(k=>opt(k,MEDIA_TYPE_ONE[k],e.mediaType||'')).join('')}</select></label>
+    <fieldset class="checks" style="border:0;padding:0;margin:0"><legend style="font-size:12px;color:var(--muted);margin-bottom:4px">Media tags (media titles only: tick all that apply)</legend>${Object.keys(MEDIA_TAGS).map(k=>`<label><input type="checkbox" name="fe-mtag" value="${esc(k)}"${(e.mediaTags||[]).includes(k)?' checked':''}>${esc(MEDIA_TAGS[k])}</label>`).join('')}</fieldset>
     <div class="two">
     <label>Country<select id="fe-country">${opt('','Not known',e.country)}${(e.country&&!COUNTRIES.some(c=>c[0]===e.country)?[[e.country,e.country]]:[]).concat(COUNTRIES).map(([c,n])=>opt(c,n+' ('+c+')',e.country)).join('')}</select></label></div>
     <label>Note<textarea id="fe-note" rows="3">${esc(e.note)}</textarea></label>
@@ -586,7 +588,7 @@ async function reload(){await start();if(sel&&!E.has(sel))sel=null}
 async function saveEntity(){const name=val('fe-name');if(!name)return;let id=editing;
   if(!id){id=val('fe-id').toLowerCase().replace(/[^a-z0-9-]+/g,'-').replace(/^-|-$/g,'');if(!id){msg='Give the entry an id.';return render()}if(E.has(id)){msg='The id "'+id+'" is taken by '+E.get(id).name+'. Choose another.';return render()}}
   const type=val('fe-type'),sd=val('fe-start'),ed=val('fe-end');if(type==='event'&&ed&&(!sd||ed<sd)){msg='The end date must be on or after the start date.';return render()}
-  const body={start_date:type==='event'&&sd?sd:null,end_date:type==='event'&&sd&&ed?ed:null,dates_provisional:type==='event'&&!!sd&&document.getElementById('fe-prov').checked,name,type,level:type==='event'?val('fe-level'):null,sectors:type==='org'?[...document.querySelectorAll('input[name="fe-sec"]:checked')].map(x=>x.value):[],media_type:type==='org'&&document.querySelector('input[name="fe-sec"][value="media"]:checked')?val('fe-mtype'):'',country:val('fe-country').toUpperCase(),note:val('fe-note')};
+  const body={start_date:type==='event'&&sd?sd:null,end_date:type==='event'&&sd&&ed?ed:null,dates_provisional:type==='event'&&!!sd&&document.getElementById('fe-prov').checked,name,type,level:type==='event'?val('fe-level'):null,sectors:type==='org'?[...document.querySelectorAll('input[name="fe-sec"]:checked')].map(x=>x.value):[],media_tags:type==='org'&&document.querySelector('input[name="fe-sec"][value="media"]:checked')?[...document.querySelectorAll('input[name="fe-mtag"]:checked')].map(x=>x.value):[],country:val('fe-country').toUpperCase(),note:val('fe-note')};
   try{if(editing)await api('PATCH','entities?id=eq.'+encodeURIComponent(id),body);else await api('POST','entities',{id,...body});
     sel=id;mode='view';editing=null;msg='';await reload();syncHash()}catch(e){fail(e)}}
 async function saveLink(){if(!comboCheck('fl-from')||!comboCheck('fl-to')||!comboCheck('fl-context',true))return;const from=val('fl-from'),to=val('fl-to'),role=val('fl-role');
@@ -1510,7 +1512,7 @@ const within=(p,ms)=>Promise.race([p,new Promise((_,no)=>setTimeout(()=>no(new E
 let SHOWN_SIG='';
 function sigOf(es,ls,fs){const j=JSON.stringify([es,ls,fs,STORIES,[...PROFILES.entries()]]);let h=0;for(let i=0;i<j.length;i++)h=(h*31+j.charCodeAt(i))|0;return j.length+':'+h}
 function useData(es,ls,fs){FEAT=fs;
-    db={};E=new Map(es.map(x=>[x.id,norm({id:x.id,name:x.name,type:x.type,sectors:x.sectors||[],level:x.level||'',country:x.country||'',note:x.note||'',origin:x.origin||'editorial',sectorNote:x.sector_note||'',mediaType:x.media_type||'',latestUrl:x.latest_url||'',latestTitle:x.latest_title||'',latestDate:x.latest_date||'',latestKind:x.latest_kind||'',logo:x.logo_path||'',about:x.about||'',website:x.website||'',linkedin:x.linkedin||'',instagram:x.instagram||'',otherSocial:x.other_social||'',contactEmail:x.contact_email||'',startDate:x.start_date||'',endDate:x.end_date||'',provisional:!!x.dates_provisional})]));
+    db={};E=new Map(es.map(x=>[x.id,norm({id:x.id,name:x.name,type:x.type,sectors:x.sectors||[],level:x.level||'',country:x.country||'',note:x.note||'',origin:x.origin||'editorial',sectorNote:x.sector_note||'',mediaTags:x.media_tags||[],latestUrl:x.latest_url||'',latestTitle:x.latest_title||'',latestDate:x.latest_date||'',latestKind:x.latest_kind||'',logo:x.logo_path||'',about:x.about||'',website:x.website||'',linkedin:x.linkedin||'',instagram:x.instagram||'',otherSocial:x.other_social||'',contactEmail:x.contact_email||'',startDate:x.start_date||'',endDate:x.end_date||'',provisional:!!x.dates_provisional})]));
     L=ls.map(l=>({id:l.id,from:l.from_id,to:l.to_id,role:l.role,cat:l.cat,context:l.context_id||'',start:l.start_date||'',end:l.end_date||'',source:l.source||'',note:l.note||'',created:l.created_at||'',origin:l.origin||'editorial'}));
     loaded={e:true,l:true};fillScope();MAXY=Math.max(NOW,...L.map(l=>yr(l.start)).filter(v=>v!=null));syncWhen();yrEl.min=Math.max(YR_FLOOR,Math.min(NOW-1,...L.map(l=>yr(l.start)||NOW)))}
 /* 0.3.20: open straight from the saved copy when there is one, then refresh from the network in the background.
@@ -1518,7 +1520,7 @@ function useData(es,ls,fs){FEAT=fs;
 async function start(){
   if(!SHOWN_SIG){const sn=await readSnap();if(sn){STORIES=sn.stories||[];PROFILES=new Map(sn.profiles||[]);useData(sn.es,sn.ls,sn.fs);OFFLINE_AT=sn.at;SHOWN_SIG=sigOf(sn.es,sn.ls,sn.fs);offBar(true);build();render()}}
   try{if(!navigator.onLine)throw new Error('offline');
-    const [es,ls,fs]=await within(Promise.all([fetchAll('entities','id,name,type,sectors,level,country,note,origin,sector_note,logo_path,about,website,linkedin,instagram,other_social,contact_email,start_date,end_date,dates_provisional,media_type,latest_url,latest_title,latest_date,latest_kind'),fetchAll('links','id,from_id,to_id,role,cat,context_id,start_date,end_date,source,note,created_at,origin'),fetchAll('features','slot,position,entity_id,headline,link','slot,position').catch(()=>[])]),20000);
+    const [es,ls,fs]=await within(Promise.all([fetchAll('entities','id,name,type,sectors,level,country,note,origin,sector_note,logo_path,about,website,linkedin,instagram,other_social,contact_email,start_date,end_date,dates_provisional,media_tags,latest_url,latest_title,latest_date,latest_kind'),fetchAll('links','id,from_id,to_id,role,cat,context_id,start_date,end_date,source,note,created_at,origin'),fetchAll('features','slot,position,entity_id,headline,link','slot,position').catch(()=>[])]),20000);
     await Promise.all([loadProfiles(),loadStories()]);OFFLINE_AT=null;
     const sig=sigOf(es,ls,fs),changed=sig!==SHOWN_SIG;if(changed)useData(es,ls,fs);
     await checkAuth();offBar();if(justConfirmed&&mode==='view'&&!sel)mode='account';else if(freshSignin&&!checkDone()&&mode==='view'&&!location.hash)mode='account';freshSignin=false;
@@ -1532,39 +1534,39 @@ async function start(){
    unless they also belong to a media outlet. Freelancers with no company of their own in the book are linked to the
    Media cohort itself. Cohorts (type 'group') aren't drawn on the map; opening one shows this page. */
 const MEDIA_ID='media',MEDIA_HASH='yacht-racing-media';
-const MEDIA_TYPES={magazine:'Magazines',website:'Websites and blogs',youtube:'YouTube channels',podcast:'Podcasts',tv:'TV and video',film:'Film',publisher:'Publishers','photo agency':'Photographers and photo agencies',agency:'Media agencies',social:'Social media',other:'Other outlets','':'Other outlets'};
-const MEDIA_TYPE_ONE={magazine:'magazine',website:'website or blog',youtube:'YouTube channel',podcast:'podcast',tv:'TV and video',film:'film',publisher:'publisher','photo agency':'photographer or photo agency',agency:'media agency',social:'social media',other:'other'};
+const MEDIA_TAGS={website:'Website',youtube:'YouTube channel',podcast:'Podcast',magazine:'Magazine',newsletter:'Newsletter',tv:'TV and video','production company':'Production company',publisher:'Publisher',photographer:'Photographer',agency:'Agency',social:'Social media',other:'Other'};
 const isMediaOrg=e=>e&&e.type==='org'&&e.sectors.includes('media');
-let mediaQ='';
+let mediaQ='',mediaTag='';
 function listMedia(){
   const cur=L.filter(l=>E.has(l.from)&&E.has(l.to)&&!ended(l));
   const other=(l,id)=>E.get(l.from===id?l.to:l.from);
   const outlets=[...E.values()].filter(isMediaOrg).sort((a,b)=>a.name.localeCompare(b.name));
-  const groups=new Map();outlets.forEach(o=>{const t=MEDIA_TYPES[o.mediaType||'']?o.mediaType||'':'';if(!groups.has(t))groups.set(t,[]);groups.get(t).push(o)});
-  const order=Object.keys(MEDIA_TYPES).filter(k=>k!=='');order.push('');
   const go=e=>`<button type="button" class="ent" data-go="${esc(e.id)}">${esc(e.name)}</button>`;
   const people=new Map();const add=(p,role,at)=>{if(!people.has(p.id))people.set(p.id,{p,roles:[]});people.get(p.id).roles.push({role,at})};
   const outletRow=o=>{const mine=cur.filter(l=>l.from===o.id||l.to===o.id),ppl=mine.filter(l=>other(l,o.id).type==='person'),rest=mine.filter(l=>!['person','group'].includes(other(l,o.id).type));
     ppl.forEach(l=>add(other(l,o.id),l.role,o));
-    const q=[o.name,MEDIA_TYPE_ONE[o.mediaType]||'',...ppl.map(l=>other(l,o.id).name+' '+l.role),...rest.map(l=>other(l,o.id).name+' '+l.role)].join(' ').toLowerCase();
+    const tags=o.mediaTags||[];const q=[o.name,...tags.map(t=>MEDIA_TAGS[t]||t),...ppl.map(l=>other(l,o.id).name+' '+l.role),...rest.map(l=>other(l,o.id).name+' '+l.role)].join(' ').toLowerCase();
     const lt=o.latestUrl?`<div class="meta"><span><span class="role">${esc(latestLabel(o))}:</span> <a href="${esc(o.latestUrl)}" target="_blank" rel="noopener">${esc(o.latestTitle||newsHost(o.latestUrl))} ↗</a></span></div>`:'';
-    return`<li data-q="${esc(q)}"><div class="rl">${go(o)}</div>${lt}
+    return`<li data-q="${esc(q)}" data-tags="${esc(tags.join('|'))}"><div class="rl">${go(o)}${tags.map(t=>`<span class="mtag">${esc(MEDIA_TAGS[t]||t)}</span>`).join('')}</div>${lt}
       ${ppl.length?`<div class="meta">${ppl.map(l=>`<span>${go(other(l,o.id))} <span class="role">${esc(l.role)}</span></span>`).join('')}</div>`:''}
       ${rest.length?`<div class="meta">${rest.map(l=>`<span>${go(other(l,o.id))} <span class="role">${esc(l.role)}</span></span>`).join('')}</div>`:''}</li>`};
   const sec=(title,rows,note)=>rows.length?`<section class="msec"><h3>${esc(title)} <span class="cnt">${rows.length}</span></h3>${note?`<p class="note">${esc(note)}</p>`:''}<ul class="rel">${rows.join('')}</ul></section>`:'';
-  const outletHtml=order.filter(t=>groups.has(t)).map(t=>sec(MEDIA_TYPES[t],groups.get(t).map(outletRow))).join('');
+  const outletHtml=sec('Titles',outlets.map(outletRow));
+  const used=Object.keys(MEDIA_TAGS).filter(t=>outlets.some(o=>(o.mediaTags||[]).includes(t)));
+  const chips=used.length?`<div class="mchips" role="group" aria-label="Filter titles by tag"><button type="button" class="mchip" data-mtag=""${mediaTag?'':' aria-pressed="true"'}>All</button>${used.map(t=>`<button type="button" class="mchip" data-mtag="${esc(t)}"${mediaTag===t?' aria-pressed="true"':''}>${esc(MEDIA_TAGS[t])} <span>${outlets.filter(o=>(o.mediaTags||[]).includes(t)).length}</span></button>`).join('')}</div>`:'';
   // freelancers: people linked to the Media cohort itself
   const free=cur.filter(l=>l.from===MEDIA_ID||l.to===MEDIA_ID).map(l=>({l,p:other(l,MEDIA_ID)})).filter(x=>x.p.type==='person');
   free.forEach(({l,p})=>add(p,l.role,null));
   const freeRows=free.sort((a,b)=>a.p.name.localeCompare(b.p.name)).map(({l,p})=>`<li data-q="${esc((p.name+' '+l.role+' freelance').toLowerCase())}"><div class="rl">${go(p)}</div><div class="meta"><span class="role">${esc(l.role||'freelance')}</span></div></li>`);
   const index=[...people.values()].sort((a,b)=>a.p.name.localeCompare(b.p.name)).map(({p,roles})=>`<li data-q="${esc((p.name+' '+roles.map(r=>r.role+' '+(r.at?r.at.name:'freelance')).join(' ')).toLowerCase())}"><div class="rl">${go(p)}</div><div class="meta">${roles.map(r=>`<span><span class="role">${esc(r.role)}</span> ${r.at?go(r.at):'<span class="role">freelance</span>'}</span>`).join('')}</div></li>`);
   panel.innerHTML=`<div><div class="kind"><i style="background:var(--t-media,var(--t-org))"></i>Cohort</div><h2>Media</h2>
-    <p class="note">The outlets of yacht racing and the people who work for them: ${outlets.length} outlets and ${people.size} people. Only entries marked as media count; press and communications staff of teams, events and agencies aren’t included unless they also belong to an outlet. Freelancers with no company of their own in the book are linked to Media directly.</p></div>
-    <label class="mfilter">Filter<input id="media-q" type="search" placeholder="A name, outlet, role or type" value="${esc(mediaQ)}"></label>
+    <p class="note">The titles of yacht racing and the people who work for them: ${outlets.length} titles and ${people.size} people. Only entries marked as media count; press and communications staff of teams, events and agencies aren’t included unless they also belong to a title. Freelancers with no company of their own in the book are linked to Media directly.</p></div>
+    <label class="mfilter">Filter<input id="media-q" type="search" placeholder="A name, title or role" value="${esc(mediaQ)}"></label>
     ${(()=>{const lat=outlets.filter(o=>o.latestUrl).sort((a,b)=>(b.latestDate||'').localeCompare(a.latestDate||'')).slice(0,10);
       return lat.length?`<h3 class="mhead">Latest from the media</h3>${sec('Newest first',lat.map(o=>`<li data-q="${esc((o.name+' '+(o.latestTitle||'')).toLowerCase())}"><div class="rl"><a class="nhead" href="${esc(o.latestUrl)}" target="_blank" rel="noopener">${esc(o.latestTitle||newsHost(o.latestUrl))} ↗</a></div><div class="meta">${go(o)}<span class="role">${esc(latestLabel(o).replace('Latest ',''))}</span>${o.latestDate?`<span>${esc(newsDay(o.latestDate))}</span>`:''}</div></li>`))}`:''})()}
-    <h3 class="mhead">Outlets</h3>
-    ${outletHtml||'<p class="note">No media outlets yet.</p>'}
+    <h3 class="mhead">Titles</h3>
+    ${chips}
+    ${outletHtml||'<p class="note">No media titles yet.</p>'}
     ${freeRows.length?`<h3 class="mhead">Freelance</h3>${sec('Freelance',freeRows,'Photographers, writers and presenters with no outlet of their own in the book.')}`:''}
     <h3 class="mhead">People, A to Z</h3>
     ${sec('Everyone',index)}
@@ -1572,12 +1574,13 @@ function listMedia(){
     <div class="acts"><button type="button" class="btn" data-mediacopy="1">Copy link</button><button type="button" class="btn" data-cancel="1">Back to the map</button></div>`;
   mediaFilter()}
 function mediaFilter(){const q=mediaQ.trim().toLowerCase();let any=false;
-  document.querySelectorAll('.msec').forEach(s=>{let n=0;s.querySelectorAll('li[data-q]').forEach(li=>{const ok=!q||li.dataset.q.includes(q);li.hidden=!ok;if(ok)n++});s.hidden=!n;if(n)any=true});
+  document.querySelectorAll('.msec').forEach(s=>{let n=0;s.querySelectorAll('li[data-q]').forEach(li=>{const ok=(!q||li.dataset.q.includes(q))&&(!mediaTag||li.dataset.tags===undefined||li.dataset.tags.split('|').includes(mediaTag));li.hidden=!ok;if(ok)n++});s.hidden=!n;if(n)any=true});
   const none=document.getElementById('media-none');if(none)none.hidden=any}
 panel.addEventListener('input',e=>{if(e.target.id!=='media-q')return;mediaQ=e.target.value;mediaFilter()});
+panel.addEventListener('click',e=>{const b=e.target.closest('[data-mtag]');if(!b)return;mediaTag=b.dataset.mtag;document.querySelectorAll('.mchip').forEach(x=>x===b?x.setAttribute('aria-pressed','true'):x.removeAttribute('aria-pressed'));mediaFilter()});
 panel.addEventListener('click',e=>{const b=e.target.closest('[data-mediacopy]');if(!b)return;const u=location.href.split('#')[0].split('?')[0]+'#'+MEDIA_HASH;
   try{navigator.clipboard.writeText(u).then(()=>{b.textContent='Link copied'},()=>{b.textContent=u})}catch(x){b.textContent=u}});
-document.addEventListener('click',e=>{const b=e.target.closest('[data-media]');if(!b)return;e.preventDefault();const m=document.getElementById('menu');if(m)m.hidden=true;mediaQ='';pick(MEDIA_ID);showPanel()});
+document.addEventListener('click',e=>{const b=e.target.closest('[data-media]');if(!b)return;e.preventDefault();const m=document.getElementById('menu');if(m)m.hidden=true;mediaQ='';mediaTag='';pick(MEDIA_ID);showPanel()});
 
 /* ---------- latest piece (0.3.27) ---------- */
 /* A media outlet's newest video, episode or article, set by its owners and managers (registered media) or editors.
@@ -1677,7 +1680,7 @@ panel.addEventListener('click',e=>{const b=e.target.closest('[data-dashmore]');i
 const UPD_HASH='update';
 const UPDATES=[
  {v:'0.3.27',d:'2026-11-12',t:'Latest pieces from media outlets',i:['Media outlets can show their newest video, podcast episode or article on their entry and in Media. It’s set by the outlet’s own owners and managers, once they’ve claimed it.']},
- {v:'0.3.26',d:'2026-11-12',t:'Media',i:['Media, in the top bar and the menu: the outlets of yacht racing and the people who work for them in one place, like the media chapter of the printed book. Outlets are sorted by type, with an A to Z of people and a filter.','Freelance photographers, writers and presenters can be listed too.']},
+ {v:'0.3.26',d:'2026-11-12',t:'Media',i:['Media, in the top bar and the menu: the titles of yacht racing and the people who work for them in one place, like the media chapter of the printed book. Titles are tagged (website, YouTube channel, podcast…) and can be filtered by tag, with an A to Z of people.','Freelance photographers, writers and presenters can be listed too.']},
  {v:'0.3.25',d:'2026-11-12',t:'News you can share anywhere',i:['A plain news page at app.darkbluebook.com/news that opens anywhere, quickly, even without JavaScript: search engines and AI tools can read it too.','An RSS feed of the news at app.darkbluebook.com/news.xml, for feed readers.']},
  {v:'0.3.24',d:'2026-11-12',t:'A sandbox for trying things out',x:1,i:['sandbox.dbb-2k3.pages.dev (and any experiment branch) runs on a copy of the book, marked SANDBOX at the top. Changes there never touch the live book. Preview still uses the live book.']},
  {v:'0.3.23',d:'2026-11-12',t:'Editor dashboard',x:1,i:['Dashboard in the top bar (menu on phones): applications, claims and reports waiting, latest changes, searches, entries that need attention, and Supabase usage against the Free plan limits, all on one page. Each list shows its latest 5, with Show all for the rest.']},

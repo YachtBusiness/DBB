@@ -15,9 +15,9 @@ The Media cohort. On the sandbox only until it ships; needs migration 2026111200
 
 - Media in the top bar (desktop) and menu (phones), at #yacht-racing-media, like the media chapter of the printed book.
 - Rule (decided 12 Nov 2026): only entries with the media sector ticked count, and the people linked to them. People who work for a team, event, club or agency (press officers, comms leads, an event's presenter) don't appear unless they also belong to a media outlet. A person becomes media through an outlet: e.g. Shirley Robertson once her podcast is in the book.
-- Outlets sorted by a new optional media type (magazine, website or blog, YouTube channel, podcast, TV and video, film, publisher, photographer or photo agency, media agency, social media, other), each with its people and partnerships; a Freelance list (people linked to the Media cohort itself, for freelancers with no company of their own in the book); and an A to Z of everyone. A filter narrows it.
+- Titles (media-ticked entries) in one A to Z list, each listed once, with its people and partnerships. Titles can carry any number of tags (website, YouTube channel, podcast, magazine, newsletter, TV and video, production company, publisher, photographer, agency, social media, other), shown as labels and used as filter buttons; separate type boxes didn't work because titles are several things at once (decided 13 Nov 2026). Then a Freelance list (people linked to the Media cohort itself) and an A to Z of people. A text filter narrows everything.
 - A new kind of entry, Cohort (stored as type 'group'). Cohorts and their links aren't drawn on the map; opening one shows its page. Media (#media) is the first.
-- Media type on the entry form for media organisations.
+- Media tags on the entry form for media organisations (tick all that apply).
 - The sandbox refresh keeps the sandbox's own entries (test accounts, Media).
 
 ## 0.3.25 (12 November 2026)
