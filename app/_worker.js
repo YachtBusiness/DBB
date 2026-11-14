@@ -47,7 +47,7 @@ ${ents ? `<p class="t">In the book: ${ents}</p>` : ''}</article></li>`;
 <meta name="description" content="The latest yacht racing news linked to the people, teams, clubs, organisations and events in The Dark Blue Book, the who’s who of yacht racing. Newest first.">
 <link rel="canonical" href="${APP}news"><link rel="alternate" type="application/rss+xml" title="The Dark Blue Book: yacht racing news" href="${APP}news.xml">
 <link rel="icon" href="/icons/icon-32.png" sizes="32x32"><meta name="theme-color" content="#12264d">
-<meta property="og:title" content="Yacht racing news · The Dark Blue Book"><meta property="og:type" content="website"><meta property="og:url" content="${APP}news"><meta property="og:image" content="${APP}icons/icon-512.png">
+<meta property="og:title" content="Yacht racing news · The Dark Blue Book"><meta property="og:type" content="website"><meta property="og:url" content="${APP}news"><meta property="og:image" content="${APP}og.jpg"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta name="twitter:card" content="summary_large_image">
 <script type="application/ld+json">${JSON.stringify(ld).replace(/</g, '\\u003c')}</script>
 <style>
 :root{--navy:#12264d;--ink:#0e1d3a;--muted:#5a6680;--line:#dde3ee;--bg:#f6f8fc;--surface:#fff;--link:#1d5fc4}

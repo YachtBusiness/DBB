@@ -2,6 +2,11 @@
 
 Version plan: 0.1 public map live · 0.2 editing moves to Supabase · 0.3 sign-in, applications and claims · 0.4 paid features (contact details for paid members, extra profile links, job board, organisation editing, verified roles), switched on by editors before payments · 0.5 payments (Stripe, tiers, prices) · 1.0 membership network opens · 1.x events and intros. Small fixes in between are 0.x.1, 0.x.2 and so on.
 
+## 0.3.31 (14 November 2026)
+
+- Share previews: the app had no Open Graph or Twitter tags, so shared links showed a bare text snippet. Added og:title, og:description, og:image and a summary_large_image card, with a 1200×630 share image (app/og.jpg: the title, tagline and sail icon on navy). The /news page uses the same image.
+- Every app link still shares the same card, because entries live after the # and the server never sees which one; per-entry previews need per-entry share pages (roadmap).
+
 ## 0.3.30 (13 November 2026)
 
 Freelance photographers. Migration 20261113000001_freelance_photographers.sql applied to live 13 Nov 2026.
