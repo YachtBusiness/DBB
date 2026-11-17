@@ -686,7 +686,7 @@ async function sendLink(){const email=val('fs-email');if(!email)return;
   /* sandbox only: password sign-in for the test accounts */
   const pw=IS_SANDBOX&&document.getElementById('fs-pw')?document.getElementById('fs-pw').value:'';
   if(pw){const r=await fetch(`${SB_URL}/auth/v1/token?grant_type=password`,{method:'POST',headers:{apikey:SB_KEY,'Content-Type':'application/json'},body:JSON.stringify({email,password:pw})}).catch(()=>null);
-    if(r&&r.ok){const j=await r.json();saveAuth({access_token:j.access_token,refresh_token:j.refresh_token,expires_at:j.expires_at||Date.now()/1000+j.expires_in});await checkAuth();mode='view';msg='Signed in as '+email+' (sandbox).';paint();render();return}
+    if(r&&r.ok){const j=await r.json();saveAuth({access_token:j.access_token,refresh_token:j.refresh_token,expires_at:j.expires_at||Date.now()/1000+j.expires_in});await checkAuth();mode='view';msg='Signed in as '+email+' (sandbox).';paint();render();takeReturn();return}
     msg='Wrong email or password for a sandbox test account.';return render()}
   const r=await fetch(`${SB_URL}/auth/v1/otp?redirect_to=${encodeURIComponent(location.origin+location.pathname)}`,{method:'POST',headers:{apikey:SB_KEY,'Content-Type':'application/json'},body:JSON.stringify({email,create_user:false})}).catch(()=>null);
   if(r&&r.ok){panel.innerHTML=`<div><h2>Check your email</h2><p class="note">If ${esc(email)} has an account, a sign-in link is on its way. It works once and expires after an hour.</p><div class="acts"><button type="button" class="btn" data-cancel="1">Back</button></div></div>`;return}
