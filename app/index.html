@@ -957,7 +957,7 @@ function welcome(x){const url='https://app.darkbluebook.com/#'+encodeURIComponen
   return{subject:'Welcome to The Dark Blue Book',body:`Hi ${firstName(x.name)},\n\nYour application's been accepted, welcome aboard. You're now on the map: ${url}\n\nSign in to finish your profile: add a photo and choose which contact details other members can see.\n\nYou're one of our first members, so some things are still being worked out. If something's missing, wrong or annoying, tell us: use Send feedback in the app or just reply to this email.\n\nDave\nEditor, The Dark Blue Book`}}
 async function sendWelcome(again){if(!accepted)return;const x=accepted;x.mail='sending';x.why='';if(mode==='review')render();
   try{const t=await token();const r=await fetch(`${SB_URL}/functions/v1/welcome`,{method:'POST',headers:{apikey:SB_KEY,Authorization:'Bearer '+t,'Content-Type':'application/json'},body:JSON.stringify({user_id:x.uid,again:!!again})});
-    const j=await r.json().catch(()=>({}));x.mail=r.ok?(j.result==='already'?'already':'sent'):'failed';x.why=r.ok?'':j.error==='not_configured'?'Automatic sending isn’t set up yet (no Resend key in Supabase).':'Resend said: '+(j.detail||j.error||r.status)}
+    const j=await r.json().catch(()=>({}));x.mail=r.ok?(j.result==='already'?'already':'sent'):'failed';x.why=r.ok?'':j.error==='not_configured'?(IS_SANDBOX?'This is the sandbox, which never sends emails, so nothing reached anyone. On live it goes out as normal.':'Automatic sending isn’t set up yet (no Resend key in Supabase).'):'Resend said: '+(j.detail||j.error||r.status)}
   catch(e){x.mail='failed';x.why='Couldn’t reach the server.'}
   if(accepted===x&&mode==='review')render()}
 function acceptedView(){const x=accepted,w=welcome(x);
