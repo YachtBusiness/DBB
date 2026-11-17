@@ -5,7 +5,7 @@
 // application is deleted: at 7 days, and never sooner than 2 days after the reminder.
 // Callers must send Vault's remind_secret as x-remind-secret (checked by public.remind_key_ok). Needs RESEND_API_KEY.
 // Without the email key (the sandbox) nothing is sent and nobody is marked as reminded.
-// Job ads (0.4.0): a few days before a job ad expires, the member who posted it gets one email with a one-click link
+// Job ads (0.3.40): a few days before a job ad expires, the member who posted it gets one email with a one-click link
 // (app#job-extend=<token>, public.job_notice_token) to keep it open another 30 days, without signing in.
 // {"preview_to": "<editor's email>"} sends samples of the emails (application, reminder, job expiry) to an editor
 // instead; their buttons open sample links that do nothing.

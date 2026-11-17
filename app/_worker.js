@@ -1,9 +1,9 @@
 /* The Dark Blue Book: pages built on Cloudflare's side, readable without JavaScript (0.3.25).
    /news      every news story as plain HTML, for search engines, AI tools and anyone without JavaScript
    /news.xml  the same stories as an RSS feed
-   /jobs      open job ads as plain HTML (0.4.0): the public teaser only (title, location, workplace, type, date),
+   /jobs      open job ads as plain HTML (0.3.40): the public teaser only (title, location, workplace, type, date),
               never the organisation, salary or how to apply, which are for signed-in members in the app
-   /jobs/<8 hex>  one job ad's teaser (0.4.1), with its own title and share preview, linking to app#job-<8 hex>
+   /jobs/<8 hex>  one job ad's teaser (0.3.41), with its own title and share preview, linking to app#job-<8 hex>
    Only these paths reach this worker (see _routes.json); everything else is served as static files.
    Live and preview read the live book; any other address reads the sandbox, as the app does. */
 const LIVE_HOSTS = ['app.darkbluebook.com', 'preview.dbb-2k3.pages.dev', 'dbb-2k3.pages.dev'];

@@ -1,4 +1,4 @@
--- 0.4.0 (second part): views and Apply clicks on job ads, for the people who manage them.
+-- 0.3.40 (second part): views and Apply clicks on job ads, for the people who manage them.
 -- Applications happen on the employer's site or by email, so the book never sees who applied. What it can count:
 -- how many members opened an ad (a count only), and who clicked Apply now. Decided 17 Nov 2026: the hirer sees the list
 -- of members who clicked Apply (name and their entry) as a trust signal; members are told under the button.

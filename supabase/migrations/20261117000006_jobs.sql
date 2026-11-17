@@ -1,4 +1,4 @@
--- 0.4.0 (first part): job board, and the paid flag it depends on.
+-- 0.3.40 (first part): job board, and the paid flag it depends on.
 -- Decided 9 and 17 Nov 2026:
 --   Who posts: owners and managers of an organisation who are paid members (editors can always post). Each job is for
 --     that organisation. Up to 5 live jobs per organisation.
