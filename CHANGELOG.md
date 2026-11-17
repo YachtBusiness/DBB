@@ -2,6 +2,10 @@
 
 Version plan: 0.1 public map live · 0.2 editing moves to Supabase · 0.3 sign-in, applications and claims · 0.4 paid features (contact details for paid members, extra profile links, job board, organisation editing, verified roles), switched on by editors before payments · 0.5 payments (Stripe, tiers, prices) · 1.0 membership network opens · 1.x events and intros. Small fixes in between are 0.x.1, 0.x.2 and so on.
 
+## 0.3.34 (17 November 2026)
+
+- Search fix: the header search took the first 8 matches A to Z across names and notes, so an entry whose name matched could be crowded out by entries that only mention it in their note (IMOCA was beaten by a dozen IMOCA teams starting A to G). Name matches now come first, ranked as in the link-form pickers (exact, starts with, word starts, initials), then note matches A to Z; accents are ignored in notes too.
+
 ## 0.3.33 (17 November 2026)
 
 The first way to earn points. Migrations 20261117000001_points.sql and 20261117000002_points_rewards.sql applied to live 17 Nov 2026; the 2 members who already had photos received 10 points each.
