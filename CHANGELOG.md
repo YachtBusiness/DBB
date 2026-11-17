@@ -2,6 +2,16 @@
 
 Version plan: 0.1 public map live · 0.2 editing moves to Supabase · 0.3 sign-in, applications and claims · 0.4 paid features (contact details for paid members, extra profile links, job board, organisation editing, verified roles), switched on by editors before payments · 0.5 payments (Stripe, tiers, prices) · 1.0 membership network opens · 1.x events and intros. Small fixes in between are 0.x.1, 0.x.2 and so on.
 
+## 0.3.35 (sandbox, not yet live)
+
+Referrals, tied to points. Migration 20261117000003_referrals.sql applied to the sandbox only.
+
+- Every member gets a personal invite link (app.darkbluebook.com/?ref=xxxxxxxx) under Invite people on their profile, with Copy (and Share on phones), and a count of who joined, who is waiting and points earned from invites. The code is made the first time they open their profile.
+- Opening an invite link remembers the code for 90 days on that device and tidies it out of the address bar. The Apply form says "You were invited by <name>"; the application is tied to the referrer when the applicant confirms their email (set_referrer: once, own undecided application only, not yourself).
+- Editor approval stays: when an editor accepts the application, the database pays the referrer the 'referral' reward (100 points to start), once per person referred, and only while the referrer is still a member. The history reads "+100 Referred a new member: <name>".
+- Editors see "invited by <name>" on the applications list and the review page.
+- Rewards tile on the editor dashboard lists the earning rules; the owner can change an amount or switch a rule off (set_points_rule), applying from then on. Editors can see switched-off rules.
+
 ## 0.3.34 (17 November 2026)
 
 - Search fix: the header search took the first 8 matches A to Z across names and notes, so an entry whose name matched could be crowded out by entries that only mention it in their note (IMOCA was beaten by a dozen IMOCA teams starting A to G). Name matches now come first, ranked as in the link-form pickers (exact, starts with, word starts, initials), then note matches A to Z; accents are ignored in notes too.
