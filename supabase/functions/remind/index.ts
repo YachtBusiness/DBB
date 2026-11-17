@@ -5,8 +5,10 @@
 // application is deleted: at 7 days, and never sooner than 2 days after the reminder.
 // Callers must send Vault's remind_secret as x-remind-secret (checked by public.remind_key_ok). Needs RESEND_API_KEY.
 // Without the email key (the sandbox) nothing is sent and nobody is marked as reminded.
-// {"preview_to": "<editor's email>"} sends samples of both emails (application and reminder) to an editor instead;
-// their buttons open a sample link that confirms nothing.
+// Job ads (0.4.0): a few days before a job ad expires, the member who posted it gets one email with a one-click link
+// (app#job-extend=<token>, public.job_notice_token) to keep it open another 30 days, without signing in.
+// {"preview_to": "<editor's email>"} sends samples of the emails (application, reminder, job expiry) to an editor
+// instead; their buttons open sample links that do nothing.
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 
 const URL_ = Deno.env.get("SUPABASE_URL")!;
@@ -34,15 +36,15 @@ async function rpc(name: string, args: unknown = {}) {
 // ---- the confirm emails (same layout in the apply function) ----
 const esc = (s: string) => s.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]!));
 const day = (d: Date) => d.toLocaleDateString("en-GB", { day: "numeric", month: "long", timeZone: "UTC" });
-function layout(paras: string[], link: string) {
-  const text = paras.map((p) => p === "LINK" ? `Confirm your email: ${link}` : p).join("\n\n") + "\n\nDave\nEditor, The Dark Blue Book";
+function layout(paras: string[], link: string, button = "Confirm my email") {
+  const text = paras.map((p) => p === "LINK" ? `${button}: ${link}` : p).join("\n\n") + "\n\nDave\nEditor, The Dark Blue Book";
   const p = "margin:0 0 16px";
   const html = `<!doctype html><html><body style="margin:0;padding:24px;background:#eef1f7;font-family:Georgia,'Times New Roman',serif;color:#0e1d3a">
 <div style="max-width:560px;margin:0 auto;background:#ffffff;border-radius:6px;overflow:hidden">
 <div style="background:#12264d;color:#f2f5fb;padding:18px 24px;font-size:22px;font-weight:600">The Dark Blue Book</div>
 <div style="padding:24px;font-size:16px;line-height:1.5">
 ${paras.map((x) => x === "LINK"
-    ? `<p style="${p}"><a href="${esc(link)}" style="display:inline-block;background:#12264d;color:#ffffff;text-decoration:none;padding:10px 18px;border-radius:4px;font-weight:600">Confirm my email</a></p>`
+    ? `<p style="${p}"><a href="${esc(link)}" style="display:inline-block;background:#12264d;color:#ffffff;text-decoration:none;padding:10px 18px;border-radius:4px;font-weight:600">${esc(button)}</a></p>`
     : `<p style="${p}">${esc(x)}</p>`).join("\n")}
 <p style="margin:0">Dave<br>Editor, The Dark Blue Book</p>
 </div></div></body></html>`;
@@ -68,6 +70,16 @@ function remindEmail(name: string, applied: Date, link: string) {
     `The link works until ${day(by)}, on any device. After that, unconfirmed applications are deleted, and you're welcome to apply again.`,
     `If you didn't apply, ignore this email.`,
   ], link) };
+}
+function jobEmail(name: string, title: string, org: string, expires: Date, link: string) {
+  const first = name.trim().split(/\s+/)[0] || "there";
+  return { subject: `Your job ad closes on ${day(expires)}: ${title}`, ...layout([
+    `Hi ${first},`,
+    `Your job ad "${title}" for ${org} on The Dark Blue Book closes on ${day(expires)}.`,
+    `Still hiring? Keep it open for another 30 days with one click:`,
+    `LINK`,
+    `If the role's filled, there's nothing to do: the ad closes on its own.`,
+  ], link, "Keep it open") };
 }
 // ----
 
@@ -97,7 +109,8 @@ Deno.serve(async (req) => {
       const sample = APP + "#confirm=sample";
       const a = await send(email, applyEmail("Dave", sample));
       const r = await send(email, remindEmail("Dave", new Date(Date.now() - 5 * 864e5), sample));
-      return reply(a && r ? 200 : 502, { result: a && r ? "preview_sent" : "failed" });
+      const j = await send(email, jobEmail("Dave", "Boat captain, 60ft race programme", "Example Racing", new Date(Date.now() + 3 * 864e5), APP + "#job-extend=sample"));
+      return reply(a && r && j ? 200 : 502, { result: a && r && j ? "preview_sent" : "failed" });
     }
 
     const due: { user_id: string; name: string; email: string; applied_at: string }[] = (await rpc("applications_due_reminder")) || [];
@@ -109,7 +122,17 @@ Deno.serve(async (req) => {
         sent++;
       } else failed++;
     }
-    return reply(200, { result: "ok", due: due.length, sent, failed });
+
+    const jobs: { job_id: string; title: string; org_name: string; expires_at: string; email: string; name: string }[] = (await rpc("jobs_due_notice")) || [];
+    let jsent = 0;
+    for (const j of jobs) {
+      const token = await rpc("job_notice_token", { p_job: j.job_id });
+      if (token && await send(j.email, jobEmail(j.name || "", j.title, j.org_name, new Date(j.expires_at), `${APP}#job-extend=${token}`))) {
+        await rpc("job_notice_sent", { p_job: j.job_id });
+        jsent++;
+      } else failed++;
+    }
+    return reply(200, { result: "ok", due: due.length, sent, jobs_due: jobs.length, jobs_sent: jsent, failed });
   } catch (e) {
     return reply(500, { error: "server", detail: String((e as Error).message || e).slice(0, 300) });
   }
