@@ -100,7 +100,7 @@ ${STYLE}</head><body>
 <header><a href="${APP}"><div class="b">The Dark Blue Book</div><p>The who’s who of yacht racing</p></a></header>
 <main><h1>Yacht racing jobs</h1>
 <p class="n">Jobs in yacht racing, newest first. ${list.length} open ${list.length === 1 ? 'job' : 'jobs'}. Members of The Dark Blue Book see who’s hiring, the full ad and how to apply.</p>
-<p><a class="app" href="${APP}#yacht-racing-jobs">See the jobs in the app</a><a class="app" href="${APP}">Apply to join</a></p>
+<p><a class="app" href="${APP}#yacht-racing-jobs">See the jobs in the app</a><a class="app" href="${APP}#apply">Apply to join</a></p>
 <ol>
 ${items || '<li>No jobs posted yet. Organisations in the book can post them; members see the full ads.</li>'}
 </ol>

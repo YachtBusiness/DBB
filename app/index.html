@@ -250,7 +250,7 @@ a.btn{text-decoration:none;color:#0e1d3a}a.btn.go{color:var(--surface)}
 .news{border-left:3px solid var(--t-team);padding:2px 0 2px 12px;display:flex;flex-direction:column;gap:10px}.news .nitem{display:flex;flex-direction:column;gap:2px}.news .acts{margin-top:2px}
 .ntags{display:flex;flex-direction:column;gap:8px}.ntags .lbl{font-size:13px;font-weight:600}.ntags ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}.ntags li{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.ntags li i{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px}.news h3{margin:0 0 2px}.news a{font-weight:600;color:var(--ink);overflow-wrap:anywhere}.news .who{margin:0}
 .jobs .job details>summary{cursor:pointer;list-style:none;display:block;font-size:inherit;letter-spacing:normal;text-transform:none;font-weight:400;padding:0}.jobs .job details>summary::-webkit-details-marker{display:none}.jobs .job details>summary strong{text-decoration:underline;text-decoration-color:var(--muted);text-underline-offset:3px}.jobs .job .meta{margin-top:2px}
-.jobsnip{margin:4px 0 0;font-size:14px;color:var(--muted)}.jobs .job details[open] .jobsnip{display:none}.jobm .acts{margin-top:4px}.jobbody{padding:6px 0 4px}.jobbody p{margin:6px 0}.jobdesc{white-space:pre-wrap;overflow-wrap:anywhere}.jobtypes{gap:6px}.jobtypes .btn[aria-pressed="true"]{background:#12264d;color:#fff;border-color:#12264d}
+.jobs .jobt{font-size:inherit}.jobs li.jteaser{display:block}.jobs li.jteaser .meta{margin-top:2px}.jobs li.jteaser .owner{margin-top:6px}.jobsnip{margin:4px 0 0;font-size:14px;color:var(--muted)}.jobs .job details[open] .jobsnip{display:none}.jobm .acts{margin-top:4px}.jobbody{padding:6px 0 4px}.jobbody p{margin:6px 0}.jobdesc{white-space:pre-wrap;overflow-wrap:anywhere}.jobtypes{gap:6px}.jobtypes .btn[aria-pressed="true"]{background:#12264d;color:#fff;border-color:#12264d}
 #fjob textarea{width:100%;font:inherit;min-height:180px}
 .logo{display:block;width:72px;height:72px;object-fit:contain;background:#fff;border:1px solid var(--line);border-radius:8px;padding:6px;flex:none}
 .logo.big{width:112px;height:112px}
@@ -497,6 +497,7 @@ function fromHash(){let id='';try{id=decodeURIComponent(location.hash.slice(1))}
   if(id.startsWith('confirm=')){try{history.replaceState(null,'',location.pathname+location.search)}catch(e){}sel=null;editing=null;msg='';mode='confirmed';CONFIRM={state:'working'};paint();render();if(typeof showPanel==='function')showPanel();confirmToken(id.slice(8));return}
   if(id===JOBS_HASH){sel=null;editing=null;msg='';jobsFor=null;mode='jobs';paint();render();if(typeof showPanel==='function')showPanel();return}
   if(id.startsWith('job-extend=')){try{history.replaceState(null,'',location.pathname+location.search)}catch(e){}sel=null;editing=null;msg='';mode='jobext';JOBEXT={state:'working'};paint();render();if(typeof showPanel==='function')showPanel();jobExtendToken(id.slice(11));return}
+  if(id==='apply'){sel=null;editing=null;msg='';if(auth)mode='account';else{draft=null;mode='apply'}paint();render();if(typeof showPanel==='function')showPanel();return}
   if(id==='sign-in'){sel=null;editing=null;mode=auth?'account':'signin';paint();render();if(typeof showPanel==='function')showPanel();return}
   if(id===UPD_HASH_){sel=null;editing=null;msg='';mode='updates';paint();render();if(typeof showPanel==='function')showPanel();return}
   if(id===CAL_HASH||id===NEWS_HASH){sel=null;editing=null;msg='';mode=id===CAL_HASH?'calendar':'allnews';if(id===NEWS_HASH)newsFor=null;paint();render();if(typeof showPanel==='function')showPanel();return}
@@ -697,7 +698,7 @@ const umenu=()=>document.getElementById('umenu');
 function closeUmenu(){const u=umenu();if(u)u.hidden=true;document.querySelectorAll('.join [data-acct]').forEach(b=>b.setAttribute('aria-expanded','false'))}
 document.addEventListener('click',e=>{const b=e.target.closest('[data-acct]');if(!b)return;$('#menu').hidden=true;
   if(auth&&b.closest('.join')){const u=umenu();u.hidden=!u.hidden;b.setAttribute('aria-expanded',String(!u.hidden));if(!u.hidden&&ME&&ME.status==='member'){loadMyPoints();umenuPoints()}return}
-  closeUmenu();mode=auth?'account':'signin';editing=null;msg='';render();showPanel()});
+  if(!auth)saveReturn();closeUmenu();mode=auth?'account':'signin';editing=null;msg='';render();showPanel()});
 document.addEventListener('click',e=>{if(!e.target.closest('#umenu,.join [data-acct]'))closeUmenu();
   const b=e.target.closest('#umenu button');if(!b)return;closeUmenu();
   if(b.dataset.uprofile){sel=null;mode='account';editing=null;msg='';render();showPanel();syncHash()}else if(b.dataset.upoints)goPoints();else if(b.dataset.usignout)signOut()});
@@ -929,17 +930,28 @@ async function loadJobs(force){try{SB_URL}catch(e){return}  /* too early in star
   const J=JOBS;J.loading=(async()=>{try{if(seesJobs()){J.full=(await rpc('jobs_full',{}))||[];J.pub=null}
     else{const r=await fetch(`${SB_URL}/rest/v1/rpc/jobs_public`,{method:'POST',headers:{apikey:SB_KEY,'Content-Type':'application/json'},body:'{}'});if(!r.ok)throw new Error(r.status);J.pub=await r.json();J.full=null}
     J.at=Date.now();J.failAt=0}catch(e){J.failAt=Date.now()}finally{J.loading=null}})();return J.loading}
+/* sign-in return (0.4.0): clicking Sign in remembers the page (and the job ad wanted); after opening the emailed link on
+   this device, the app goes back there instead of the overview. Kept for 2 hours. */
+const RET_KEY='dbb-return';let JOB_WANT=null;
+function saveReturn(){const h=mode==='jobs'?'#'+JOBS_HASH:sel?'#'+encodeURIComponent(sel):mode==='allnews'?'#'+NEWS_HASH:mode==='calendar'?'#'+CAL_HASH:'';
+  try{h?localStorage.setItem(RET_KEY,JSON.stringify({h,job:mode==='jobs'?JOB_WANT:null,at:Date.now()})):localStorage.removeItem(RET_KEY)}catch(e){}}
+function takeReturn(){let r=null;try{r=JSON.parse(localStorage.getItem(RET_KEY)||'null');localStorage.removeItem(RET_KEY)}catch(e){}
+  if(!r||!r.h||Date.now()-r.at>2*3600e3)return false;JOB_WANT=r.job||null;
+  if(location.hash===r.h)fromHash();else location.hash=r.h;return true}
 const jobsRetry=()=>!JOBS.failAt||Date.now()-JOBS.failAt>10000;
 async function loadOrgJobs(id){try{JOBS_ORG.set(id,(await rpc('jobs_for_org',{p_entity:id}))||[])}catch(e){JOBS_ORG.set(id,[])}}
 const jobMeta=j=>[j.location+(j.workplace&&j.workplace!=='onsite'?' ('+JOB_WP[j.workplace].toLowerCase()+')':''),JOB_TYPES[j.job_type]||'',fmtDate(j.posted_at)].filter(Boolean).map(x=>`<span>${esc(x)}</span>`).join('');
 const jobSnip=d=>{const t=String(d||'').replace(/\s+/g,' ').trim();if(t.length<=160)return t;const c=t.slice(0,160),i=c.lastIndexOf(' ');return(i>110?c.slice(0,i):c).replace(/[\s,;:.–-]+$/,'')+'…'};
 const applyHref=a=>/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(a)?'mailto:'+a:a;
 function jobFull(j,manage){const org=E.get(j.entity_id);
-  return`<li class="job"><details><summary><strong>${esc(j.title)}</strong>${org?` <span class="role">${esc(org.name)}</span>`:j.org_name?` <span class="role">${esc(j.org_name)}</span>`:''}<div class="meta">${jobMeta(j)}</div><p class="jobsnip">${esc(jobSnip(j.description))}</p></summary>
+  const want=JOB_WANT===j.id;
+  return`<li class="job"${want?' id="jobwant"':''}><details${want?' open':''}><summary><strong>${esc(j.title)}</strong>${org?` <span class="role">${esc(org.name)}</span>`:j.org_name?` <span class="role">${esc(j.org_name)}</span>`:''}<div class="meta">${jobMeta(j)}</div><p class="jobsnip">${esc(jobSnip(j.description))}</p></summary>
     <div class="jobbody">${j.salary?`<p><strong>Salary:</strong> ${esc(j.salary)}</p>`:''}<p class="jobdesc">${esc(j.description)}</p>
     ${j.closes_on?`<p class="who">Applications close ${esc(fmtDate(j.closes_on))}.</p>`:''}${canEdit&&j.posted_by_name?`<p class="who">Posted by ${esc(j.posted_by_name)} (editors only).</p>`:''}${!canEdit&&!myOrgRole(j.entity_id)?`<p class="who">When you click Apply now, ${esc(org?org.name:j.org_name||'the employer')} can see your name and your entry in the book.</p>`:''}
     <div class="acts"><a class="btn go" href="${esc(applyHref(j.apply_to))}" target="_blank" rel="noopener nofollow" data-jobapply="${esc(j.id)}">Apply now ↗</a>${org?`<button type="button" class="btn" data-go="${esc(org.id)}">${esc(org.name)}</button>`:''}${canPostFor(j.entity_id)?`<button type="button" class="btn" data-jobedit="${esc(j.id)}" data-jobent="${esc(j.entity_id)}">Edit</button>`:''}</div></div></details></li>`}
-function jobTeaser(j){return`<li class="job"><div class="rl"><strong>${esc(j.title)}</strong></div><div class="meta">${jobMeta(j)}</div></li>`}
+function jobTeaser(j){const open=JOB_WANT===j.id;
+  return`<li class="job jteaser"><button type="button" class="ent jobt" data-jobwant="${esc(j.id)}" aria-expanded="${open}">${esc(j.title)}</button><div class="meta">${jobMeta(j)}</div>
+    ${open?(auth?'<p class="who">You’ll see who’s hiring and the full ad once your application is accepted.</p>':`<div class="owner"><span>Sign in to see who’s hiring, the full ad and how to apply. Not a member yet? Apply to join.</span><button type="button" class="btn go" data-acct="1">Sign in</button><button type="button" class="btn" data-join="1">Apply to join</button></div>`):''}</li>`}
 function listJobs(){const full=seesJobs(),all=(full?JOBS.full:JOBS.pub);
   if(!all){if(JOBS.failAt&&!jobsRetry()){panel.innerHTML='<div><h2>Jobs</h2><p class="note">Jobs couldn’t be loaded just now.</p></div><div class="acts"><button type="button" class="btn" data-jobs="1">Try again</button><button type="button" class="btn" data-cancel="1">Back to the map</button></div>';return}
     panel.innerHTML='<div><h2>Jobs</h2><p class="note">Loading…</p></div>';Promise.resolve(loadJobs()).then(()=>{if(mode==='jobs')setTimeout(render,JOBS.full||JOBS.pub||JOBS.failAt?0:300)});return}
@@ -952,7 +964,7 @@ function listJobs(){const full=seesJobs(),all=(full?JOBS.full:JOBS.pub);
   panel.innerHTML=`<div><h2>${f?'Jobs: '+esc(f.name):'Jobs'}</h2><p class="note">${f?`Open jobs at ${esc(f.name)}, newest first.`:'Jobs in yacht racing, newest first. Also as a <a href="/jobs" target="_blank" rel="noopener">plain page</a>.'}${full?' Select a job for the full ad. Applications go to the employer, not through the book.':''}</p></div>
     ${msg?`<div class="msg">${esc(msg)}</div>`:''}${gate}${post?`<div class="acts">${post}</div>`:''}
     ${types.length>1?`<div class="acts jobtypes"><button type="button" class="btn"${jobType?'':' aria-pressed="true"'} data-jobtype="">All</button>${types.map(t=>`<button type="button" class="btn"${jobType===t?' aria-pressed="true"':''} data-jobtype="${t}">${esc(JOB_TYPES[t])}</button>`).join('')}</div>`:''}
-    ${rows.length?`<ul class="rel jobs">${rows.map(j=>full?jobFull(j):jobTeaser(j)).join('')}</ul>`:`<p class="note">${all.length?'No jobs of this type right now.':'No jobs posted yet.'}</p>`}
+    ${rows.length?`<ul class="rel jobs">${rows.map(j=>full?jobFull(j):jobTeaser(j)).join('')}${full&&JOB_WANT?(setTimeout(()=>{const w=document.getElementById('jobwant');if(w){w.scrollIntoView({block:'center'});const j=JOBS.full.find(x=>x.id===JOB_WANT);if(j&&E.has(j.entity_id)&&reveal(j.entity_id))centerSoon(j.entity_id,200)}JOB_WANT=null},0),''):''}</ul>`:`<p class="note">${all.length?'No jobs of this type right now.':'No jobs posted yet.'}</p>`}
     <div class="acts">${f?`<button type="button" class="btn" data-go="${esc(f.id)}">Back to ${esc(f.name)}</button><button type="button" class="btn" data-jobsall="1">All jobs</button>`:`<button type="button" class="btn" data-jobscopy="1">Copy link</button><button type="button" class="btn" data-cancel="1">Back to the map</button>`}</div>`}
 /* on the overview, under Coming up: the latest 5 (teaser for the public, with the organisation for members) */
 function jobsOverview(){const full=seesJobs(),all=full?JOBS.full:JOBS.pub;
@@ -1018,7 +1030,7 @@ async function saveJob(){jobKeep();const d=jobDraft;
     JOBS.at=0;JOBS_ORG.delete(d.entity);await loadJobs(true);jobLeave(jobEdit&&jobEdit.id?'Job ad saved.':'Job posted. Members can see it now.')}
   catch(x){const t=String(x.message||''),k=Object.keys(JOB_ERR).find(k=>t.includes(k));msg=k?JOB_ERR[k]:'Not saved. '+t.slice(0,160);render()}}
 panel.addEventListener('submit',e=>{if(e.target.id!=='fjob')return;e.preventDefault();e.stopImmediatePropagation();saveJob()},true);
-panel.addEventListener('click',async e=>{const b=e.target.closest('[data-jobnew],[data-jobedit],[data-jobcancel],[data-jobclose],[data-jobclose2],[data-jobextend],[data-jobtype],[data-jobsall],[data-jobscopy],[data-jobsfor]');if(!b)return;const d=b.dataset;
+panel.addEventListener('click',async e=>{const b=e.target.closest('[data-jobnew],[data-jobedit],[data-jobcancel],[data-jobclose],[data-jobclose2],[data-jobextend],[data-jobwant],[data-jobtype],[data-jobsall],[data-jobscopy],[data-jobsfor]');if(!b)return;const d=b.dataset;
   if('jobnew' in d){jobBack=mode==='jobs'?'jobs':sel;jobEdit={id:null,entity:d.jobnew||''};jobDraft=null;msg='';mode='job';render();panel.scrollTop=0;return}
   if(d.jobedit){jobBack=mode==='jobs'?'jobs':sel;jobEdit={id:d.jobedit,entity:d.jobent};jobDraft=null;msg='';mode='job';render();panel.scrollTop=0;return}
   if('jobcancel' in d)return jobLeave('');
@@ -1030,6 +1042,7 @@ panel.addEventListener('click',async e=>{const b=e.target.closest('[data-jobnew]
     try{await rpc('job_close',{p_id:d.jobclose2});msg='Job ad taken down.'}catch(x){msg='Not taken down. '+String(x.message).slice(0,140)}
     JOBS.at=0;JOBS_ORG.delete(d.jobent);await loadJobs(true);render();return}
   if('jobtype' in d){jobType=d.jobtype;return render()}
+  if(d.jobwant){JOB_WANT=JOB_WANT===d.jobwant?null:d.jobwant;return render()}
   if('jobsall' in d){jobsFor=null;return render()}
   if(d.jobsfor){jobsFor=d.jobsfor;sel=null;mode='jobs';render();syncHash();return}
   if('jobscopy' in d){const u=location.href.split('#')[0].split('?')[0]+'#'+JOBS_HASH;try{navigator.clipboard.writeText(u).then(()=>{b.textContent='Link copied'},()=>{b.textContent=u})}catch(x){b.textContent=u}}});
@@ -1739,7 +1752,7 @@ async function start(){
     const [es,ls,fs]=await within(Promise.all([fetchAll('entities','id,name,type,sectors,level,country,note,origin,sector_note,logo_path,about,website,linkedin,instagram,other_social,contact_email,start_date,end_date,dates_provisional,media_tags,latest_url,latest_title,latest_date,latest_kind'),fetchAll('links','id,from_id,to_id,role,cat,context_id,start_date,end_date,source,note,created_at,origin'),fetchAll('features','slot,position,entity_id,headline,link','slot,position').catch(()=>[])]),20000);
     await Promise.all([loadProfiles(),loadStories()]);OFFLINE_AT=null;
     const sig=sigOf(es,ls,fs),changed=sig!==SHOWN_SIG;if(changed)useData(es,ls,fs);
-    await checkAuth();offBar();if(justConfirmed&&mode==='view'&&!sel)mode='account';else if(freshSignin&&!checkDone()&&mode==='view'&&!location.hash)mode='account';freshSignin=false;
+    await checkAuth();offBar();if(justConfirmed&&mode==='view'&&!sel)mode='account';else if(freshSignin&&takeReturn()){}else if(freshSignin&&!checkDone()&&mode==='view'&&!location.hash)mode='account';freshSignin=false;
     const toApply=REF_LANDED&&!auth&&!ME;REF_LANDED=false;if(toApply){sel=null;editing=null;draft=null;msg='';mode='apply'}
     if(changed){SHOWN_SIG=sig;build()}render();if(toApply&&typeof showPanel==='function')showPanel();saveSnap(es,ls,fs)}
   catch(e){if(SHOWN_SIG){offBar();return}db=null;loaded={e:true,l:true};$('#blank').hidden=false;$('#blank').firstElementChild.textContent='The book could not be loaded. Please try again in a moment.'}
@@ -1984,7 +1997,7 @@ panel.addEventListener('click',e=>{const b=e.target.closest('[data-dashmore]');i
    "editors" lines show only to signed-in editors. CHANGELOG.md keeps the technical detail. */
 const UPD_HASH='update';
 const UPDATES=[
- {v:'0.4.0',d:'2026-11-17',t:'Jobs',i:['A Jobs page (top bar and menu): jobs in yacht racing, newest first. Everyone sees the title, location and type; signed-in members also see who’s hiring, the salary, the full ad and Apply now, which goes to the employer’s own site or email.','The newest jobs also show on the overview, under Coming up. Members see an organisation’s open jobs on its entry.','Paid members who manage an organisation can post up to 5 jobs for it, and edit or take them down from the organisation’s entry, where they also see how many members viewed each ad and which members clicked Apply (members are told under the button). Ads stay up 30 days, with an email a few days before and one click to keep them open.','Opening an ad centres the map on the organisation hiring.','Editors: switch paid features on or off from a member’s entry; new job ads show on the dashboard.']},
+ {v:'0.4.0',d:'2026-11-17',t:'Jobs',i:['A Jobs page (top bar and menu): jobs in yacht racing, newest first. Everyone sees the title, location and type; signed-in members also see who’s hiring, the salary, the full ad and Apply now, which goes to the employer’s own site or email.','The newest jobs also show on the overview, under Coming up. Members see an organisation’s open jobs on its entry.','Paid members who manage an organisation can post up to 5 jobs for it, and edit or take them down from the organisation’s entry, where they also see how many members viewed each ad and which members clicked Apply (members are told under the button). Ads stay up 30 days, with an email a few days before and one click to keep them open.','Opening an ad centres the map on the organisation hiring.','Signing in from a page now brings you back to it after you open the email link, including the job ad you were looking at.','Editors: switch paid features on or off from a member’s entry; new job ads show on the dashboard.']},
  {v:'0.3.39',d:'2026-11-17',t:'Confirm links last a week',i:['The link to confirm your email when you apply now works for 7 days, on any device, instead of an hour. It only confirms your email; it doesn’t sign you in.']},
  {v:'0.3.38',d:'2026-11-17',t:'Application reminders',i:['If you apply but don’t confirm your email, we now send one reminder after 5 days with a new link. Applications still unconfirmed 2 days after that are deleted.','app.darkbluebook.com/#sign-in opens the sign-in form directly.']},
  {v:'0.3.37',d:'2026-11-17',t:'Dashboard order',x:1,i:['Supabase usage moves up the dashboard, next to the queues; Latest changes moves to the end.']},
