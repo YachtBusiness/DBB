@@ -2,12 +2,12 @@
 
 Version plan: 0.1 public map live · 0.2 editing moves to Supabase · 0.3 sign-in, applications and claims · 0.4 paid features (contact details for paid members, extra profile links, job board, organisation editing, verified roles), switched on by editors before payments · 0.5 payments (Stripe, tiers, prices) · 1.0 membership network opens · 1.x events and intros. Small fixes in between are 0.x.1, 0.x.2 and so on.
 
-## 0.3.35 (sandbox, not yet live)
+## 0.3.35 (17 November 2026)
 
-Referrals, tied to points. Migration 20261117000003_referrals.sql applied to the sandbox only.
+Referrals, tied to points. Migration 20261117000003_referrals.sql applied to live 17 Nov 2026; apply Edge Function redeployed to live (version 3).
 
 - Every member gets a personal invite link (app.darkbluebook.com/?ref=xxxxxxxx) on an Invite people page (#invite), with Copy (and Share on phones), and a count of who joined, who is waiting and points earned from invites. Members reach it from Invite in the top bar and menu, a box at the top of their profile, and a button on their own entry.
-- Opening an invite link goes straight to the Apply form (unless already signed in), remembers the code for 90 days on that device and tidies it out of the address bar. The top of the Apply form says "You were invited by <name>"; the application is tied to the referrer when it's sent (the apply Edge Function calls apply_set_referrer, service role only), so it doesn't matter which device the applicant confirms on; set_referrer on confirming stays as a fallback (once, own undecided application only, not yourself). The apply function must be redeployed to live with this release.
+- Opening an invite link goes straight to the Apply form (unless already signed in), remembers the code for 90 days on that device and tidies it out of the address bar. The top of the Apply form says "You were invited by <name>"; the application is tied to the referrer when it's sent (the apply Edge Function calls apply_set_referrer, service role only), so it doesn't matter which device the applicant confirms on; set_referrer on confirming stays as a fallback (once, own undecided application only, not yourself).
 - Editor approval stays: when an editor accepts the application, the database pays the referrer the 'referral' reward (100 points to start), once per person referred, and only while the referrer is still a member. The history reads "+100 Referred a new member: <name>".
 - Editors see "invited by <name>" on the applications list and the review page.
 - Rewards tile on the editor dashboard lists the earning rules; the owner can change an amount or switch a rule off (set_points_rule), applying from then on. Editors can see switched-off rules.

@@ -1,5 +1,5 @@
 -- 0.3.35: referrals, tied to points. Each member has a personal invite code (made the first time they ask for it).
--- An application made through an invite link is tied to the referrer when the applicant confirms their email.
+-- An application made through an invite link is tied to the referrer when it is sent (apply function) or, failing that, when the applicant confirms.
 -- When an editor accepts the application, the referrer earns the 'referral' reward (100 points to start), once per
 -- person referred, and only if the referrer is still a member. Editor approval stays: referral is not a fast lane.
 -- The owner can change reward amounts or switch rules off.
