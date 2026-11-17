@@ -1,11 +1,12 @@
 // The Dark Blue Book: reminder for applicants who haven't confirmed their email, sent through Resend.
 // Called hourly by public.applications_housekeeping() (pg_cron + pg_net) when someone is due: unconfirmed
-// for 5 days and not yet reminded. Each gets one email with a fresh one-time sign-in link (the original link
-// expired after an hour); opening it signs them in and the app confirms the application. Unconfirmed
-// applications are deleted at 7 days, and never sooner than 2 days after the reminder.
-// Callers must send Vault's remind_secret as x-remind-secret (checked by public.remind_key_ok). Needs RESEND_API_KEY. Without the
-// email key (the sandbox) nothing is sent and nobody is marked as reminded.
-// {"preview_to": "<editor's email>"} sends a sample to an editor instead, with a real sign-in link for them.
+// for 5 days and not yet reminded. Each gets one email with a confirm link (0.3.39: app#confirm=<token>, made by
+// public.application_token_new). It only confirms the email, doesn't sign anyone in, and works until the
+// application is deleted: at 7 days, and never sooner than 2 days after the reminder.
+// Callers must send Vault's remind_secret as x-remind-secret (checked by public.remind_key_ok). Needs RESEND_API_KEY.
+// Without the email key (the sandbox) nothing is sent and nobody is marked as reminded.
+// {"preview_to": "<editor's email>"} sends samples of both emails (application and reminder) to an editor instead;
+// their buttons open a sample link that confirms nothing.
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 
 const URL_ = Deno.env.get("SUPABASE_URL")!;
@@ -29,28 +30,11 @@ async function rpc(name: string, args: unknown = {}) {
   if (!r.ok) throw new Error(`${name}: ${t.slice(0, 200)}`);
   return t ? JSON.parse(t) : null;
 }
+
+// ---- the confirm emails (same layout in the apply function) ----
 const esc = (s: string) => s.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]!));
 const day = (d: Date) => d.toLocaleDateString("en-GB", { day: "numeric", month: "long", timeZone: "UTC" });
-
-// a fresh one-time sign-in link, without sending Supabase's own email
-async function signInLink(email: string) {
-  const r = await svc("/auth/v1/admin/generate_link", { method: "POST", body: JSON.stringify({ type: "magiclink", email, redirect_to: APP }) });
-  const j = await r.json().catch(() => ({}));
-  return (r.ok && (j.action_link || j.properties?.action_link)) || "";
-}
-
-function compose(name: string, applied: Date, link: string) {
-  const first = name.trim().split(/\s+/)[0] || "there";
-  const by = new Date(Math.max(applied.getTime() + 7 * 864e5, Date.now() + 2 * 864e5));
-  const again = APP + "#sign-in";
-  const subject = "Confirm your email to finish your application";
-  const paras = [
-    `Hi ${first},`,
-    `You applied to join The Dark Blue Book on ${day(applied)}, but your email isn't confirmed yet, so your application hasn't reached the editors.`,
-    `LINK`,
-    `The link works once and for an hour. If it's expired, get a new one at ${again} with this email address.`,
-    `Unconfirmed applications are deleted after ${day(by)}. If you didn't apply, ignore this email and it'll be deleted then.`,
-  ];
+function layout(paras: string[], link: string) {
   const text = paras.map((p) => p === "LINK" ? `Confirm your email: ${link}` : p).join("\n\n") + "\n\nDave\nEditor, The Dark Blue Book";
   const p = "margin:0 0 16px";
   const html = `<!doctype html><html><body style="margin:0;padding:24px;background:#eef1f7;font-family:Georgia,'Times New Roman',serif;color:#0e1d3a">
@@ -59,11 +43,33 @@ function compose(name: string, applied: Date, link: string) {
 <div style="padding:24px;font-size:16px;line-height:1.5">
 ${paras.map((x) => x === "LINK"
     ? `<p style="${p}"><a href="${esc(link)}" style="display:inline-block;background:#12264d;color:#ffffff;text-decoration:none;padding:10px 18px;border-radius:4px;font-weight:600">Confirm my email</a></p>`
-    : `<p style="${p}">${esc(x).replace(esc(again), `<a href="${esc(again)}" style="color:#1d5fc4">app.darkbluebook.com</a>`)}</p>`).join("\n")}
+    : `<p style="${p}">${esc(x)}</p>`).join("\n")}
 <p style="margin:0">Dave<br>Editor, The Dark Blue Book</p>
 </div></div></body></html>`;
-  return { subject, text, html };
+  return { text, html };
 }
+function applyEmail(name: string, link: string) {
+  const first = name.trim().split(/\s+/)[0] || "there";
+  return { subject: "Confirm your email for The Dark Blue Book", ...layout([
+    `Hi ${first},`,
+    `Thanks for applying to join The Dark Blue Book. Please confirm your email so your application can go to the editors.`,
+    `LINK`,
+    `The link works for 7 days, on any device.`,
+    `If you didn't apply, ignore this email and the application will be deleted.`,
+  ], link) };
+}
+function remindEmail(name: string, applied: Date, link: string) {
+  const first = name.trim().split(/\s+/)[0] || "there";
+  const by = new Date(Math.max(applied.getTime() + 7 * 864e5, Date.now() + 2 * 864e5));
+  return { subject: "Confirm your email to finish your application", ...layout([
+    `Hi ${first},`,
+    `You applied to join The Dark Blue Book on ${day(applied)}, but your email isn't confirmed yet, so your application hasn't reached the editors.`,
+    `LINK`,
+    `The link works until ${day(by)}, on any device. After that, unconfirmed applications are deleted, and you're welcome to apply again.`,
+    `If you didn't apply, ignore this email.`,
+  ], link) };
+}
+// ----
 
 async function send(to: string, m: { subject: string; text: string; html: string }) {
   const r = await fetch("https://api.resend.com/emails", {
@@ -88,17 +94,17 @@ Deno.serve(async (req) => {
       const found = await rpc("apply_lookup", { p_email: email });
       const ed = found?.user_id ? await (await svc(`/rest/v1/editors?select=user_id&user_id=eq.${found.user_id}`)).json() : [];
       if (!ed.length) return reply(403, { error: "not_editor" });
-      const link = await signInLink(email);
-      if (!link) return reply(502, { error: "link" });
-      const ok = await send(email, compose("Dave", new Date(Date.now() - 5 * 864e5), link));
-      return reply(ok ? 200 : 502, { result: ok ? "preview_sent" : "failed" });
+      const sample = APP + "#confirm=sample";
+      const a = await send(email, applyEmail("Dave", sample));
+      const r = await send(email, remindEmail("Dave", new Date(Date.now() - 5 * 864e5), sample));
+      return reply(a && r ? 200 : 502, { result: a && r ? "preview_sent" : "failed" });
     }
 
     const due: { user_id: string; name: string; email: string; applied_at: string }[] = (await rpc("applications_due_reminder")) || [];
     let sent = 0, failed = 0;
     for (const a of due) {
-      const link = await signInLink(a.email);
-      if (link && await send(a.email, compose(a.name || "", new Date(a.applied_at), link))) {
+      const token = await rpc("application_token_new", { p_user: a.user_id });
+      if (token && await send(a.email, remindEmail(a.name || "", new Date(a.applied_at), `${APP}#confirm=${token}`))) {
         await rpc("application_reminded", { p_user: a.user_id });
         sent++;
       } else failed++;

@@ -2,6 +2,16 @@
 
 Version plan: 0.1 public map live · 0.2 editing moves to Supabase · 0.3 sign-in, applications and claims · 0.4 paid features (contact details for paid members, extra profile links, job board, organisation editing, verified roles), switched on by editors before payments · 0.5 payments (Stripe, tiers, prices) · 1.0 membership network opens · 1.x events and intros. Small fixes in between are 0.x.1, 0.x.2 and so on.
 
+## 0.3.39 (17 November 2026)
+
+Confirm links that last. Migration 20261117000005_confirm_links.sql; apply and remind Edge Functions redeployed.
+
+- The confirm-your-email link was a Supabase sign-in link, which expires after an hour: too short for an email people may open the next day. The application email and the 5-day reminder now carry their own link, app.darkbluebook.com/#confirm=<token>, which only confirms the email (moves the application to pending). It doesn't sign anyone in, so it can safely work until the application is confirmed or deleted (up to 7 days, or 2 days after the reminder), on any device.
+- Tokens: 32 random bytes, stored only as a SHA-256 hash (application_tokens, no direct access); made by application_token_new (service role); used by confirm_application_token (anyone holding the link). All an applicant's tokens go once one is used or they confirm by signing in; they're deleted with the application.
+- The application email is now sent by the apply function through Resend ("Confirm your email for The Dark Blue Book", signed Dave). Without the Resend key (the sandbox), or if Resend fails, it falls back to the one-hour sign-in link as before. Signing in still confirms too.
+- App: #confirm=<token> opens a page saying the email is confirmed (or that the link was used or has expired, with Sign in and Apply); the after-apply message says the link works for 7 days on any device.
+- Sign-in links for members and editors are unchanged (one hour).
+
 ## 0.3.38 (17 November 2026)
 
 Application reminders. Migration 20261117000004_application_reminders.sql; new remind Edge Function; hourly pg_cron job application-housekeeping. Tried on the sandbox 17 Nov 2026.
