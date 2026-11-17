@@ -1,6 +1,8 @@
 /* The Dark Blue Book: pages built on Cloudflare's side, readable without JavaScript (0.3.25).
    /news      every news story as plain HTML, for search engines, AI tools and anyone without JavaScript
    /news.xml  the same stories as an RSS feed
+   /jobs      open job ads as plain HTML (0.4.0): the public teaser only (title, location, workplace, type, date),
+              never the organisation, salary or how to apply, which are for signed-in members in the app
    Only these paths reach this worker (see _routes.json); everything else is served as static files.
    Live and preview read the live book; any other address reads the sandbox, as the app does. */
 const LIVE_HOSTS = ['app.darkbluebook.com', 'preview.dbb-2k3.pages.dev', 'dbb-2k3.pages.dev'];
@@ -9,6 +11,17 @@ const DB = {
   sandbox: ['https://kttiojuuynaznqrcwbyy.supabase.co', 'sb_publishable_x3NTVTSCTWkt3aaYtsncwA__-Xd-tt2'],
 };
 const APP = 'https://app.darkbluebook.com/';
+const STYLE = `<style>
+:root{--navy:#12264d;--ink:#0e1d3a;--muted:#5a6680;--line:#dde3ee;--bg:#f6f8fc;--surface:#fff;--link:#1d5fc4}
+@media (prefers-color-scheme:dark){:root{--ink:#e8edf7;--muted:#9aa6bf;--line:#2a3550;--bg:#0b1428;--surface:#111d36;--link:#8db4ff}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}
+header{background:var(--navy);color:#f2f5fb;padding:16px}header a{color:inherit;text-decoration:none}header .b{font:600 22px Georgia,serif}header p{margin:2px 0 0;opacity:.75;font-size:13px}
+main{max-width:760px;margin:0 auto;padding:20px 16px 48px}h1{font:600 28px Georgia,serif;margin:8px 0 4px}.n{color:var(--muted);margin:0 0 20px}
+ol{list-style:none;margin:0;padding:0}li{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:14px 16px;margin:0 0 12px}
+h2{font-size:17px;margin:0}a{color:var(--link)}h2 a{color:var(--ink)}.m{margin:4px 0 0;color:var(--muted);font-size:13px}.t{margin:6px 0 0;font-size:14px}.k{color:var(--muted);font-size:12px}
+.app{display:inline-block;margin:0 8px 8px 0;padding:8px 14px;border-radius:6px;background:var(--navy);color:#fff;text-decoration:none;font-size:14px}
+footer{color:var(--muted);font-size:13px;margin-top:24px}
+</style>`;
 const KINDS = { person: 'Person', team: 'Team', club: 'Yacht club', org: 'Organisation', event: 'Event', entry: 'Entry', class: 'Boat class', venue: 'Venue', record: 'Record' };
 const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const host = (u) => { try { return new URL(u).hostname.replace(/^www\./, ''); } catch { return ''; } };
@@ -49,17 +62,7 @@ ${ents ? `<p class="t">In the book: ${ents}</p>` : ''}</article></li>`;
 <link rel="icon" href="/icons/icon-32.png" sizes="32x32"><meta name="theme-color" content="#12264d">
 <meta property="og:title" content="Yacht racing news · The Dark Blue Book"><meta property="og:type" content="website"><meta property="og:url" content="${APP}news"><meta property="og:image" content="${APP}og.jpg"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta name="twitter:card" content="summary_large_image">
 <script type="application/ld+json">${JSON.stringify(ld).replace(/</g, '\\u003c')}</script>
-<style>
-:root{--navy:#12264d;--ink:#0e1d3a;--muted:#5a6680;--line:#dde3ee;--bg:#f6f8fc;--surface:#fff;--link:#1d5fc4}
-@media (prefers-color-scheme:dark){:root{--ink:#e8edf7;--muted:#9aa6bf;--line:#2a3550;--bg:#0b1428;--surface:#111d36;--link:#8db4ff}}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}
-header{background:var(--navy);color:#f2f5fb;padding:16px}header a{color:inherit;text-decoration:none}header .b{font:600 22px Georgia,serif}header p{margin:2px 0 0;opacity:.75;font-size:13px}
-main{max-width:760px;margin:0 auto;padding:20px 16px 48px}h1{font:600 28px Georgia,serif;margin:8px 0 4px}.n{color:var(--muted);margin:0 0 20px}
-ol{list-style:none;margin:0;padding:0}li{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:14px 16px;margin:0 0 12px}
-h2{font-size:17px;margin:0}a{color:var(--link)}h2 a{color:var(--ink)}.m{margin:4px 0 0;color:var(--muted);font-size:13px}.t{margin:6px 0 0;font-size:14px}.k{color:var(--muted);font-size:12px}
-.app{display:inline-block;margin:0 8px 8px 0;padding:8px 14px;border-radius:6px;background:var(--navy);color:#fff;text-decoration:none;font-size:14px}
-footer{color:var(--muted);font-size:13px;margin-top:24px}
-</style></head><body>
+${STYLE}</head><body>
 <header><a href="${APP}"><div class="b">The Dark Blue Book</div><p>The who’s who of yacht racing</p></a></header>
 <main><h1>Yacht racing news</h1>
 <p class="n">Stories about the people, teams, clubs, organisations and events in The Dark Blue Book, newest first. ${list.length} ${list.length === 1 ? 'story' : 'stories'}.</p>
@@ -68,6 +71,40 @@ footer{color:var(--muted);font-size:13px;margin-top:24px}
 ${items || '<li>No stories yet.</li>'}
 </ol>
 <footer>Updated ${esc(new Date().toUTCString())}. The book: <a href="${APP}">app.darkbluebook.com</a> · <a href="${APP}privacy">Privacy</a></footer>
+</main></body></html>`;
+}
+
+async function jobs(hostname) {
+  const [url, key] = LIVE_HOSTS.includes(hostname) ? DB.live : DB.sandbox;
+  const r = await fetch(`${url}/rest/v1/rpc/jobs_public`, { method: 'POST', headers: { apikey: key, 'Content-Type': 'application/json' }, body: '{}' });
+  if (!r.ok) throw new Error('jobs ' + r.status);
+  return r.json();
+}
+const JOB_TYPES = { full_time: 'Full-time', part_time: 'Part-time', contract: 'Contract', freelance: 'Freelance', crew: 'Crew', internship: 'Internship' };
+const JOB_WP = { onsite: '', hybrid: 'hybrid', remote: 'remote' };
+
+function jobsHtml(list) {
+  const items = list.map((j) => {
+    const d = j.posted_at ? new Date(j.posted_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' }) : '';
+    const where = esc(j.location) + (JOB_WP[j.workplace] ? ` (${JOB_WP[j.workplace]})` : '');
+    return `<li><article><h2>${esc(j.title)}</h2>
+<p class="m">${[where, esc(JOB_TYPES[j.job_type] || ''), d && `Posted <time datetime="${esc(j.posted_at)}">${esc(d)}</time>`].filter(Boolean).join(' · ')}</p></article></li>`;
+  }).join('\n');
+  return `<!doctype html><html lang="en-GB"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Yacht racing jobs · The Dark Blue Book</title>
+<meta name="description" content="Jobs in yacht racing: crew, shore team, commercial and event roles, from The Dark Blue Book, the who’s who of yacht racing. Members see who’s hiring and how to apply.">
+<link rel="canonical" href="${APP}jobs">
+<link rel="icon" href="/icons/icon-32.png" sizes="32x32"><meta name="theme-color" content="#12264d">
+<meta property="og:title" content="Yacht racing jobs · The Dark Blue Book"><meta property="og:type" content="website"><meta property="og:url" content="${APP}jobs"><meta property="og:image" content="${APP}og.jpg"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta name="twitter:card" content="summary_large_image">
+${STYLE}</head><body>
+<header><a href="${APP}"><div class="b">The Dark Blue Book</div><p>The who’s who of yacht racing</p></a></header>
+<main><h1>Yacht racing jobs</h1>
+<p class="n">Jobs in yacht racing, newest first. ${list.length} open ${list.length === 1 ? 'job' : 'jobs'}. Members of The Dark Blue Book see who’s hiring, the full ad and how to apply.</p>
+<p><a class="app" href="${APP}#yacht-racing-jobs">See the jobs in the app</a><a class="app" href="${APP}">Apply to join</a></p>
+<ol>
+${items || '<li>No jobs posted yet. Organisations in the book can post them; members see the full ads.</li>'}
+</ol>
+<footer>Updated ${esc(new Date().toUTCString())}. The book: <a href="${APP}">app.darkbluebook.com</a> · <a href="${APP}news">News</a> · <a href="${APP}privacy">Privacy</a></footer>
 </main></body></html>`;
 }
 
@@ -92,12 +129,19 @@ export default {
   async fetch(request, env, ctx) {
     const u = new URL(request.url);
     const path = u.pathname.replace(/\/+$/, '') || '/';
-    if (path !== '/news' && path !== '/news.xml') return env.ASSETS.fetch(request);
+    if (path !== '/news' && path !== '/news.xml' && path !== '/jobs') return env.ASSETS.fetch(request);
     const cache = caches.default, key = new Request(u.origin + path);
     const hit = await cache.match(key);
     if (hit) return hit;
     let res;
     try {
+      if (path === '/jobs') {
+        res = new Response(jobsHtml(await jobs(u.hostname)), { headers: { 'Content-Type': 'text/html; charset=utf-8' } });
+        res.headers.set('Cache-Control', 'public, max-age=600');
+        if (u.hostname !== 'app.darkbluebook.com') res.headers.set('X-Robots-Tag', 'noindex');
+        ctx.waitUntil(cache.put(key, res.clone()));
+        return res;
+      }
       const list = await stories(u.hostname);
       res = path === '/news.xml'
         ? new Response(rss(list), { headers: { 'Content-Type': 'application/rss+xml; charset=utf-8' } })
@@ -106,7 +150,7 @@ export default {
       if (u.hostname !== 'app.darkbluebook.com') res.headers.set('X-Robots-Tag', 'noindex'); // only the live address is indexed
       ctx.waitUntil(cache.put(key, res.clone()));
     } catch (e) {
-      res = new Response('The news could not be loaded just now. Please try again in a moment.', { status: 503, headers: { 'Content-Type': 'text/plain; charset=utf-8', 'Retry-After': '60' } });
+      res = new Response((path === '/jobs' ? 'The jobs' : 'The news') + ' could not be loaded just now. Please try again in a moment.', { status: 503, headers: { 'Content-Type': 'text/plain; charset=utf-8', 'Retry-After': '60' } });
     }
     return res;
   },
