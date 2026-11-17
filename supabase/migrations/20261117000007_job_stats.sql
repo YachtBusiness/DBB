@@ -1,7 +1,8 @@
 -- 0.4.0 (second part): views and Apply clicks on job ads, for the people who manage them.
 -- Applications happen on the employer's site or by email, so the book never sees who applied. What it can count:
--- how many members opened an ad, and how many clicked Apply now. Counted once per member per ad; the organisation's
--- own owners and managers and the editors aren't counted. Managers and editors see the counts, never the names.
+-- how many members opened an ad (a count only), and who clicked Apply now. Decided 17 Nov 2026: the hirer sees the list
+-- of members who clicked Apply (name and their entry) as a trust signal; members are told under the button.
+-- Once per member per ad; the organisation's own owners and managers and the editors aren't counted.
 
 create table if not exists public.job_events (
   job_id uuid not null references public.jobs (id) on delete cascade,
@@ -46,3 +47,20 @@ revoke execute on function public.job_track(uuid, text) from public, anon;
 grant execute on function public.job_track(uuid, text) to authenticated;
 revoke execute on function public.jobs_for_org(text) from public, anon;
 grant execute on function public.jobs_for_org(text) to authenticated;
+
+-- Who clicked Apply on an ad: for the organisation's owners and managers, and editors.
+create or replace function public.job_applicants(p_job uuid) returns table (name text, entity_id text, clicked_at timestamptz)
+language plpgsql stable security definer set search_path = '' as $$
+declare ent text;
+begin
+  select j.entity_id into ent from public.jobs j where j.id = p_job;
+  if ent is null then raise exception 'job_missing' using errcode = 'P0001'; end if;
+  if not (public.is_editor() or exists (select 1 from public.org_roles where org_roles.entity_id = ent and user_id = (select auth.uid()))) then
+    raise exception 'not_manager' using errcode = '42501';
+  end if;
+  return query
+  select m.name, m.entity_id, ev.at from public.job_events ev join public.members m on m.user_id = ev.user_id
+   where ev.job_id = p_job and ev.kind = 'apply' and m.status = 'member' order by ev.at desc;
+end $$;
+revoke execute on function public.job_applicants(uuid) from public, anon;
+grant execute on function public.job_applicants(uuid) to authenticated;

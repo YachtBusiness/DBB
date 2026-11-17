@@ -937,7 +937,7 @@ const applyHref=a=>/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(a)?'mailto:'+a:a;
 function jobFull(j,manage){const org=E.get(j.entity_id);
   return`<li class="job"><details><summary><strong>${esc(j.title)}</strong>${org?` <span class="role">${esc(org.name)}</span>`:j.org_name?` <span class="role">${esc(j.org_name)}</span>`:''}<div class="meta">${jobMeta(j)}</div><p class="jobsnip">${esc(jobSnip(j.description))}</p></summary>
     <div class="jobbody">${j.salary?`<p><strong>Salary:</strong> ${esc(j.salary)}</p>`:''}<p class="jobdesc">${esc(j.description)}</p>
-    ${j.closes_on?`<p class="who">Applications close ${esc(fmtDate(j.closes_on))}.</p>`:''}${canEdit&&j.posted_by_name?`<p class="who">Posted by ${esc(j.posted_by_name)} (editors only).</p>`:''}
+    ${j.closes_on?`<p class="who">Applications close ${esc(fmtDate(j.closes_on))}.</p>`:''}${canEdit&&j.posted_by_name?`<p class="who">Posted by ${esc(j.posted_by_name)} (editors only).</p>`:''}${!canEdit&&!myOrgRole(j.entity_id)?`<p class="who">When you click Apply now, ${esc(org?org.name:j.org_name||'the employer')} can see your name and your entry in the book.</p>`:''}
     <div class="acts"><a class="btn go" href="${esc(applyHref(j.apply_to))}" target="_blank" rel="noopener nofollow" data-jobapply="${esc(j.id)}">Apply now ↗</a>${org?`<button type="button" class="btn" data-go="${esc(org.id)}">${esc(org.name)}</button>`:''}${canPostFor(j.entity_id)?`<button type="button" class="btn" data-jobedit="${esc(j.id)}" data-jobent="${esc(j.entity_id)}">Edit</button>`:''}</div></div></details></li>`}
 function jobTeaser(j){return`<li class="job"><div class="rl"><strong>${esc(j.title)}</strong></div><div class="meta">${jobMeta(j)}</div></li>`}
 function listJobs(){const full=seesJobs(),all=(full?JOBS.full:JOBS.pub);
@@ -969,13 +969,15 @@ function jobsOrgBlock(e){if(e.type!=='org'||!seesJobs())return'';
   /* owners, managers and editors: the management view */
   if(!JOBS_ORG.has(e.id)){JOBS_ORG.set(e.id,null);loadOrgJobs(e.id).then(()=>{if(mode==='view'&&sel===e.id)render()})}
   const all=JOBS_ORG.get(e.id),mine=all||[],on=mine.filter(j=>j.status==='live'),past=mine.filter(j=>j.status!=='live');
-  const stats=j=>`<span>${j.views} ${j.views===1?'member':'members'} viewed</span><span>${j.applies} clicked Apply</span>`;
+  const stats=j=>`<span>${j.views} ${j.views===1?'member':'members'} viewed</span>${j.applies?`<button type="button" class="linky" data-jobappl="${esc(j.id)}">${j.applies} clicked Apply</button>`:'<span>0 clicked Apply</span>'}`;
+  const appl=j=>{const A=JOB_APPL.get(j.id);if(A===undefined)return'';if(A===null)return'<p class="note">Loading…</p>';
+    return A.length?`<ul class="rel appl">${A.map(a=>`<li><div class="rl">${a.entity_id&&E.has(a.entity_id)?`<button type="button" class="ent" data-go="${esc(a.entity_id)}">${esc(a.name)}</button>`:`<strong>${esc(a.name)}</strong>`}</div><div class="meta"><span>clicked ${esc(fmtDate(a.clicked_at))}</span></div></li>`).join('')}</ul>`:'<p class="note">Nobody yet.</p>'};
   const row=j=>`<li class="jobm"><div class="rl"><strong>${esc(j.title)}</strong> <span class="role">${esc(JOB_TYPES[j.job_type]||'')}${j.status!=='live'?' · '+(j.status==='closed'?'closed':'expired'):''}</span></div>
     <div class="meta"><span>Posted ${esc(fmtDate(j.posted_at))}</span>${j.status==='live'?`<span>Up until ${esc(fmtDate(j.expires_at))}</span>`:''}${stats(j)}</div>
     <div class="acts">${j.status==='live'?(post?`<button type="button" class="mini" data-jobedit="${esc(j.id)}" data-jobent="${esc(e.id)}">Edit</button>`:'')+`<button type="button" class="mini" data-jobclose2="${esc(j.id)}" data-jobent="${esc(e.id)}">Take down</button>`
-      :j.status==='expired'&&post?`<button type="button" class="mini" data-jobextend="${esc(j.id)}" data-jobent="${esc(e.id)}">Reopen for 30 days</button>`:''}</div></li>`;
+      :j.status==='expired'&&post?`<button type="button" class="mini" data-jobextend="${esc(j.id)}" data-jobent="${esc(e.id)}">Reopen for 30 days</button>`:''}</div>${appl(j)}</li>`;
   let h=`<details class="grp" open><summary><b style="border-color:var(--muted)"></b>Jobs <span class="cnt">${live.length}</span></summary>`;
-  h+=`<p class="who">${canEdit&&!role?'Editors':'You'} manage this organisation’s job ads. ${on.length}/5 live. Ads stay up 30 days; whoever posted one gets an email a few days before, with a link to keep it open. People apply on your site or by email, so the book can’t see who applied: it counts members who opened each ad and who clicked Apply.</p>`;
+  h+=`<p class="who">${canEdit&&!role?'Editors':'You'} manage this organisation’s job ads. ${on.length}/5 live. Ads stay up 30 days; whoever posted one gets an email a few days before, with a link to keep it open. People apply on your site or by email; here you can see how many members opened each ad, and which members clicked Apply (they’re told you’ll see it).</p>`;
   if(post)h+=`<div class="acts"><button type="button" class="btn go" data-jobnew="${esc(e.id)}">Post a job</button>${live.length?`<button type="button" class="btn" data-jobsfor="${esc(e.id)}">See as members do</button>`:''}</div>`;
   else h+=`<p class="who">Posting and editing jobs is for paid members. Contact the editors to switch it on.</p>`;
   h+=!all?'<p class="note">Loading…</p>':on.length?`<ul class="rel">${on.map(row).join('')}</ul>`:'<p class="note">No live job ads.</p>';
@@ -1036,7 +1038,10 @@ panel.addEventListener('click',async e=>{const b=e.target.closest('[data-settier
   try{await rpc('set_member_tier',{p_user:u,p_tier:t});for(const m of MEMBERS_BY_ENTITY.values())if(m.user_id===u)m.tier=t;msg=t==='paid'?'Paid features switched on. If they manage an organisation, they can post jobs for it.':'Paid features switched off.'}
   catch(x){msg='Not saved. '+String(x.message).slice(0,140)}render()});
 /* a member opens an ad: centre the map on the organisation (never for the public, which mustn't learn who's hiring), count the view */
-const JOB_SEEN=new Set();
+const JOB_SEEN=new Set(),JOB_APPL=new Map();
+panel.addEventListener('click',async e=>{const b=e.target.closest('[data-jobappl]');if(!b)return;const id=b.dataset.jobappl;
+  if(JOB_APPL.has(id)&&JOB_APPL.get(id)!==null){JOB_APPL.delete(id);return render()}
+  JOB_APPL.set(id,null);render();try{JOB_APPL.set(id,(await rpc('job_applicants',{p_job:id}))||[])}catch(x){JOB_APPL.set(id,[])}render()});
 panel.addEventListener('toggle',e=>{const dt=e.target;if(!dt.open||!dt.closest||!dt.closest('.jobs .job')||!seesJobs())return;
   const id=(dt.querySelector('[data-jobapply]')||{}).dataset;const j=id&&(JOBS.full||[]).find(x=>x.id===id.jobapply);if(!j)return;
   if(E.has(j.entity_id)&&reveal(j.entity_id))centerSoon(j.entity_id,120);
@@ -1979,7 +1984,7 @@ panel.addEventListener('click',e=>{const b=e.target.closest('[data-dashmore]');i
    "editors" lines show only to signed-in editors. CHANGELOG.md keeps the technical detail. */
 const UPD_HASH='update';
 const UPDATES=[
- {v:'0.4.0',d:'2026-11-17',t:'Jobs',i:['A Jobs page (top bar and menu): jobs in yacht racing, newest first. Everyone sees the title, location and type; signed-in members also see who’s hiring, the salary, the full ad and Apply now, which goes to the employer’s own site or email.','The newest jobs also show on the overview, under Coming up. Members see an organisation’s open jobs on its entry.','Paid members who manage an organisation can post up to 5 jobs for it, and edit or take them down from the organisation’s entry, where they also see how many members viewed each ad and clicked Apply. Ads stay up 30 days, with an email a few days before and one click to keep them open.','Opening an ad centres the map on the organisation hiring.','Editors: switch paid features on or off from a member’s entry; new job ads show on the dashboard.']},
+ {v:'0.4.0',d:'2026-11-17',t:'Jobs',i:['A Jobs page (top bar and menu): jobs in yacht racing, newest first. Everyone sees the title, location and type; signed-in members also see who’s hiring, the salary, the full ad and Apply now, which goes to the employer’s own site or email.','The newest jobs also show on the overview, under Coming up. Members see an organisation’s open jobs on its entry.','Paid members who manage an organisation can post up to 5 jobs for it, and edit or take them down from the organisation’s entry, where they also see how many members viewed each ad and which members clicked Apply (members are told under the button). Ads stay up 30 days, with an email a few days before and one click to keep them open.','Opening an ad centres the map on the organisation hiring.','Editors: switch paid features on or off from a member’s entry; new job ads show on the dashboard.']},
  {v:'0.3.39',d:'2026-11-17',t:'Confirm links last a week',i:['The link to confirm your email when you apply now works for 7 days, on any device, instead of an hour. It only confirms your email; it doesn’t sign you in.']},
  {v:'0.3.38',d:'2026-11-17',t:'Application reminders',i:['If you apply but don’t confirm your email, we now send one reminder after 5 days with a new link. Applications still unconfirmed 2 days after that are deleted.','app.darkbluebook.com/#sign-in opens the sign-in form directly.']},
  {v:'0.3.37',d:'2026-11-17',t:'Dashboard order',x:1,i:['Supabase usage moves up the dashboard, next to the queues; Latest changes moves to the end.']},
