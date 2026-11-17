@@ -250,7 +250,7 @@ a.btn{text-decoration:none;color:#0e1d3a}a.btn.go{color:var(--surface)}
 .news{border-left:3px solid var(--t-team);padding:2px 0 2px 12px;display:flex;flex-direction:column;gap:10px}.news .nitem{display:flex;flex-direction:column;gap:2px}.news .acts{margin-top:2px}
 .ntags{display:flex;flex-direction:column;gap:8px}.ntags .lbl{font-size:13px;font-weight:600}.ntags ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}.ntags li{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.ntags li i{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px}.news h3{margin:0 0 2px}.news a{font-weight:600;color:var(--ink);overflow-wrap:anywhere}.news .who{margin:0}
 .jobs .job details>summary{cursor:pointer;list-style:none;display:block;font-size:inherit;letter-spacing:normal;text-transform:none;font-weight:400;padding:0}.jobs .job details>summary::-webkit-details-marker{display:none}.jobs .job details>summary strong{text-decoration:underline;text-decoration-color:var(--muted);text-underline-offset:3px}.jobs .job .meta{margin-top:2px}
-.jobbody{padding:6px 0 4px}.jobbody p{margin:6px 0}.jobdesc{white-space:pre-wrap;overflow-wrap:anywhere}.jobtypes{gap:6px}.jobtypes .btn[aria-pressed="true"]{background:#12264d;color:#fff;border-color:#12264d}
+.jobsnip{margin:4px 0 0;font-size:14px;color:var(--muted)}.jobs .job details[open] .jobsnip{display:none}.jobm .acts{margin-top:4px}.jobbody{padding:6px 0 4px}.jobbody p{margin:6px 0}.jobdesc{white-space:pre-wrap;overflow-wrap:anywhere}.jobtypes{gap:6px}.jobtypes .btn[aria-pressed="true"]{background:#12264d;color:#fff;border-color:#12264d}
 #fjob textarea{width:100%;font:inherit;min-height:180px}
 .logo{display:block;width:72px;height:72px;object-fit:contain;background:#fff;border:1px solid var(--line);border-radius:8px;padding:6px;flex:none}
 .logo.big{width:112px;height:112px}
@@ -932,12 +932,13 @@ async function loadJobs(force){try{SB_URL}catch(e){return}  /* too early in star
 const jobsRetry=()=>!JOBS.failAt||Date.now()-JOBS.failAt>10000;
 async function loadOrgJobs(id){try{JOBS_ORG.set(id,(await rpc('jobs_for_org',{p_entity:id}))||[])}catch(e){JOBS_ORG.set(id,[])}}
 const jobMeta=j=>[j.location+(j.workplace&&j.workplace!=='onsite'?' ('+JOB_WP[j.workplace].toLowerCase()+')':''),JOB_TYPES[j.job_type]||'',fmtDate(j.posted_at)].filter(Boolean).map(x=>`<span>${esc(x)}</span>`).join('');
+const jobSnip=d=>{const t=String(d||'').replace(/\s+/g,' ').trim();if(t.length<=160)return t;const c=t.slice(0,160),i=c.lastIndexOf(' ');return(i>110?c.slice(0,i):c).replace(/[\s,;:.–-]+$/,'')+'…'};
 const applyHref=a=>/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(a)?'mailto:'+a:a;
 function jobFull(j,manage){const org=E.get(j.entity_id);
-  return`<li class="job"><details><summary><strong>${esc(j.title)}</strong>${org?` <span class="role">${esc(org.name)}</span>`:j.org_name?` <span class="role">${esc(j.org_name)}</span>`:''}<div class="meta">${jobMeta(j)}</div></summary>
+  return`<li class="job"><details><summary><strong>${esc(j.title)}</strong>${org?` <span class="role">${esc(org.name)}</span>`:j.org_name?` <span class="role">${esc(j.org_name)}</span>`:''}<div class="meta">${jobMeta(j)}</div><p class="jobsnip">${esc(jobSnip(j.description))}</p></summary>
     <div class="jobbody">${j.salary?`<p><strong>Salary:</strong> ${esc(j.salary)}</p>`:''}<p class="jobdesc">${esc(j.description)}</p>
     ${j.closes_on?`<p class="who">Applications close ${esc(fmtDate(j.closes_on))}.</p>`:''}${canEdit&&j.posted_by_name?`<p class="who">Posted by ${esc(j.posted_by_name)} (editors only).</p>`:''}
-    <div class="acts"><a class="btn go" href="${esc(applyHref(j.apply_to))}" target="_blank" rel="noopener nofollow">Apply now ↗</a>${org?`<button type="button" class="btn" data-go="${esc(org.id)}">${esc(org.name)}</button>`:''}${canPostFor(j.entity_id)?`<button type="button" class="btn" data-jobedit="${esc(j.id)}" data-jobent="${esc(j.entity_id)}">Edit</button>`:''}</div></div></details></li>`}
+    <div class="acts"><a class="btn go" href="${esc(applyHref(j.apply_to))}" target="_blank" rel="noopener nofollow" data-jobapply="${esc(j.id)}">Apply now ↗</a>${org?`<button type="button" class="btn" data-go="${esc(org.id)}">${esc(org.name)}</button>`:''}${canPostFor(j.entity_id)?`<button type="button" class="btn" data-jobedit="${esc(j.id)}" data-jobent="${esc(j.entity_id)}">Edit</button>`:''}</div></div></details></li>`}
 function jobTeaser(j){return`<li class="job"><div class="rl"><strong>${esc(j.title)}</strong></div><div class="meta">${jobMeta(j)}</div></li>`}
 function listJobs(){const full=seesJobs(),all=(full?JOBS.full:JOBS.pub);
   if(!all){if(JOBS.failAt&&!jobsRetry()){panel.innerHTML='<div><h2>Jobs</h2><p class="note">Jobs couldn’t be loaded just now.</p></div><div class="acts"><button type="button" class="btn" data-jobs="1">Try again</button><button type="button" class="btn" data-cancel="1">Back to the map</button></div>';return}
@@ -946,7 +947,8 @@ function listJobs(){const full=seesJobs(),all=(full?JOBS.full:JOBS.pub);
   const types=[...new Set(all.map(j=>j.job_type))].filter(t=>JOB_TYPES[t]);
   const gate=full?'':!auth?`<div class="owner"><span>Members see who’s hiring, the full ad and how to apply.</span><button type="button" class="btn go" data-join="1">Apply to join</button><button type="button" class="btn" data-acct="1">Sign in</button></div>`
     :`<div class="owner"><span>You’ll see who’s hiring and the full ads once your application is accepted.</span></div>`;
-  const post=canEdit||myPostOrgs().length?`<button type="button" class="btn go" data-jobnew="${esc(f?f.id:'')}">Post a job</button>`:'';
+  const post=(canEdit||myPostOrgs().length?`<button type="button" class="btn go" data-jobnew="${esc(f?f.id:'')}">Post a job</button>`:'')
+    +(!f&&!canEdit&&full?MYORGS.roles.filter(r=>E.has(r.entity_id)).map(r=>`<button type="button" class="btn" data-go="${esc(r.entity_id)}">Manage ${esc(E.get(r.entity_id).name)} jobs</button>`).join(''):'');
   panel.innerHTML=`<div><h2>${f?'Jobs: '+esc(f.name):'Jobs'}</h2><p class="note">${f?`Open jobs at ${esc(f.name)}, newest first.`:'Jobs in yacht racing, newest first.'}${full?' Select a job for the full ad. Applications go to the employer, not through the book.':''}</p></div>
     ${msg?`<div class="msg">${esc(msg)}</div>`:''}${gate}${post?`<div class="acts">${post}</div>`:''}
     ${types.length>1?`<div class="acts jobtypes"><button type="button" class="btn"${jobType?'':' aria-pressed="true"'} data-jobtype="">All</button>${types.map(t=>`<button type="button" class="btn"${jobType===t?' aria-pressed="true"':''} data-jobtype="${t}">${esc(JOB_TYPES[t])}</button>`).join('')}</div>`:''}
@@ -961,15 +963,23 @@ function jobsOverview(){const full=seesJobs(),all=full?JOBS.full:JOBS.pub;
 /* on an organisation's entry: open jobs for members; posting and managing for paid owners/managers and editors */
 function jobsOrgBlock(e){if(e.type!=='org'||!seesJobs())return'';
   if(!JOBS.full){if(jobsRetry())Promise.resolve(loadJobs()).then(()=>{if(mode==='view'&&sel===e.id&&JOBS.full)render()});return''}
-  const live=JOBS.full.filter(j=>j.entity_id===e.id),manage=canPostFor(e.id),role=myOrgRole(e.id);let h='';
-  if(manage&&!JOBS_ORG.has(e.id)){JOBS_ORG.set(e.id,null);loadOrgJobs(e.id).then(()=>{if(mode==='view'&&sel===e.id)render()})}
-  const mine=manage?(JOBS_ORG.get(e.id)||[]).filter(j=>j.status!=='live'):[];
-  if(!live.length&&!manage&&!role)return'';
-  h+=`<details class="grp"${live.length?' open':''}><summary><b style="border-color:var(--muted)"></b>Jobs <span class="cnt">${live.length}</span></summary>`;
-  h+=live.length?`<ul class="rel jobs">${live.map(j=>jobFull(j)).join('')}</ul>`:`<p class="note">No open jobs.</p>`;
-  if(manage){h+=`<div class="acts"><button type="button" class="btn go" data-jobnew="${esc(e.id)}">Post a job</button></div><p class="who">${live.length}/5 live job ads. Ads stay up 30 days; the person who posted gets an email a few days before, with a link to keep it open.</p>`;
-    if(mine.length)h+=`<p class="who">Closed and expired (kept 180 days):</p><ul class="rel">${mine.map(j=>`<li><div class="rl"><strong>${esc(j.title)}</strong> <span class="role">${j.status==='closed'?'closed':'expired'}</span></div><div class="meta"><span>${esc(fmtDate(j.posted_at))}</span>${j.status==='expired'?`<button type="button" class="mini" data-jobextend="${esc(j.id)}" data-jobent="${esc(e.id)}">Reopen for 30 days</button>`:''}</div></li>`).join('')}</ul>`}
-  else if(role)h+=`<p class="who">Posting jobs is for paid members. Contact the editors to switch it on.</p>`;
+  const live=JOBS.full.filter(j=>j.entity_id===e.id),role=myOrgRole(e.id),manage=canEdit||!!role,post=canPostFor(e.id);
+  if(!live.length&&!manage)return'';
+  if(!manage)return`<details class="grp" open><summary><b style="border-color:var(--muted)"></b>Jobs <span class="cnt">${live.length}</span></summary><ul class="rel jobs">${live.map(j=>jobFull(j)).join('')}</ul></details>`;
+  /* owners, managers and editors: the management view */
+  if(!JOBS_ORG.has(e.id)){JOBS_ORG.set(e.id,null);loadOrgJobs(e.id).then(()=>{if(mode==='view'&&sel===e.id)render()})}
+  const all=JOBS_ORG.get(e.id),mine=all||[],on=mine.filter(j=>j.status==='live'),past=mine.filter(j=>j.status!=='live');
+  const stats=j=>`<span>${j.views} ${j.views===1?'member':'members'} viewed</span><span>${j.applies} clicked Apply</span>`;
+  const row=j=>`<li class="jobm"><div class="rl"><strong>${esc(j.title)}</strong> <span class="role">${esc(JOB_TYPES[j.job_type]||'')}${j.status!=='live'?' · '+(j.status==='closed'?'closed':'expired'):''}</span></div>
+    <div class="meta"><span>Posted ${esc(fmtDate(j.posted_at))}</span>${j.status==='live'?`<span>Up until ${esc(fmtDate(j.expires_at))}</span>`:''}${stats(j)}</div>
+    <div class="acts">${j.status==='live'?(post?`<button type="button" class="mini" data-jobedit="${esc(j.id)}" data-jobent="${esc(e.id)}">Edit</button>`:'')+`<button type="button" class="mini" data-jobclose2="${esc(j.id)}" data-jobent="${esc(e.id)}">Take down</button>`
+      :j.status==='expired'&&post?`<button type="button" class="mini" data-jobextend="${esc(j.id)}" data-jobent="${esc(e.id)}">Reopen for 30 days</button>`:''}</div></li>`;
+  let h=`<details class="grp" open><summary><b style="border-color:var(--muted)"></b>Jobs <span class="cnt">${live.length}</span></summary>`;
+  h+=`<p class="who">${canEdit&&!role?'Editors':'You'} manage this organisation’s job ads. ${on.length}/5 live. Ads stay up 30 days; whoever posted one gets an email a few days before, with a link to keep it open. People apply on your site or by email, so the book can’t see who applied: it counts members who opened each ad and who clicked Apply.</p>`;
+  if(post)h+=`<div class="acts"><button type="button" class="btn go" data-jobnew="${esc(e.id)}">Post a job</button>${live.length?`<button type="button" class="btn" data-jobsfor="${esc(e.id)}">See as members do</button>`:''}</div>`;
+  else h+=`<p class="who">Posting and editing jobs is for paid members. Contact the editors to switch it on.</p>`;
+  h+=!all?'<p class="note">Loading…</p>':on.length?`<ul class="rel">${on.map(row).join('')}</ul>`:'<p class="note">No live job ads.</p>';
+  if(past.length)h+=`<p class="who">Taken down and expired (kept 180 days):</p><ul class="rel">${past.map(row).join('')}</ul>`;
   return h+'</details>'}
 function formJob(){const id=jobEdit&&jobEdit.id,ent=jobEdit&&jobEdit.entity;
   const src=id?(JOBS.full||[]).find(j=>j.id===id)||(JOBS_ORG.get(ent)||[]).find(j=>j.id===id):null;
@@ -990,7 +1000,7 @@ function formJob(){const id=jobEdit&&jobEdit.id,ent=jobEdit&&jobEdit.entity;
     <label>Description<textarea id="jb-desc" rows="10" maxlength="5000" required placeholder="The role, the programme, what you’re looking for">${esc(d.description)}</textarea></label>
     <label>How to apply: a link or an email address<input id="jb-apply" maxlength="500" required value="${esc(d.apply_to)}" placeholder="https://… or jobs@…"></label>
     <label>Applications close (optional)<input id="jb-closes" type="date" value="${esc(d.closes_on||'')}"></label>
-    <div class="acts"><button class="btn go">${id?'Save':'Post the job'}</button>${id?'<button type="button" class="btn bad" data-jobclose="1">Close this ad</button>':''}<button type="button" class="btn" data-jobcancel="1">Cancel</button></div></form>`}
+    <div class="acts"><button class="btn go">${id?'Save':'Post the job'}</button>${id?'<button type="button" class="btn bad" data-jobclose="1">Take it down</button>':''}<button type="button" class="btn" data-jobcancel="1">Cancel</button></div></form>`}
 function jobKeep(){if(!jobDraft||!document.getElementById('jb-title'))return;const g=i=>(document.getElementById(i)||{}).value;
   Object.assign(jobDraft,{title:g('jb-title').trim(),location:g('jb-loc').trim(),workplace:g('jb-wp'),job_type:g('jb-type'),salary:g('jb-sal').trim(),description:g('jb-desc').trim(),apply_to:g('jb-apply').trim(),closes_on:g('jb-closes')||''});
   const oc=document.getElementById('jb-org'),os=document.getElementById('jb-orgsel');if(oc)jobDraft.entity=oc.value;if(os)jobDraft.entity=os.value}
@@ -1006,13 +1016,16 @@ async function saveJob(){jobKeep();const d=jobDraft;
     JOBS.at=0;JOBS_ORG.delete(d.entity);await loadJobs(true);jobLeave(jobEdit&&jobEdit.id?'Job ad saved.':'Job posted. Members can see it now.')}
   catch(x){const t=String(x.message||''),k=Object.keys(JOB_ERR).find(k=>t.includes(k));msg=k?JOB_ERR[k]:'Not saved. '+t.slice(0,160);render()}}
 panel.addEventListener('submit',e=>{if(e.target.id!=='fjob')return;e.preventDefault();e.stopImmediatePropagation();saveJob()},true);
-panel.addEventListener('click',async e=>{const b=e.target.closest('[data-jobnew],[data-jobedit],[data-jobcancel],[data-jobclose],[data-jobextend],[data-jobtype],[data-jobsall],[data-jobscopy],[data-jobsfor]');if(!b)return;const d=b.dataset;
+panel.addEventListener('click',async e=>{const b=e.target.closest('[data-jobnew],[data-jobedit],[data-jobcancel],[data-jobclose],[data-jobclose2],[data-jobextend],[data-jobtype],[data-jobsall],[data-jobscopy],[data-jobsfor]');if(!b)return;const d=b.dataset;
   if('jobnew' in d){jobBack=mode==='jobs'?'jobs':sel;jobEdit={id:null,entity:d.jobnew||''};jobDraft=null;msg='';mode='job';render();panel.scrollTop=0;return}
   if(d.jobedit){jobBack=mode==='jobs'?'jobs':sel;jobEdit={id:d.jobedit,entity:d.jobent};jobDraft=null;msg='';mode='job';render();panel.scrollTop=0;return}
   if('jobcancel' in d)return jobLeave('');
-  if('jobclose' in d){if(b.dataset.sure!=='1'){b.dataset.sure='1';b.textContent='Yes, close it';return}
-    try{await rpc('job_close',{p_id:jobEdit.id});JOBS.at=0;JOBS_ORG.delete(jobEdit.entity);await loadJobs(true);jobLeave('Job ad closed.')}catch(x){msg='Not closed. '+String(x.message).slice(0,140);render()}return}
+  if('jobclose' in d){if(b.dataset.sure!=='1'){b.dataset.sure='1';b.textContent='Yes, take it down';return}
+    try{await rpc('job_close',{p_id:jobEdit.id});JOBS.at=0;JOBS_ORG.delete(jobEdit.entity);await loadJobs(true);jobLeave('Job ad taken down.')}catch(x){msg='Not closed. '+String(x.message).slice(0,140);render()}return}
   if(d.jobextend){b.disabled=true;try{const r=await rpc('job_extend',{p_id:d.jobextend});msg=r==='extended'?'Reopened for 30 days.':r==='limit'?JOB_ERR.job_limit:'Couldn’t reopen it.'}catch(x){msg='Couldn’t reopen it. '+String(x.message).slice(0,120)}
+    JOBS.at=0;JOBS_ORG.delete(d.jobent);await loadJobs(true);render();return}
+  if(d.jobclose2){if(b.dataset.sure!=='1'){b.dataset.sure='1';b.textContent='Yes, take it down';return}b.disabled=true;
+    try{await rpc('job_close',{p_id:d.jobclose2});msg='Job ad taken down.'}catch(x){msg='Not taken down. '+String(x.message).slice(0,140)}
     JOBS.at=0;JOBS_ORG.delete(d.jobent);await loadJobs(true);render();return}
   if('jobtype' in d){jobType=d.jobtype;return render()}
   if('jobsall' in d){jobsFor=null;return render()}
@@ -1022,6 +1035,13 @@ document.addEventListener('click',e=>{const b=e.target.closest('[data-jobs]');if
 panel.addEventListener('click',async e=>{const b=e.target.closest('[data-settier]');if(!b||!canEdit)return;b.disabled=true;const u=b.dataset.uid,t=b.dataset.settier;
   try{await rpc('set_member_tier',{p_user:u,p_tier:t});for(const m of MEMBERS_BY_ENTITY.values())if(m.user_id===u)m.tier=t;msg=t==='paid'?'Paid features switched on. If they manage an organisation, they can post jobs for it.':'Paid features switched off.'}
   catch(x){msg='Not saved. '+String(x.message).slice(0,140)}render()});
+/* a member opens an ad: centre the map on the organisation (never for the public, which mustn't learn who's hiring), count the view */
+const JOB_SEEN=new Set();
+panel.addEventListener('toggle',e=>{const dt=e.target;if(!dt.open||!dt.closest||!dt.closest('.jobs .job')||!seesJobs())return;
+  const id=(dt.querySelector('[data-jobapply]')||{}).dataset;const j=id&&(JOBS.full||[]).find(x=>x.id===id.jobapply);if(!j)return;
+  if(E.has(j.entity_id)&&reveal(j.entity_id))centerSoon(j.entity_id,120);
+  if(!JOB_SEEN.has(j.id)){JOB_SEEN.add(j.id);rpc('job_track',{p_job:j.id,p_kind:'view'}).catch(()=>{})}},true);
+panel.addEventListener('click',e=>{const a=e.target.closest('[data-jobapply]');if(a&&seesJobs())rpc('job_track',{p_job:a.dataset.jobapply,p_kind:'apply'}).catch(()=>{})});
 /* one-click "keep it open" from the expiry email: app#job-extend=<token>, no sign-in needed */
 async function jobExtendToken(tok){let j=null;
   try{const r=await fetch(`${SB_URL}/rest/v1/rpc/job_extend_by_token`,{method:'POST',headers:{apikey:SB_KEY,'Content-Type':'application/json'},body:JSON.stringify({p_token:tok})});j=r.ok?await r.json():null}catch(e){}
@@ -1959,7 +1979,7 @@ panel.addEventListener('click',e=>{const b=e.target.closest('[data-dashmore]');i
    "editors" lines show only to signed-in editors. CHANGELOG.md keeps the technical detail. */
 const UPD_HASH='update';
 const UPDATES=[
- {v:'0.4.0',d:'2026-11-17',t:'Jobs',i:['A Jobs page (top bar and menu): jobs in yacht racing, newest first. Everyone sees the title, location and type; signed-in members also see who’s hiring, the salary, the full ad and Apply now, which goes to the employer’s own site or email.','The newest jobs also show on the overview, under Coming up. Members see an organisation’s open jobs on its entry.','Paid members who manage an organisation can post up to 5 jobs for it. Ads stay up 30 days, with an email a few days before and one click to keep them open.','Editors: switch paid features on or off from a member’s entry; new job ads show on the dashboard.']},
+ {v:'0.4.0',d:'2026-11-17',t:'Jobs',i:['A Jobs page (top bar and menu): jobs in yacht racing, newest first. Everyone sees the title, location and type; signed-in members also see who’s hiring, the salary, the full ad and Apply now, which goes to the employer’s own site or email.','The newest jobs also show on the overview, under Coming up. Members see an organisation’s open jobs on its entry.','Paid members who manage an organisation can post up to 5 jobs for it, and edit or take them down from the organisation’s entry, where they also see how many members viewed each ad and clicked Apply. Ads stay up 30 days, with an email a few days before and one click to keep them open.','Opening an ad centres the map on the organisation hiring.','Editors: switch paid features on or off from a member’s entry; new job ads show on the dashboard.']},
  {v:'0.3.39',d:'2026-11-17',t:'Confirm links last a week',i:['The link to confirm your email when you apply now works for 7 days, on any device, instead of an hour. It only confirms your email; it doesn’t sign you in.']},
  {v:'0.3.38',d:'2026-11-17',t:'Application reminders',i:['If you apply but don’t confirm your email, we now send one reminder after 5 days with a new link. Applications still unconfirmed 2 days after that are deleted.','app.darkbluebook.com/#sign-in opens the sign-in form directly.']},
  {v:'0.3.37',d:'2026-11-17',t:'Dashboard order',x:1,i:['Supabase usage moves up the dashboard, next to the queues; Latest changes moves to the end.']},
