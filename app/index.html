@@ -994,7 +994,7 @@ function formJob(){const id=jobEdit&&jobEdit.id,ent=jobEdit&&jobEdit.entity;
   panel.innerHTML=`<form id="fjob" novalidate><div><h2>${id?'Edit job ad':'Post a job'}</h2>
     <p class="note">Everyone sees the title, location and type. Signed-in members also see the organisation, salary, the full ad and how to apply. People apply on your site or by email, not through the book. The ad stays up 30 days, or until the closing date if sooner.</p></div>
     ${msg?`<div class="msg">${esc(msg)}</div>`:''}${orgField}
-    <label>Job title<input id="jb-title" maxlength="120" required value="${esc(d.title)}" placeholder="e.g. Boat captain, Sailing team coordinator"></label>
+    <label>Job title<input id="jb-title" maxlength="120" required value="${esc(d.title)}" placeholder="e.g. Boat captain, Sailing team coordinator"></label><p class="who">The public sees the title, so keep the organisation’s name out of it: only members see who’s hiring.</p>
     <label>Location<input id="jb-loc" maxlength="120" required value="${esc(d.location)}" placeholder="City, country"></label>
     <label>Workplace<select id="jb-wp">${Object.entries(JOB_WP).map(([k,v])=>opt(k,v,d.workplace)).join('')}</select></label>
     <label>Type<select id="jb-type">${Object.entries(JOB_TYPES).map(([k,v])=>opt(k,v,d.job_type)).join('')}</select></label>

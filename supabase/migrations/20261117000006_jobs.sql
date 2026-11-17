@@ -135,7 +135,7 @@ begin
     exp := now() + interval '30 days';
     if cl is not null and cl + 1 < exp then exp := cl + 1; end if;
     insert into public.jobs (entity_id, posted_by, title, location, workplace, job_type, salary, description, apply_to, closes_on, expires_at)
-    values (ent, me, t, loc, wp, jt, sal, d, ap, cl, exp) returning id into jid;
+    values (ent, (select user_id from public.members where user_id = me), t, loc, wp, jt, sal, d, ap, cl, exp) returning id into jid;  -- editors without a member row post as nobody
     return jid;
   end if;
   update public.jobs set title = t, location = loc, workplace = wp, job_type = jt, salary = sal, description = d, apply_to = ap,
@@ -202,7 +202,8 @@ language sql stable security definer set search_path = '' as $$
   select j.id, j.title, e.name, j.expires_at, m.email, m.name from public.jobs j
     join public.entities e on e.id = j.entity_id join public.members m on m.user_id = j.posted_by
    where j.status = 'live' and j.notice_sent_at is null and j.expires_at > now() and j.expires_at < now() + interval '4 days'
-     and m.status = 'member'
+     and m.status = 'member' and (exists (select 1 from public.org_roles r where r.entity_id = j.entity_id and r.user_id = j.posted_by)
+                                  or exists (select 1 from public.editors ed where ed.user_id = j.posted_by))  -- still allowed to manage it
    order by j.expires_at limit 50;
 $$;
 
