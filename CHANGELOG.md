@@ -2,6 +2,16 @@
 
 Version plan: 0.1 public map live · 0.2 editing moves to Supabase · 0.3 sign-in, applications and claims · 0.4 paid features (contact details for paid members, extra profile links, job board, organisation editing, verified roles), switched on by editors before payments · 0.5 payments (Stripe, tiers, prices) · 1.0 membership network opens · 1.x events and intros. Small fixes in between are 0.x.1, 0.x.2 and so on.
 
+## 0.3.32 (sandbox, 17 November 2026)
+
+Rewards points, the basic mechanism. Needs migration 20261117000001_points.sql on live.
+
+- A points ledger (points_ledger): each change is a row (member, amount, reason, note, when, by whom); the balance is the sum. Rows are never edited or deleted; whole numbers only; no monetary value. Only accepted members can have points, and they're deleted with the account.
+- Written only through database functions: points_adjust() for editors (award or deduct with a required reason; the balance can't go below zero). my_points() for a member's own balance and history, member_points() and points_recent() for editors. Members can read only their own rows; nobody can write to the table directly.
+- Members see their balance and history under Points on their profile. Editors see a member's points and Award / Deduct controls on the member's entry (editors only), and a Recent points tile on the dashboard.
+- How points are earned (referrals first), what they're for and how they're redeemed are left for later and will write to the same ledger.
+- Privacy notice: a Points section.
+
 ## 0.3.31 (14 November 2026)
 
 - Share previews: the app had no Open Graph or Twitter tags, so shared links showed a bare text snippet. Added og:title, og:description, og:image and a summary_large_image card, with a 1200×630 share image (app/og.jpg: the title, tagline and sail icon on navy). The /news page uses the same image.
