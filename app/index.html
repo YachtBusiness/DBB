@@ -1025,7 +1025,7 @@ function formJob(){const id=jobEdit&&jobEdit.id,ent=jobEdit&&jobEdit.entity;
     <label>Salary or rate (optional, members only)<input id="jb-sal" maxlength="120" value="${esc(d.salary)}" placeholder="e.g. €60–70k a year, £350 a day"></label>
     <label for="jb-desc">Description</label><div class="jbtools" role="toolbar" aria-label="Formatting"><button type="button" class="mini" data-jbfmt="b" title="Bold"><strong>B</strong></button><button type="button" class="mini" data-jbfmt="ul" title="Bulleted list">• List</button><button type="button" class="mini" data-jbfmt="ol" title="Numbered list">1. List</button><span class="who">Or type **bold**, and start a line with - or 1. for a list. Links aren’t clickable.</span></div>
     <textarea id="jb-desc" rows="10" maxlength="5000" required placeholder="The role, the programme, what you’re looking for">${esc(d.description)}</textarea>
-    <div class="jbprev"><span class="who">How members will see it</span><div class="jobdesc" id="jb-prev">${jobRich(d.description)||'<p class="note">Nothing yet.</p>'}</div></div>
+    <p class="who" id="jb-count">${d.description.trim().length} characters (30 to 5,000)</p><div class="jbprev"><span class="who">How members will see it</span><div class="jobdesc" id="jb-prev">${jobRich(d.description)||'<p class="note">Nothing yet.</p>'}</div></div>
     <label>How to apply: a link or an email address<input id="jb-apply" maxlength="500" required value="${esc(d.apply_to)}" placeholder="https://… or jobs@…"></label>
     <label>Applications close (optional)<input id="jb-closes" type="date" value="${esc(d.closes_on||'')}"></label>
     <div class="acts"><button class="btn go">${id?'Save':'Post the job'}</button>${id?'<button type="button" class="btn bad" data-jobclose="1">Take it down</button>':''}<button type="button" class="btn" data-jobcancel="1">Cancel</button></div></form>`}
@@ -1040,10 +1040,11 @@ const JOB_ERR={job_limit:'This organisation already has 5 live job ads, the most
   jobs_apply_to_check:'How to apply should be a web address (https://…) or an email address.'};
 async function saveJob(){jobKeep();const d=jobDraft;
   if(!d.entity){msg=JOB_ERR.job_org;return render()}
+  const dl=d.description.trim().length;if(dl<30||dl>5000){msg=`The description needs 30 to 5,000 characters; this one has ${dl}.`;return render()}
   try{await rpc('job_save',{p_id:jobEdit&&jobEdit.id||null,p_entity:d.entity,p:d});const back=jobBack||d.entity;jobBack=back;
     JOBS.at=0;JOBS_ORG.delete(d.entity);await loadJobs(true);jobLeave(jobEdit&&jobEdit.id?'Job ad saved.':'Job posted. Members can see it now.')}
   catch(x){const t=String(x.message||''),k=Object.keys(JOB_ERR).find(k=>t.includes(k));msg=k?JOB_ERR[k]:'Not saved. '+t.slice(0,160);render()}}
-panel.addEventListener('input',e=>{if(e.target.id!=='jb-desc')return;const p=document.getElementById('jb-prev');if(p)p.innerHTML=jobRich(e.target.value)||'<p class="note">Nothing yet.</p>'});
+panel.addEventListener('input',e=>{if(e.target.id!=='jb-desc')return;const c=document.getElementById('jb-count');if(c)c.textContent=e.target.value.trim().length+' characters (30 to 5,000)';const p=document.getElementById('jb-prev');if(p)p.innerHTML=jobRich(e.target.value)||'<p class="note">Nothing yet.</p>'});
 panel.addEventListener('click',e=>{const b=e.target.closest('[data-jbfmt]');if(!b)return;const ta=document.getElementById('jb-desc');if(!ta)return;
   const v=ta.value,a=ta.selectionStart,z=ta.selectionEnd,k=b.dataset.jbfmt;let nv,na,nz;
   if(k==='b'){const sel=v.slice(a,z)||'bold text';nv=v.slice(0,a)+'**'+sel+'**'+v.slice(z);na=a+2;nz=na+sel.length}
