@@ -6,8 +6,8 @@ Version plan: 0.1 public map live · 0.2 editing moves to Supabase · 0.3 sign-i
 
 Referrals, tied to points. Migration 20261117000003_referrals.sql applied to the sandbox only.
 
-- Every member gets a personal invite link (app.darkbluebook.com/?ref=xxxxxxxx) under Invite people on their profile, with Copy (and Share on phones), and a count of who joined, who is waiting and points earned from invites. The code is made the first time they open their profile.
-- Opening an invite link remembers the code for 90 days on that device and tidies it out of the address bar. The Apply form says "You were invited by <name>"; the application is tied to the referrer when the applicant confirms their email (set_referrer: once, own undecided application only, not yourself).
+- Every member gets a personal invite link (app.darkbluebook.com/?ref=xxxxxxxx) on an Invite people page (#invite), with Copy (and Share on phones), and a count of who joined, who is waiting and points earned from invites. Members reach it from Invite in the top bar and menu, a box at the top of their profile, and a button on their own entry.
+- Opening an invite link goes straight to the Apply form (unless already signed in), remembers the code for 90 days on that device and tidies it out of the address bar. The top of the Apply form says "You were invited by <name>"; the application is tied to the referrer when the applicant confirms their email (set_referrer: once, own undecided application only, not yourself).
 - Editor approval stays: when an editor accepts the application, the database pays the referrer the 'referral' reward (100 points to start), once per person referred, and only while the referrer is still a member. The history reads "+100 Referred a new member: <name>".
 - Editors see "invited by <name>" on the applications list and the review page.
 - Rewards tile on the editor dashboard lists the earning rules; the owner can change an amount or switch a rule off (set_points_rule), applying from then on. Editors can see switched-off rules.
