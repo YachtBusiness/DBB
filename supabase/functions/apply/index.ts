@@ -52,7 +52,7 @@ Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: h });
   if (req.method !== "POST") return reply(405, { error: "method" });
 
-  let body: { email?: string; application?: Record<string, unknown>; website?: string; redirect?: string };
+  let body: { email?: string; application?: Record<string, unknown>; website?: string; redirect?: string; ref?: string };
   try { body = await req.json(); } catch { return reply(400, { error: "bad_request" }); }
 
   // simple bots fill in the hidden field; pretend all went well
@@ -89,6 +89,10 @@ Deno.serve(async (req) => {
       const code = (m.match(/^[a-z_]+$/) || m.match(/(application[a-z_]*|applications_rate_limit|[a-z]+_check)/) || [""])[0];
       return reply(code === "applications_rate_limit" ? 429 : 400, { error: code || "invalid", detail: m.slice(0, 300) });
     }
+
+    // invited through a member's link: tie the application to them now (0.3.35); never blocks the application
+    const ref = String(body.ref || "").toLowerCase();
+    if (/^[a-z0-9]{8}$/.test(ref)) await rpc("apply_set_referrer", { p_user: userId, p_code: ref }).catch(() => {});
 
     const link = await sendLink(email, redirect);
     return reply(200, { result: "sent", link });

@@ -94,3 +94,16 @@ grant execute on function public.set_points_rule(text, int, boolean) to authenti
 -- editors see all rules, including switched-off ones
 drop policy if exists points_rules_read on public.points_rules;
 create policy points_rules_read on public.points_rules for select to anon, authenticated using (active or (select public.is_editor()));
+
+-- the Apply function ties a new application to its referrer when it's sent, so it doesn't matter which device the
+-- applicant later confirms on (service role only)
+create or replace function public.apply_set_referrer(p_user uuid, p_code text) returns void
+language plpgsql security definer set search_path = '' as $$
+declare r uuid;
+begin
+  select user_id into r from public.members where ref_code = lower(btrim(coalesce(p_code, ''))) and status = 'member';
+  if r is null or r = p_user then return; end if;
+  update public.members set referrer_id = r where user_id = p_user and status in ('unconfirmed','pending') and referrer_id is null;
+end $$;
+revoke all on function public.apply_set_referrer(uuid, text) from public, anon, authenticated;
+grant execute on function public.apply_set_referrer(uuid, text) to service_role;
