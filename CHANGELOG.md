@@ -2,6 +2,15 @@
 
 Version plan: 0.1 public map live · 0.2 editing moves to Supabase · 0.3 sign-in, applications and claims · 0.4 paid features (contact details for paid members, extra profile links, job board, organisation editing, verified roles), switched on by editors before payments · 0.5 payments (Stripe, tiers, prices) · 1.0 membership network opens · 1.x events and intros. Small fixes in between are 0.x.1, 0.x.2 and so on.
 
+## 0.3.33 (sandbox, 17 November 2026)
+
+The first way to earn points. Needs migration 20261117000002_points_rewards.sql on live (after 20261117000001_points.sql).
+
+- Earning rules live in points_rules (key, points, label, active), readable by anyone; amounts change there without touching the app. First rule: profile_photo, 10 points, "Added a profile photo".
+- Given automatically by the database when a member's photo is saved (trigger on members), once per member: a unique index on rewards means removing and re-adding a photo doesn't pay twice. Backdated for members who already have a photo. Only the database can give rewards; members and visitors can't call points_reward().
+- The profile checklist shows "+10 points" next to Add a photo; the Points section mentions it until earned, and the history reads "+10 Added a profile photo" (Reward).
+- Terms line on the Points section and in the privacy notice: points have no cash value, can't be transferred, and how they're earned and used may change. Decided 17 Nov 2026: no expiry.
+
 ## 0.3.32 (sandbox, 17 November 2026)
 
 Rewards points, the basic mechanism. Needs migration 20261117000001_points.sql on live.
