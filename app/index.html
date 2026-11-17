@@ -495,6 +495,7 @@ function fromHash(){let id='';try{id=decodeURIComponent(location.hash.slice(1))}
   if(id==='dashboard'){sel=null;editing=null;msg='';if(typeof showPanel==='function')showPanel();openDashboard();return}
   if(id==='invite'){sel=null;editing=null;msg='';mode='invite';paint();render();if(typeof showPanel==='function')showPanel();return}
   if(id.startsWith('confirm=')){try{history.replaceState(null,'',location.pathname+location.search)}catch(e){}sel=null;editing=null;msg='';mode='confirmed';CONFIRM={state:'working'};paint();render();if(typeof showPanel==='function')showPanel();confirmToken(id.slice(8));return}
+  if(/^job-[0-9a-f]{8}$/.test(id)){sel=null;editing=null;msg='';jobsFor=null;jobType='';JOB_SHORT=id.slice(4);mode='jobs';paint();render();if(typeof showPanel==='function')showPanel();return}
   if(id===JOBS_HASH){sel=null;editing=null;msg='';jobsFor=null;mode='jobs';paint();render();if(typeof showPanel==='function')showPanel();return}
   if(id.startsWith('job-extend=')){try{history.replaceState(null,'',location.pathname+location.search)}catch(e){}sel=null;editing=null;msg='';mode='jobext';JOBEXT={state:'working'};paint();render();if(typeof showPanel==='function')showPanel();jobExtendToken(id.slice(11));return}
   if(id==='apply'){sel=null;editing=null;msg='';if(auth)mode='account';else{draft=null;mode='apply'}paint();render();if(typeof showPanel==='function')showPanel();return}
@@ -932,7 +933,9 @@ async function loadJobs(force){try{SB_URL}catch(e){return}  /* too early in star
     J.at=Date.now();J.failAt=0}catch(e){J.failAt=Date.now()}finally{J.loading=null}})();return J.loading}
 /* sign-in return (0.4.0): clicking Sign in remembers the page (and the job ad wanted); after opening the emailed link on
    this device, the app goes back there instead of the overview. Kept for 2 hours. */
-const RET_KEY='dbb-return';let JOB_WANT=null;
+const RET_KEY='dbb-return';let JOB_WANT=null,JOB_SHORT=null;
+const jobShort=id=>String(id||'').slice(0,8);
+const jobAddr=id=>{try{history.replaceState(null,'','#job-'+jobShort(id))}catch(e){}};
 function saveReturn(){const h=mode==='jobs'?'#'+JOBS_HASH:sel?'#'+encodeURIComponent(sel):mode==='allnews'?'#'+NEWS_HASH:mode==='calendar'?'#'+CAL_HASH:'';
   try{h?localStorage.setItem(RET_KEY,JSON.stringify({h,job:mode==='jobs'?JOB_WANT:null,at:Date.now()})):localStorage.removeItem(RET_KEY)}catch(e){}}
 function takeReturn(){let r=null;try{r=JSON.parse(localStorage.getItem(RET_KEY)||'null');localStorage.removeItem(RET_KEY)}catch(e){}
@@ -960,13 +963,14 @@ function jobFull(j,manage){const org=E.get(j.entity_id);
   return`<li class="job"${want?' id="jobwant"':''}><details${want?' open':''}><summary><strong>${esc(j.title)}</strong>${org?` <span class="role">${esc(org.name)}</span>`:j.org_name?` <span class="role">${esc(j.org_name)}</span>`:''}<div class="meta">${jobMeta(j)}</div><p class="jobsnip">${esc(jobSnip(j.description))}</p></summary>
     <div class="jobbody">${j.salary?`<p><strong>Salary:</strong> ${esc(j.salary)}</p>`:''}<div class="jobdesc">${jobRich(j.description)}</div>
     ${j.closes_on?`<p class="who">Applications close ${esc(fmtDate(j.closes_on))}.</p>`:''}${canEdit&&j.posted_by_name?`<p class="who">Posted by ${esc(j.posted_by_name)} (editors only).</p>`:''}${!canEdit&&!myOrgRole(j.entity_id)?`<p class="who">When you click Apply now, ${esc(org?org.name:j.org_name||'the employer')} can see your name and your entry in the book.</p>`:''}
-    <div class="acts"><a class="btn go" href="${esc(applyHref(j.apply_to))}" target="_blank" rel="noopener nofollow" data-jobapply="${esc(j.id)}">Apply now ↗</a>${org?`<button type="button" class="btn" data-go="${esc(org.id)}">${esc(org.name)}</button>`:''}${canPostFor(j.entity_id)?`<button type="button" class="btn" data-jobedit="${esc(j.id)}" data-jobent="${esc(j.entity_id)}">Edit</button>`:''}</div></div></details></li>`}
+    <div class="acts"><a class="btn go" href="${esc(applyHref(j.apply_to))}" target="_blank" rel="noopener nofollow" data-jobapply="${esc(j.id)}">Apply now ↗</a>${org?`<button type="button" class="btn" data-go="${esc(org.id)}">${esc(org.name)}</button>`:''}<button type="button" class="btn" data-jobcopy="${esc(jobShort(j.id))}">Copy link</button>${canPostFor(j.entity_id)?`<button type="button" class="btn" data-jobedit="${esc(j.id)}" data-jobent="${esc(j.entity_id)}">Edit</button>`:''}</div></div></details></li>`}
 function jobTeaser(j){const open=JOB_WANT===j.id;
-  return`<li class="job jteaser"><button type="button" class="ent jobt" data-jobwant="${esc(j.id)}" aria-expanded="${open}">${esc(j.title)}</button><div class="meta">${jobMeta(j)}</div>
+  return`<li class="job jteaser"${open?' id="jobwant"':''}><button type="button" class="ent jobt" data-jobwant="${esc(j.id)}" aria-expanded="${open}">${esc(j.title)}</button><div class="meta">${jobMeta(j)}</div>
     ${open?(auth?'<p class="who">You’ll see who’s hiring and the full ad once your application is accepted.</p>':`<div class="owner"><span>Sign in to see who’s hiring, the full ad and how to apply. Not a member yet? Apply to join.</span><button type="button" class="btn go" data-acct="1">Sign in</button><button type="button" class="btn" data-join="1">Apply to join</button></div>`):''}</li>`}
 function listJobs(){const full=seesJobs(),all=(full?JOBS.full:JOBS.pub);
   if(!all){if(JOBS.failAt&&!jobsRetry()){panel.innerHTML='<div><h2>Jobs</h2><p class="note">Jobs couldn’t be loaded just now.</p></div><div class="acts"><button type="button" class="btn" data-jobs="1">Try again</button><button type="button" class="btn" data-cancel="1">Back to the map</button></div>';return}
     panel.innerHTML='<div><h2>Jobs</h2><p class="note">Loading…</p></div>';Promise.resolve(loadJobs()).then(()=>{if(mode==='jobs')setTimeout(render,JOBS.full||JOBS.pub||JOBS.failAt?0:300)});return}
+  if(JOB_SHORT){const m=all.find(j=>j.id.startsWith(JOB_SHORT));if(m)JOB_WANT=m.id;else msg='That job ad is no longer open.';JOB_SHORT=null}
   const f=full&&jobsFor&&E.get(jobsFor),rows=all.filter(j=>(!jobType||j.job_type===jobType)&&(!f||j.entity_id===f.id));
   const types=[...new Set(all.map(j=>j.job_type))].filter(t=>JOB_TYPES[t]);
   const gate=full?'':!auth?`<div class="owner"><span>Members see who’s hiring, the full ad and how to apply.</span><button type="button" class="btn go" data-join="1">Apply to join</button><button type="button" class="btn" data-acct="1">Sign in</button></div>`
@@ -976,7 +980,7 @@ function listJobs(){const full=seesJobs(),all=(full?JOBS.full:JOBS.pub);
   panel.innerHTML=`<div><h2>${f?'Jobs: '+esc(f.name):'Jobs'}</h2><p class="note">${f?`Open jobs at ${esc(f.name)}, newest first.`:'Jobs in yacht racing, newest first. Also as a <a href="/jobs" target="_blank" rel="noopener">plain page</a>.'}${full?' Select a job for the full ad. Applications go to the employer, not through the book.':''}</p></div>
     ${msg?`<div class="msg">${esc(msg)}</div>`:''}${gate}${post?`<div class="acts">${post}</div>`:''}
     ${types.length>1?`<div class="acts jobtypes"><button type="button" class="btn"${jobType?'':' aria-pressed="true"'} data-jobtype="">All</button>${types.map(t=>`<button type="button" class="btn"${jobType===t?' aria-pressed="true"':''} data-jobtype="${t}">${esc(JOB_TYPES[t])}</button>`).join('')}</div>`:''}
-    ${rows.length?`<ul class="rel jobs">${rows.map(j=>full?jobFull(j):jobTeaser(j)).join('')}${full&&JOB_WANT?(setTimeout(()=>{const w=document.getElementById('jobwant');if(w){w.scrollIntoView({block:'center'});const j=JOBS.full.find(x=>x.id===JOB_WANT);if(j&&E.has(j.entity_id)&&reveal(j.entity_id))centerSoon(j.entity_id,200)}JOB_WANT=null},0),''):''}</ul>`:`<p class="note">${all.length?'No jobs of this type right now.':'No jobs posted yet.'}</p>`}
+    ${rows.length?`<ul class="rel jobs">${rows.map(j=>full?jobFull(j):jobTeaser(j)).join('')}${JOB_WANT?(setTimeout(()=>{const w=document.getElementById('jobwant');if(w)w.scrollIntoView({block:'center'});if(full){const j=JOBS.full.find(x=>x.id===JOB_WANT);if(j&&E.has(j.entity_id)&&reveal(j.entity_id))centerSoon(j.entity_id,200);JOB_WANT=null}},0),''):''}</ul>`:`<p class="note">${all.length?'No jobs of this type right now.':'No jobs posted yet.'}</p>`}
     <div class="acts">${f?`<button type="button" class="btn" data-go="${esc(f.id)}">Back to ${esc(f.name)}</button><button type="button" class="btn" data-jobsall="1">All jobs</button>`:`<button type="button" class="btn" data-jobscopy="1">Copy link</button><button type="button" class="btn" data-cancel="1">Back to the map</button>`}</div>`}
 /* on the overview, under Coming up: the latest 5 (teaser for the public, with the organisation for members) */
 function jobsOverview(){const full=seesJobs(),all=full?JOBS.full:JOBS.pub;
@@ -998,7 +1002,7 @@ function jobsOrgBlock(e){if(e.type!=='org'||!seesJobs())return'';
     return A.length?`<ul class="rel appl">${A.map(a=>`<li><div class="rl">${a.entity_id&&E.has(a.entity_id)?`<button type="button" class="ent" data-go="${esc(a.entity_id)}">${esc(a.name)}</button>`:`<strong>${esc(a.name)}</strong>`}</div><div class="meta"><span>clicked ${esc(fmtDate(a.clicked_at))}</span></div></li>`).join('')}</ul>`:'<p class="note">Nobody yet.</p>'};
   const row=j=>`<li class="jobm"><div class="rl"><strong>${esc(j.title)}</strong> <span class="role">${esc(JOB_TYPES[j.job_type]||'')}${j.status!=='live'?' · '+(j.status==='closed'?'closed':'expired'):''}</span></div>
     <div class="meta"><span>Posted ${esc(fmtDate(j.posted_at))}</span>${j.status==='live'?`<span>Up until ${esc(fmtDate(j.expires_at))}</span>`:''}${stats(j)}</div>
-    <div class="acts">${j.status==='live'?(post?`<button type="button" class="mini" data-jobedit="${esc(j.id)}" data-jobent="${esc(e.id)}">Edit</button>`:'')+`<button type="button" class="mini" data-jobclose2="${esc(j.id)}" data-jobent="${esc(e.id)}">Take down</button>`
+    <div class="acts">${j.status==='live'?(post?`<button type="button" class="mini" data-jobedit="${esc(j.id)}" data-jobent="${esc(e.id)}">Edit</button>`:'')+`<button type="button" class="mini" data-jobcopy="${esc(jobShort(j.id))}">Copy link</button><button type="button" class="mini" data-jobclose2="${esc(j.id)}" data-jobent="${esc(e.id)}">Take down</button>`
       :j.status==='expired'&&post?`<button type="button" class="mini" data-jobextend="${esc(j.id)}" data-jobent="${esc(e.id)}">Reopen for 30 days</button>`:''}</div>${appl(j)}</li>`;
   let h=`<details class="grp" open><summary><b style="border-color:var(--muted)"></b>Jobs <span class="cnt">${live.length}</span></summary>`;
   h+=`<p class="who">${canEdit&&!role?'Editors':'You'} manage this organisation’s job ads. ${on.length}/5 live. Ads stay up 30 days; whoever posted one gets an email a few days before, with a link to keep it open. People apply on your site or by email; here you can see how many members opened each ad, and which members clicked Apply (they’re told you’ll see it).</p>`;
@@ -1053,7 +1057,8 @@ panel.addEventListener('click',e=>{const b=e.target.closest('[data-jbfmt]');if(!
     const out=rows.map((r,i)=>on?strip(r):(k==='ul'?'- ':(i+1)+'. ')+strip(r)).join('\n');nv=v.slice(0,ls)+out+v.slice(le);na=ls;nz=ls+out.length}
   ta.value=nv;ta.focus();ta.setSelectionRange(na,nz);ta.dispatchEvent(new Event('input',{bubbles:true}))});
 panel.addEventListener('submit',e=>{if(e.target.id!=='fjob')return;e.preventDefault();e.stopImmediatePropagation();saveJob()},true);
-panel.addEventListener('click',async e=>{const b=e.target.closest('[data-jobnew],[data-jobedit],[data-jobcancel],[data-jobclose],[data-jobclose2],[data-jobextend],[data-jobwant],[data-jobtype],[data-jobsall],[data-jobscopy],[data-jobsfor]');if(!b)return;const d=b.dataset;
+panel.addEventListener('click',async e=>{const b=e.target.closest('[data-jobcopy],[data-jobnew],[data-jobedit],[data-jobcancel],[data-jobclose],[data-jobclose2],[data-jobextend],[data-jobwant],[data-jobtype],[data-jobsall],[data-jobscopy],[data-jobsfor]');if(!b)return;const d=b.dataset;
+  if(d.jobcopy){const u=location.origin+'/jobs/'+d.jobcopy;try{navigator.clipboard.writeText(u).then(()=>{b.textContent='Link copied'},()=>{b.textContent=u})}catch(x){b.textContent=u}return}
   if('jobnew' in d){jobBack=mode==='jobs'?'jobs':sel;jobEdit={id:null,entity:d.jobnew||''};jobDraft=null;msg='';mode='job';render();panel.scrollTop=0;return}
   if(d.jobedit){jobBack=mode==='jobs'?'jobs':sel;jobEdit={id:d.jobedit,entity:d.jobent};jobDraft=null;msg='';mode='job';render();panel.scrollTop=0;return}
   if('jobcancel' in d)return jobLeave('');
@@ -1065,7 +1070,7 @@ panel.addEventListener('click',async e=>{const b=e.target.closest('[data-jobnew]
     try{await rpc('job_close',{p_id:d.jobclose2});msg='Job ad taken down.'}catch(x){msg='Not taken down. '+String(x.message).slice(0,140)}
     JOBS.at=0;JOBS_ORG.delete(d.jobent);await loadJobs(true);render();return}
   if('jobtype' in d){jobType=d.jobtype;return render()}
-  if(d.jobwant){JOB_WANT=JOB_WANT===d.jobwant?null:d.jobwant;return render()}
+  if(d.jobwant){JOB_WANT=JOB_WANT===d.jobwant?null:d.jobwant;if(JOB_WANT&&mode==='jobs')jobAddr(JOB_WANT);return render()}
   if('jobsall' in d){jobsFor=null;return render()}
   if(d.jobsfor){jobsFor=d.jobsfor;sel=null;mode='jobs';render();syncHash();return}
   if('jobscopy' in d){const u=location.href.split('#')[0].split('?')[0]+'#'+JOBS_HASH;try{navigator.clipboard.writeText(u).then(()=>{b.textContent='Link copied'},()=>{b.textContent=u})}catch(x){b.textContent=u}}});
@@ -1080,7 +1085,7 @@ panel.addEventListener('click',async e=>{const b=e.target.closest('[data-jobappl
   JOB_APPL.set(id,null);render();try{JOB_APPL.set(id,(await rpc('job_applicants',{p_job:id}))||[])}catch(x){JOB_APPL.set(id,[])}render()});
 panel.addEventListener('toggle',e=>{const dt=e.target;if(!dt.open||!dt.closest||!dt.closest('.jobs .job')||!seesJobs())return;
   const id=(dt.querySelector('[data-jobapply]')||{}).dataset;const j=id&&(JOBS.full||[]).find(x=>x.id===id.jobapply);if(!j)return;
-  if(E.has(j.entity_id)&&reveal(j.entity_id))centerSoon(j.entity_id,120);
+  if(E.has(j.entity_id)&&reveal(j.entity_id))centerSoon(j.entity_id,120);if(mode==='jobs')jobAddr(j.id);
   if(!JOB_SEEN.has(j.id)){JOB_SEEN.add(j.id);rpc('job_track',{p_job:j.id,p_kind:'view'}).catch(()=>{})}},true);
 panel.addEventListener('click',e=>{const a=e.target.closest('[data-jobapply]');if(a&&seesJobs())rpc('job_track',{p_job:a.dataset.jobapply,p_kind:'apply'}).catch(()=>{})});
 /* one-click "keep it open" from the expiry email: app#job-extend=<token>, no sign-in needed */
@@ -2020,7 +2025,7 @@ panel.addEventListener('click',e=>{const b=e.target.closest('[data-dashmore]');i
    "editors" lines show only to signed-in editors. CHANGELOG.md keeps the technical detail. */
 const UPD_HASH='update';
 const UPDATES=[
- {v:'0.4.1',d:'2026-11-17',t:'Formatting in job ads',i:['Job ads can use bold, bulleted lists and numbered lists, with buttons above the description and a preview of how members will see it. Links aren’t clickable.']},
+ {v:'0.4.1',d:'2026-11-17',t:'Formatting in job ads',i:['Job ads can use bold, bulleted lists and numbered lists, with buttons above the description and a preview of how members will see it. Links aren’t clickable.','Every job ad has its own link to share (Copy link on the ad): app.darkbluebook.com/jobs/… shows the title, location and type to anyone, with a proper preview on LinkedIn and WhatsApp, and opens the full ad in the app for members.']},
  {v:'0.4.0',d:'2026-11-17',t:'Jobs',i:['A Jobs page (top bar and menu): jobs in yacht racing, newest first. Everyone sees the title, location and type; signed-in members also see who’s hiring, the salary, the full ad and Apply now, which goes to the employer’s own site or email.','The newest jobs also show on the overview, under Coming up. Members see an organisation’s open jobs on its entry.','Paid members who manage an organisation can post up to 5 jobs for it, and edit or take them down from the organisation’s entry, where they also see how many members viewed each ad and which members clicked Apply (members are told under the button). Ads stay up 30 days, with an email a few days before and one click to keep them open.','Opening an ad centres the map on the organisation hiring.','Signing in from a page now brings you back to it after you open the email link, including the job ad you were looking at.','Editors: switch paid features on or off from a member’s entry; new job ads show on the dashboard.']},
  {v:'0.3.39',d:'2026-11-17',t:'Confirm links last a week',i:['The link to confirm your email when you apply now works for 7 days, on any device, instead of an hour. It only confirms your email; it doesn’t sign you in.']},
  {v:'0.3.38',d:'2026-11-17',t:'Application reminders',i:['If you apply but don’t confirm your email, we now send one reminder after 5 days with a new link. Applications still unconfirmed 2 days after that are deleted.','app.darkbluebook.com/#sign-in opens the sign-in form directly.']},

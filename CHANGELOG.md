@@ -5,6 +5,8 @@ Version plan: 0.1 public map live · 0.2 editing moves to Supabase · 0.3 sign-i
 ## 0.4.1 (17 November 2026)
 
 - Job ads: basic formatting in the description (decided 17 Nov 2026): **bold**, bulleted lists (lines starting "- " or "• ") and numbered lists ("1. "). Stored as plain text with these marks and turned into formatting when shown; everything else is escaped, and nothing is ever made a link. The post form has Bold, • List and 1. List buttons and a live "How members will see it" preview. Snippets drop the marks.
+- Job ads have their own addresses: app.darkbluebook.com/#job-<first 8 characters of its id> opens Jobs with that ad (open for members; its sign-in prompt for the public), and the address bar follows the ad opened. Shareable plain page app.darkbluebook.com/jobs/<8 characters> (built on Cloudflare, like /jobs): the public teaser with the ad's own title and share preview, See the full ad (into the app) and Apply to join; "no longer open" once it's gone. Copy link on each ad (members) and on the management view copies the shareable one. /jobs list items link to their pages.
+- Job descriptions show a live character count (30 to 5,000) and the length is checked before sending.
 - Book: SailGP added as an organisation (organiser of Rolex SailGP Championship), and the 21 people's roles that were on the championship (staff, commentators, co-founders, backer) moved to SailGP. Sponsors, suppliers, teams and events stay on the championship.
 
 ## 0.4.0 (17 November 2026)

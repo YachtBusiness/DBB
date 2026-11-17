@@ -3,6 +3,7 @@
    /news.xml  the same stories as an RSS feed
    /jobs      open job ads as plain HTML (0.4.0): the public teaser only (title, location, workplace, type, date),
               never the organisation, salary or how to apply, which are for signed-in members in the app
+   /jobs/<8 hex>  one job ad's teaser (0.4.1), with its own title and share preview, linking to app#job-<8 hex>
    Only these paths reach this worker (see _routes.json); everything else is served as static files.
    Live and preview read the live book; any other address reads the sandbox, as the app does. */
 const LIVE_HOSTS = ['app.darkbluebook.com', 'preview.dbb-2k3.pages.dev', 'dbb-2k3.pages.dev'];
@@ -87,7 +88,7 @@ function jobsHtml(list) {
   const items = list.map((j) => {
     const d = j.posted_at ? new Date(j.posted_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' }) : '';
     const where = esc(j.location) + (JOB_WP[j.workplace] ? ` (${JOB_WP[j.workplace]})` : '');
-    return `<li><article><h2>${esc(j.title)}</h2>
+    return `<li><article><h2><a href="${APP}jobs/${esc(String(j.id).slice(0, 8))}">${esc(j.title)}</a></h2>
 <p class="m">${[where, esc(JOB_TYPES[j.job_type] || ''), d && `Posted <time datetime="${esc(j.posted_at)}">${esc(d)}</time>`].filter(Boolean).join(' · ')}</p></article></li>`;
   }).join('\n');
   return `<!doctype html><html lang="en-GB"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
@@ -106,6 +107,36 @@ ${items || '<li>No jobs posted yet. Organisations in the book can post them; mem
 </ol>
 <footer>Updated ${esc(new Date().toUTCString())}. The book: <a href="${APP}">app.darkbluebook.com</a> · <a href="${APP}news">News</a> · <a href="${APP}privacy">Privacy</a></footer>
 </main></body></html>`;
+}
+
+function jobHtml(j, short) {
+  const d = j.posted_at ? new Date(j.posted_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' }) : '';
+  const where = j.location + (JOB_WP[j.workplace] ? ` (${JOB_WP[j.workplace]})` : '');
+  const type = JOB_TYPES[j.job_type] || '';
+  const summary = [where, type].filter(Boolean).join(' · ');
+  const title = `${j.title} · ${summary}`;
+  return `<!doctype html><html lang="en-GB"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>${esc(j.title)} · Yacht racing jobs · The Dark Blue Book</title>
+<meta name="description" content="${esc(`${j.title}, ${summary}. A yacht racing job on The Dark Blue Book: members see who’s hiring, the full ad and how to apply.`)}">
+<link rel="canonical" href="${APP}jobs/${esc(short)}">
+<link rel="icon" href="/icons/icon-32.png" sizes="32x32"><meta name="theme-color" content="#12264d">
+<meta property="og:title" content="${esc(title)}"><meta property="og:description" content="Yacht racing job on The Dark Blue Book. Members see who’s hiring, the full ad and how to apply."><meta property="og:type" content="website"><meta property="og:url" content="${APP}jobs/${esc(short)}"><meta property="og:image" content="${APP}og.jpg"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta name="twitter:card" content="summary_large_image">
+${STYLE}</head><body>
+<header><a href="${APP}"><div class="b">The Dark Blue Book</div><p>The who’s who of yacht racing</p></a></header>
+<main><p class="n"><a href="${APP}jobs">Yacht racing jobs</a></p>
+<h1>${esc(j.title)}</h1>
+<p class="m">${[esc(where), esc(type), d && `Posted <time datetime="${esc(j.posted_at)}">${esc(d)}</time>`].filter(Boolean).join(' · ')}</p>
+<p class="n">Members of The Dark Blue Book see who’s hiring, the full ad and how to apply.</p>
+<p><a class="app" href="${APP}#job-${esc(short)}">See the full ad</a><a class="app" href="${APP}#apply">Apply to join</a></p>
+<footer>The book: <a href="${APP}">app.darkbluebook.com</a> · <a href="${APP}jobs">All jobs</a> · <a href="${APP}privacy">Privacy</a></footer>
+</main></body></html>`;
+}
+
+function goneHtml() {
+  return `<!doctype html><html lang="en-GB"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Job no longer open · The Dark Blue Book</title><meta name="robots" content="noindex">${STYLE}</head><body>
+<header><a href="${APP}"><div class="b">The Dark Blue Book</div><p>The who’s who of yacht racing</p></a></header>
+<main><h1>This job is no longer open</h1><p class="n">It may have been filled or taken down.</p><p><a class="app" href="${APP}jobs">See open jobs</a></p></main></body></html>`;
 }
 
 function rss(list) {
@@ -129,12 +160,22 @@ export default {
   async fetch(request, env, ctx) {
     const u = new URL(request.url);
     const path = u.pathname.replace(/\/+$/, '') || '/';
-    if (path !== '/news' && path !== '/news.xml' && path !== '/jobs') return env.ASSETS.fetch(request);
+    const one = path.match(/^\/jobs\/([0-9a-f]{8})$/);
+    if (path !== '/news' && path !== '/news.xml' && path !== '/jobs' && !one) return env.ASSETS.fetch(request);
     const cache = caches.default, key = new Request(u.origin + path);
     const hit = await cache.match(key);
     if (hit) return hit;
     let res;
     try {
+      if (one) {
+        const j = (await jobs(u.hostname)).find((x) => String(x.id).startsWith(one[1]));
+        res = j ? new Response(jobHtml(j, one[1]), { headers: { 'Content-Type': 'text/html; charset=utf-8' } })
+          : new Response(goneHtml(), { status: 404, headers: { 'Content-Type': 'text/html; charset=utf-8' } });
+        res.headers.set('Cache-Control', 'public, max-age=300');
+        if (u.hostname !== 'app.darkbluebook.com') res.headers.set('X-Robots-Tag', 'noindex');
+        if (j) ctx.waitUntil(cache.put(key, res.clone()));
+        return res;
+      }
       if (path === '/jobs') {
         res = new Response(jobsHtml(await jobs(u.hostname)), { headers: { 'Content-Type': 'text/html; charset=utf-8' } });
         res.headers.set('Cache-Control', 'public, max-age=600');
