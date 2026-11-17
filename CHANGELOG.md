@@ -2,6 +2,10 @@
 
 Version plan: 0.1 public map live · 0.2 editing moves to Supabase · 0.3 sign-in, applications and claims · 0.4 paid features (contact details for paid members, extra profile links, job board, organisation editing, verified roles), switched on by editors before payments · 0.5 payments (Stripe, tiers, prices) · 1.0 membership network opens · 1.x events and intros. Small fixes in between are 0.x.1, 0.x.2 and so on.
 
+## 0.3.36 (sandbox, not yet live)
+
+- Account menu: when signed in, the name at the top right opens a small menu (your name, Your profile, Invite people for members, Sign out) instead of going straight to the profile. Signed out it still says Sign in. Invite people moved there from the top navigation and the phone menu. Closes on Escape or a click elsewhere.
+
 ## 0.3.35 (17 November 2026)
 
 Referrals, tied to points. Migration 20261117000003_referrals.sql applied to live 17 Nov 2026; apply Edge Function redeployed to live (version 3).
