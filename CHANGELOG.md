@@ -2,6 +2,18 @@
 
 Version plan: 0.1 public map live · 0.2 editing moves to Supabase · 0.3 sign-in, applications and claims · 0.4 paid features (contact details for paid members, extra profile links, job board, organisation editing, verified roles), switched on by editors before payments · 0.5 payments (Stripe, tiers, prices) · 1.0 membership network opens · 1.x events and intros. Small fixes in between are 0.x.1, 0.x.2 and so on.
 
+## 0.3.38 (17 November 2026)
+
+Application reminders. Migration 20261117000004_application_reminders.sql; new remind Edge Function; hourly pg_cron job application-housekeeping. Tried on the sandbox 17 Nov 2026.
+
+- Fix: unconfirmed applications were only cleared when someone else applied (inside submit_application), so they could sit well past the week the privacy notice promised. Clean-up now runs hourly (applications_housekeeping, via pg_cron).
+- Reminder: 5 days after applying, an applicant who still hasn't confirmed gets one email (remind Edge Function, through Resend) with a fresh one-time sign-in link, made with the Auth admin generate_link so Supabase doesn't send its own email; the original link expired after an hour. Opening it signs them in and the app confirms the application as before. The email names the date the application will be deleted and points to app.darkbluebook.com/#sign-in for another link.
+- Deletion: at 7 days, and never sooner than 2 days (47 hours) after the reminder; at 14 days whatever happened, as a backstop. Editors' accounts are never deleted. Re-applying while unconfirmed restarts the clock (reminder_sent_at cleared).
+- members.reminder_sent_at; editors see "Reminder sent <date>" in the Email not yet confirmed list.
+- The remind function checks callers against Vault's remind_secret (remind_key_ok), so it needs no secret of its own; Vault's remind_url holds its address. pg_net installed on live for the call. Without RESEND_API_KEY (the sandbox) it sends nothing and marks nobody.
+- New #sign-in deep link opens the sign-in form (or your account if signed in).
+- Privacy notice: "How long we keep it" describes the reminder and the 2 days after it.
+
 ## 0.3.37 (17 November 2026)
 
 - Editor dashboard: the Supabase usage tile and the Latest changes tile swap places (usage after the queues, latest changes last). Shipped straight to live.
