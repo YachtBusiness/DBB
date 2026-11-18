@@ -2,6 +2,13 @@
 
 Version plan: 0.1 public map live · 0.2 editing moves to Supabase · 0.3 sign-in, applications and claims · 0.4 paid features (contact details for paid members, extra profile links, job board, organisation editing, verified roles), switched on by editors before payments · 0.5 payments (Stripe, tiers, prices) · 1.0 membership network opens · 1.x events and intros. Small fixes in between are 0.x.1, 0.x.2 and so on.
 
+## 0.3.43 (18 November 2026)
+
+- Job ads can belong to teams and clubs as well as organisations (decided 18 Nov 2026). Events still can't: their organiser posts. Migration 20261118000001_jobs_teams_clubs.sql (job_save's type check); applied to live 18 Nov 2026 without the sandbox, at D's call.
+- App: team and club entries show their open jobs and, for editors, the management view and Post a job; the editors' organisation picker on the post form also offers teams and clubs.
+- Teams and clubs can't be claimed yet (claims are organisation-only), so for now only editors post for them.
+- Book: The Ocean Race SLU added as an organisation (organiser of The Ocean Race), to hold its job ads.
+
 ## 0.3.42 (18 November 2026)
 
 - Applications on phones: D couldn't find Accept on mobile (18 Nov 2026). It was at the very bottom of a long, separately scrolling panel, where a phone browser's toolbar or home bar can cover it. Accept and Decline now also appear near the top of the review page (Accept submits the same form, using the person and roles ticked below). On phones the page uses the visible height (100dvh) and the panel has extra bottom room (plus the safe-area inset).

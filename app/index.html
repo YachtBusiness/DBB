@@ -988,8 +988,9 @@ function jobsOverview(){const full=seesJobs(),all=full?JOBS.full:JOBS.pub;
   if(!all.length)return'';
   return`<section class="cal"><h3><b style="border-color:var(--muted)"></b>Latest jobs</h3><ul class="rel">${all.slice(0,5).map(j=>`<li><div class="rl"><strong>${esc(j.title)}</strong>${full&&j.org_name?` <span class="role">${esc(j.org_name)}</span>`:''}</div><div class="meta">${jobMeta(j)}</div></li>`).join('')}</ul>
     <div class="acts"><button type="button" class="btn" data-jobs="1">All jobs${all.length>5?' ('+all.length+')':''}</button></div></section>`}
-/* on an organisation's entry: open jobs for members; posting and managing for paid owners/managers and editors */
-function jobsOrgBlock(e){if(e.type!=='org'||!seesJobs())return'';
+/* on an organisation's, team's or club's entry: open jobs for members; posting and managing for paid owners/managers and editors */
+const JOB_KINDS=['org','team','club'];
+function jobsOrgBlock(e){if(!JOB_KINDS.includes(e.type)||!seesJobs())return'';
   if(!JOBS.full){if(jobsRetry())Promise.resolve(loadJobs()).then(()=>{if(mode==='view'&&sel===e.id&&JOBS.full)render()});return''}
   const live=JOBS.full.filter(j=>j.entity_id===e.id),role=myOrgRole(e.id),manage=canEdit||!!role,post=canPostFor(e.id);
   if(!live.length&&!manage)return'';
@@ -1016,7 +1017,7 @@ function formJob(){const id=jobEdit&&jobEdit.id,ent=jobEdit&&jobEdit.entity;
   const d=jobDraft||(jobDraft=src?{entity:ent,title:src.title,location:src.location,workplace:src.workplace,job_type:src.job_type,salary:src.salary||'',description:src.description,apply_to:src.apply_to,closes_on:src.closes_on||''}
     :{entity:ent||(myPostOrgs().length===1?myPostOrgs()[0]:''),title:'',location:'',workplace:'onsite',job_type:'full_time',salary:'',description:'',apply_to:'',closes_on:''});
   const orgs=myPostOrgs(),orgField=id?`<p class="note"><strong>${esc((E.get(d.entity)||{}).name||'')}</strong></p>`
-    :canEdit?`<label>Organisation${combo('jb-org',d.entity,['org'],'Type an organisation in the book')}</label>`
+    :canEdit?`<label>Organisation${combo('jb-org',d.entity,JOB_KINDS,'Type an organisation, team or club in the book')}</label>`
     :orgs.length>1?`<label>Organisation<select id="jb-orgsel">${orgs.map(o=>opt(o,E.get(o).name,d.entity)).join('')}</select></label>`
     :`<p class="note">For <strong>${esc((E.get(d.entity)||{}).name||'')}</strong></p>`;
   panel.innerHTML=`<form id="fjob" novalidate><div><h2>${id?'Edit job ad':'Post a job'}</h2>
@@ -1039,7 +1040,7 @@ function jobKeep(){if(!jobDraft||!document.getElementById('jb-title'))return;con
 function jobLeave(note){const back=jobBack;jobDraft=null;jobEdit=null;jobBack=null;msg=note||'';
   if(back&&back!=='jobs'&&E.has(back)){sel=back;mode='view'}else{sel=null;mode='jobs'}render();panel.scrollTop=0}
 const JOB_ERR={job_limit:'This organisation already has 5 live job ads, the most allowed. Close one first, or contact the editors.',not_allowed:'Posting jobs is for paid members who manage this organisation.',
-  job_org:'Pick the organisation the job is for.',job_closes_on:'The closing date can’t be in the past.',job_rate_limit:'That’s a lot of jobs in one day. Try again tomorrow, or contact the editors.',
+  job_org:'Pick the organisation, team or club the job is for.',job_closes_on:'The closing date can’t be in the past.',job_rate_limit:'That’s a lot of jobs in one day. Try again tomorrow, or contact the editors.',
   jobs_title_check:'The job title needs 3 to 120 characters.',jobs_location_check:'Add a location.',jobs_description_check:'The description needs at least 30 characters.',
   jobs_apply_to_check:'How to apply should be a web address (https://…) or an email address.'};
 async function saveJob(){jobKeep();const d=jobDraft;
@@ -2026,6 +2027,7 @@ panel.addEventListener('click',e=>{const b=e.target.closest('[data-dashmore]');i
    "editors" lines show only to signed-in editors. CHANGELOG.md keeps the technical detail. */
 const UPD_HASH='update';
 const UPDATES=[
+ {v:'0.3.43',d:'2026-11-18',t:'Jobs from teams and clubs',i:['Teams and clubs can now list jobs too, not just organisations. Members see a team’s or club’s open jobs on its entry.']},
  {v:'0.3.42',d:'2026-11-18',x:1,t:'Accept on phones',i:['Accept and Decline now also sit at the top of an application, and the bottom of the panel has room so phone toolbars can’t cover the buttons.']},
  {v:'0.3.41',d:'2026-11-17',t:'Formatting in job ads',i:['Job ads can use bold, bulleted lists and numbered lists, with buttons above the description and a preview of how members will see it. Links aren’t clickable.','Every job ad has its own link to share (Copy link on the ad): app.darkbluebook.com/jobs/… shows the title, location and type to anyone, with a proper preview on LinkedIn and WhatsApp, and opens the full ad in the app for members.']},
  {v:'0.3.40',d:'2026-11-17',t:'Jobs',i:['A Jobs page (top bar and menu): jobs in yacht racing, newest first. Everyone sees the title, location and type; signed-in members also see who’s hiring, the salary, the full ad and Apply now, which goes to the employer’s own site or email.','The newest jobs also show on the overview, under Coming up. Members see an organisation’s open jobs on its entry.','Paid members who manage an organisation can post up to 5 jobs for it, and edit or take them down from the organisation’s entry, where they also see how many members viewed each ad and which members clicked Apply (members are told under the button). Ads stay up 30 days, with an email a few days before and one click to keep them open.','Opening an ad centres the map on the organisation hiring.','Signing in from a page now brings you back to it after you open the email link, including the job ad you were looking at.','Editors: switch paid features on or off from a member’s entry; new job ads show on the dashboard.']},
