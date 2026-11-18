@@ -2,6 +2,10 @@
 
 Version plan: 0.1 public map live · 0.2 editing moves to Supabase · 0.3 sign-in, applications and claims · 0.4 paid features (contact details for paid members, extra profile links, job board, organisation editing, verified roles), switched on by editors before payments · 0.5 payments (Stripe, tiers, prices) · 1.0 membership network opens · 1.x events and intros. Small fixes in between are 0.x.1, 0.x.2 and so on.
 
+## 0.3.42 (18 November 2026)
+
+- Applications on phones: D couldn't find Accept on mobile (18 Nov 2026). It was at the very bottom of a long, separately scrolling panel, where a phone browser's toolbar or home bar can cover it. Accept and Decline now also appear near the top of the review page (Accept submits the same form, using the person and roles ticked below). On phones the page uses the visible height (100dvh) and the panel has extra bottom room (plus the safe-area inset).
+
 ## 0.3.41 (17 November 2026)
 
 - Job ads: basic formatting in the description (decided 17 Nov 2026): **bold**, bulleted lists (lines starting "- " or "• ") and numbered lists ("1. "). Stored as plain text with these marks and turned into formatting when shown; everything else is escaped, and nothing is ever made a link. The post form has Bold, • List and 1. List buttons and a live "How members will see it" preview. Snippets drop the marks.
