@@ -641,7 +641,11 @@ async function remove(kind){try{const id=encodeURIComponent(editing);
 /* ---------- sign-in (Supabase Auth, magic link) ---------- */
 const AUTH_KEY='dbb-auth';let auth=null,who='',freshSignin=false;
 try{auth=JSON.parse(localStorage.getItem(AUTH_KEY)||'null')}catch(e){}
-function saveAuth(a){auth=a;try{a?localStorage.setItem(AUTH_KEY,JSON.stringify(a)):localStorage.removeItem(AUTH_KEY)}catch(e){}}
+function saveAuth(a){auth=a;try{if(a)localStorage.setItem(AUTH_KEY,JSON.stringify(a));else{localStorage.removeItem(AUTH_KEY);localStorage.removeItem(NAME_KEY)}}catch(e){}}
+/* 0.3.44: the account button's name is kept on the device, so a returning member sees it before the network answers */
+const NAME_KEY='dbb-name';const cachedName=()=>{try{return localStorage.getItem(NAME_KEY)||''}catch(e){return''}};
+/* paint the top bar from what's on the device alone, before anything loads */
+function paintAcctEarly(){document.querySelectorAll('[data-acct]').forEach(b=>{b.textContent=auth?(cachedName()||'Account'):'Sign in';b.title=auth?'Your account':'Sign in'});if(auth)document.querySelectorAll('[data-join]').forEach(b=>b.hidden=true)}
 (function takeHash(){const h=location.hash.slice(1);if(!/(^|&)(access_token|error_description)=/.test(h))return;
   const p=new URLSearchParams(h);
   if(p.get('access_token')){saveAuth({access_token:p.get('access_token'),refresh_token:p.get('refresh_token'),expires_at:Date.now()/1000+(+p.get('expires_in')||3600)});freshSignin=true}
@@ -656,9 +660,13 @@ async function api(method,path,body){if(!navigator.onLine)throw new Error(OFFLIN
   const txt=await r.text();if(!r.ok)throw new Error(r.status+' '+txt);const rows=txt?JSON.parse(txt):[];
   if(method!=='DELETE'&&Array.isArray(rows)&&!rows.length)throw new Error('403 row-level security: nothing was saved');return rows}
 async function checkAuth(){canEdit=false;who='';const t=await token().catch(()=>null);
-  if(t){try{const u=await fetch(`${SB_URL}/auth/v1/user`,{headers:{apikey:SB_KEY,Authorization:'Bearer '+t}});
-      if(!u.ok){saveAuth(null)}else{const uj=await u.json();who=uj.email||'';uid=uj.id||'';
-        const r=await fetch(`${SB_URL}/rest/v1/editors?select=user_id`,{headers:{apikey:SB_KEY,Authorization:'Bearer '+t}});canEdit=r.ok&&(await r.json()).length>0;if(canEdit){await countReports();await countApps();await countClaims();await loadAudit()}await loadRoles();await loadMe();await loadMyOrgs()}}catch(e){}}
+  /* 0.3.44: who you are, whether you're an editor and your member record are fetched together, then everything that depends on them together */
+  if(t){try{const hd={apikey:SB_KEY,Authorization:'Bearer '+t};let jw={};try{jw=JSON.parse(atob(t.split('.')[1].replace(/-/g,'+').replace(/_/g,'/')))}catch(e){}
+      uid=jw.sub||'';who=jw.email||'';
+      const [u,ed]=await Promise.all([fetch(`${SB_URL}/auth/v1/user`,{headers:hd}),fetch(`${SB_URL}/rest/v1/editors?select=user_id`,{headers:hd}).then(async r=>r.ok&&(await r.json()).length>0).catch(()=>false),uid?loadMe():Promise.resolve()]);
+      if(!u.ok){saveAuth(null);uid='';who='';ME=null}else{const uj=await u.json();who=uj.email||who;if(uj.id&&uj.id!==uid){uid=uj.id;await loadMe()}
+        canEdit=ed;try{ME&&ME.name?localStorage.setItem(NAME_KEY,firstName(ME.name)):localStorage.removeItem(NAME_KEY)}catch(e){}
+        await Promise.all([canEdit?Promise.all([countReports(),countApps(),countClaims(),loadAudit()]):null,loadRoles(),loadMyOrgs()])}}catch(e){}}
   if(!auth){MYPOINTS=null;MYINVITE=null;MEMBER_POINTS.clear();ME=null;EDITOR_ROLES=[];IS_OWNER=false;MYORGS={roles:[],claims:[],invites:[],missing:['member']};MEMBERS_BY_ENTITY=new Map()}
   document.querySelectorAll('[data-acct]').forEach(b=>{b.textContent=acctLabel();b.title=auth?'Your account':'Sign in'});
   document.querySelectorAll('[data-join]').forEach(b=>b.hidden=!!ME||(canEdit&&!!auth));
@@ -1106,7 +1114,7 @@ async function loadMe(){ME=null;JOBS={pub:null,full:null,at:0};JOBS_ORG.clear();
   if(ME&&ME.status==='unconfirmed'){try{await rpc('confirm_application',{});ME.status='pending';ME.confirmed_at=new Date().toISOString();justConfirmed=true}catch(e){}}
   await claimReferral()}
 let justConfirmed=false;
-function acctLabel(){return !auth?'Sign in':ME&&ME.name?firstName(ME.name):'Account'}
+function acctLabel(){return !auth?'Sign in':ME&&ME.name?firstName(ME.name):cachedName()||'Account'}
 function formAccount(){const m=msg?`<div class="msg">${esc(msg)}</div>`:'';const out=`<button type="button" class="btn" data-signout="1">Sign out</button>`;
   if(!ME){panel.innerHTML=`<div><h2>${canEdit?'Editor account':'Your account'}</h2><p class="note">Signed in as ${esc(who)}${canEdit?', editor':''}.</p></div>${m}${canEdit?'':`<p class="note">There’s no application for this account yet.</p>`}<div class="acts">${canEdit?'':'<button type="button" class="btn go" data-apply="1">Apply to join</button>'}${out}<button type="button" class="btn" data-cancel="1">Back to the map</button></div>`;return}
   if(ME.status==='member')return formProfile();
@@ -1776,16 +1784,19 @@ function useData(es,ls,fs){FEAT=fs;
     loaded={e:true,l:true};fillScope();MAXY=Math.max(NOW,...L.map(l=>yr(l.start)).filter(v=>v!=null));syncWhen();yrEl.min=Math.max(YR_FLOOR,Math.min(NOW-1,...L.map(l=>yr(l.start)||NOW)))}
 /* 0.3.20: open straight from the saved copy when there is one, then refresh from the network in the background.
    The map is only rebuilt if the book changed. If the network fails, the saved copy stays, marked offline. */
-async function start(){
+async function start(){paintAcctEarly();
+  /* 0.3.44: the sign-in check starts at once, alongside the book, instead of after it. With a saved copy on the device,
+     the signed-in view shows as soon as the check answers, without waiting for the book to download. */
+  let bookDone=false;const authP=(navigator.onLine?checkAuth():Promise.resolve()).catch(()=>{}).then(()=>{if(SHOWN_SIG&&!bookDone)render()});
   if(!SHOWN_SIG){const sn=await readSnap();if(sn){STORIES=sn.stories||[];PROFILES=new Map(sn.profiles||[]);useData(sn.es,sn.ls,sn.fs);OFFLINE_AT=sn.at;SHOWN_SIG=sigOf(sn.es,sn.ls,sn.fs);offBar(true);build();render()}}
   try{if(!navigator.onLine)throw new Error('offline');
     const [es,ls,fs]=await within(Promise.all([fetchAll('entities','id,name,type,sectors,level,country,note,origin,sector_note,logo_path,about,website,linkedin,instagram,other_social,contact_email,start_date,end_date,dates_provisional,media_tags,latest_url,latest_title,latest_date,latest_kind'),fetchAll('links','id,from_id,to_id,role,cat,context_id,start_date,end_date,source,note,created_at,origin'),fetchAll('features','slot,position,entity_id,headline,link','slot,position').catch(()=>[])]),20000);
     await Promise.all([loadProfiles(),loadStories()]);OFFLINE_AT=null;
     const sig=sigOf(es,ls,fs),changed=sig!==SHOWN_SIG;if(changed)useData(es,ls,fs);
-    await checkAuth();offBar();if(justConfirmed&&mode==='view'&&!sel)mode='account';else if(freshSignin&&takeReturn()){}else if(freshSignin&&!checkDone()&&mode==='view'&&!location.hash)mode='account';freshSignin=false;
+    bookDone=true;await authP;offBar();if(justConfirmed&&mode==='view'&&!sel)mode='account';else if(freshSignin&&takeReturn()){}else if(freshSignin&&!checkDone()&&mode==='view'&&!location.hash)mode='account';freshSignin=false;
     const toApply=REF_LANDED&&!auth&&!ME;REF_LANDED=false;if(toApply){sel=null;editing=null;draft=null;msg='';mode='apply'}
     if(changed){SHOWN_SIG=sig;build()}render();if(toApply&&typeof showPanel==='function')showPanel();saveSnap(es,ls,fs)}
-  catch(e){if(SHOWN_SIG){offBar();return}db=null;loaded={e:true,l:true};$('#blank').hidden=false;$('#blank').firstElementChild.textContent='The book could not be loaded. Please try again in a moment.'}
+  catch(e){bookDone=true;if(SHOWN_SIG){offBar();return}db=null;loaded={e:true,l:true};$('#blank').hidden=false;$('#blank').firstElementChild.textContent='The book could not be loaded. Please try again in a moment.'}
 }
 
 /* ---------- the Media cohort (0.3.26) ---------- */
@@ -2027,6 +2038,7 @@ panel.addEventListener('click',e=>{const b=e.target.closest('[data-dashmore]');i
    "editors" lines show only to signed-in editors. CHANGELOG.md keeps the technical detail. */
 const UPD_HASH='update';
 const UPDATES=[
+ {v:'0.3.44',d:'2026-11-18',t:'Faster sign-in on slow connections',i:['The app checks whether you’re signed in at the same time as it loads the map, instead of afterwards, so your account and what you can see appear sooner. On a device you’ve used before, your name shows in the top bar straight away.']},
  {v:'0.3.43',d:'2026-11-18',t:'Jobs from teams and clubs',i:['Teams and clubs can now list jobs too, not just organisations. Members see a team’s or club’s open jobs on its entry.']},
  {v:'0.3.42',d:'2026-11-18',x:1,t:'Accept on phones',i:['Accept and Decline now also sit at the top of an application, and the bottom of the panel has room so phone toolbars can’t cover the buttons.']},
  {v:'0.3.41',d:'2026-11-17',t:'Formatting in job ads',i:['Job ads can use bold, bulleted lists and numbered lists, with buttons above the description and a preview of how members will see it. Links aren’t clickable.','Every job ad has its own link to share (Copy link on the ad): app.darkbluebook.com/jobs/… shows the title, location and type to anyone, with a proper preview on LinkedIn and WhatsApp, and opens the full ad in the app for members.']},

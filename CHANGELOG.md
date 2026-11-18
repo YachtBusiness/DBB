@@ -2,6 +2,14 @@
 
 Version plan: 0.1 public map live · 0.2 editing moves to Supabase · 0.3 sign-in, applications and claims · 0.4 paid features (contact details for paid members, extra profile links, job board, organisation editing, verified roles), switched on by editors before payments · 0.5 payments (Stripe, tiers, prices) · 1.0 membership network opens · 1.x events and intros. Small fixes in between are 0.x.1, 0.x.2 and so on.
 
+## 0.3.44 (18 November 2026)
+
+Faster sign-in on slow connections (D, 18 Nov 2026: the map loaded first, so on a slow connection it took a while to work out who was signed in).
+- start() now runs the sign-in check alongside the book download instead of after it (and after profiles and stories). With a saved copy on the device, the signed-in view renders as soon as the check answers, without waiting for the book.
+- checkAuth makes its requests in parallel: the user check, the editors check and the member record together (user id and email read from the token), then editor counts, audit, roles and the member's organisations together. Before, these were about ten requests one after another.
+- The account button paints from the device before anything loads: "Sign in" or the member's first name (kept in localStorage as dbb-name, cleared on sign-out), and Join is hidden for signed-in people.
+- Tried locally with a mocked database (book delayed 3 s): signed-in name shows at once, a bad token falls back to Sign in, no errors. On the preview branch first.
+
 ## 0.3.43 (18 November 2026)
 
 - Job ads can belong to teams and clubs as well as organisations (decided 18 Nov 2026). Events still can't: their organiser posts. Migration 20261118000001_jobs_teams_clubs.sql (job_save's type check); applied to live 18 Nov 2026 without the sandbox, at D's call.
