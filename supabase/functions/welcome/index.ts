@@ -13,6 +13,8 @@ const RESEND = Deno.env.get("RESEND_API_KEY") || "";
 const FROM = Deno.env.get("WELCOME_FROM") || "Dave at The Dark Blue Book <no-reply@darkbluebook.com>";
 const REPLY_TO = Deno.env.get("WELCOME_REPLY_TO") || "editor@darkbluebook.com";
 const APP = "https://app.darkbluebook.com/";
+// optional WhatsApp community, announcements from the editors only for now (added 19 Nov 2026)
+const WHATSAPP = Deno.env.get("WHATSAPP_INVITE") || "https://chat.whatsapp.com/KqLpMwiny6O0f6Sr7qNgvC";
 
 const ALLOWED = [/^https:\/\/app\.darkbluebook\.com$/, /^https:\/\/([a-z0-9-]+\.)?dbb-2k3\.pages\.dev$/];
 const cors = (origin: string) => ({
@@ -38,6 +40,8 @@ Your application's been accepted, welcome aboard. You're now on the map: ${link}
 
 Sign in to finish your profile: add a photo and choose which contact details other members can see.
 
+If you'd like, join The Dark Blue Book community on WhatsApp for news and announcements from the editors (it's optional, and only the editors post there for now): ${WHATSAPP}
+
 You're one of our first members, so some things are still being worked out. If something's missing, wrong or annoying, tell us: use Send feedback in the app or just reply to this email.
 
 Dave
@@ -50,6 +54,7 @@ Editor, The Dark Blue Book`;
 <p style="${p}">Hi ${esc(first)},</p>
 <p style="${p}">Your application's been accepted, welcome aboard. You're now on the map: <a href="${esc(link)}" style="color:#1d5fc4">see your entry</a>.</p>
 <p style="${p}">Sign in to finish your profile: add a photo and choose which contact details other members can see.</p>
+<p style="${p}">If you'd like, <a href="${esc(WHATSAPP)}" style="color:#1d5fc4">join The Dark Blue Book community on WhatsApp</a> for news and announcements from the editors. It's optional, and only the editors post there for now.</p>
 <p style="${p}">You're one of our first members, so some things are still being worked out. If something's missing, wrong or annoying, tell us: use Send feedback in the app or just reply to this email.</p>
 <p style="margin:0">Dave<br>Editor, The Dark Blue Book</p>
 </div></div></body></html>`;

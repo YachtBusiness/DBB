@@ -2,6 +2,10 @@
 
 Version plan: 0.1 public map live · 0.2 editing moves to Supabase · 0.3 sign-in, applications and claims · 0.4 paid features (contact details for paid members, extra profile links, job board, organisation editing, verified roles), switched on by editors before payments · 0.5 payments (Stripe, tiers, prices) · 1.0 membership network opens · 1.x events and intros. Small fixes in between are 0.x.1, 0.x.2 and so on.
 
+## Unreleased: welcome email (19 November 2026)
+
+- The welcome email (welcome Edge Function, redeployed 19 Nov 2026) now invites new members to The Dark Blue Book's WhatsApp community: optional, for news and announcements from the editors only for now. The link (https://chat.whatsapp.com/KqLpMwiny6O0f6Sr7qNgvC) can be changed with the WHATSAPP_INVITE secret without a code change. The app's fallback (send from the editor's own inbox) carries the same line.
+
 ## 0.3.44 (18 November 2026)
 
 Faster sign-in on slow connections (D, 18 Nov 2026: the map loaded first, so on a slow connection it took a while to work out who was signed in).
