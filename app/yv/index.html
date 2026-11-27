@@ -303,10 +303,12 @@ async function openProfile(id,keep){
   if(e.in_book&&e.shared){
     const hats=await rpc('community_book_hats',{p:C,p_entity:id}).catch(()=>[]);
     if(sel!==id)return;
-    const show=hats.slice(0,10);
+    const here=new Set([...(e.people||[]).map(p=>p.id),...(e.orgs||[]).map(o=>o.id)]);
+    const others=hats.filter(x=>!here.has(x.other_id)),show=others.slice(0,10);
+    if(!others.length)return;
     $('hats').innerHTML=`<h3>Across the industry</h3><div class="bookbox"><div class="t"><i>DB</i>Also in The Dark Blue Book</div>
       <ul>${show.map(x=>`<li>${x.dir==='out'?`${esc(x.role)} <span>·</span> ${esc(x.other)}`:`${esc(x.other)} <span>· ${esc(x.role)}</span>`}</li>`).join('')}</ul>
-      ${hats.length>show.length?`<p>and ${hats.length-show.length} more.</p>`:''}<p><a href="${BOOK}#${encodeURIComponent(id)}" target="_blank" rel="noopener">See ${esc(e.name)} on the map ↗</a></p></div>`}
+      ${others.length>show.length?`<p>and ${others.length-show.length} more.</p>`:''}<p><a href="${BOOK}#${encodeURIComponent(id)}" target="_blank" rel="noopener">See ${esc(e.name)} on the map ↗</a></p></div>`}
 }
 
 function editHtml(e){
