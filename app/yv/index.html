@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<title>Startup Directory · Yachting Ventures (demo)</title>
+<meta name="description" content="Demo: a white-label startup directory for Yachting Ventures, powered by The Dark Blue Book.">
+<style>
+:root{--ink:#0c2f45;--primary:#0f4c6e;--accent:#1fa7a0;--soft:#e7f4f3;--bg:#f5f8fa;--surface:#fff;--line:#dbe4ea;--muted:#5d7282;--warn:#b8792a;--lock:#8a9aa6;
+  --r:12px;--shadow:0 1px 2px rgba(12,47,69,.06),0 4px 14px rgba(12,47,69,.06)}
+*{box-sizing:border-box}html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font:15px/1.5 ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;-webkit-font-smoothing:antialiased}
+button,input,select{font:inherit;color:inherit}a{color:var(--primary)}
+.wrap{max-width:1160px;margin:0 auto;padding:0 20px}
+/* demo strip */
+.demo{background:#0a2233;color:#cfe3ee;font-size:13px}
+.demo .wrap{display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding-top:7px;padding-bottom:7px}
+.demo b{color:#fff;letter-spacing:.06em;font-size:11px;background:#e3a33b;color:#14202a;border-radius:4px;padding:1px 7px}
+.demo .views{margin-left:auto;display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.demo .views span{opacity:.75}
+.demo button{background:transparent;border:1px solid #3b5a6e;color:#e6f1f7;border-radius:999px;padding:3px 11px;cursor:pointer;font-size:12.5px}
+.demo button:hover{border-color:#8fb3c7}.demo button.on{background:var(--accent);border-color:var(--accent);color:#04201f;font-weight:600}
+/* header */
+header.top{background:var(--surface);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:20}
+header.top .wrap{display:flex;align-items:center;gap:16px;height:64px}
+.brand{display:flex;align-items:center;gap:12px;text-decoration:none;color:var(--ink)}
+.mark{width:36px;height:36px;border-radius:9px;background:linear-gradient(135deg,var(--primary),var(--accent));display:grid;place-items:center;color:#fff;font-weight:700;font-size:15px;letter-spacing:.02em}
+.brand .n{font-weight:700;font-size:16px;line-height:1.1}.brand .p{font-size:12.5px;color:var(--muted)}
+nav.tabs{display:flex;gap:4px;margin-left:24px}
+nav.tabs button{border:0;background:none;padding:8px 12px;border-radius:8px;cursor:pointer;color:var(--muted);font-weight:500}
+nav.tabs button.on{color:var(--ink);background:var(--soft)}
+.acct{margin-left:auto;display:flex;align-items:center;gap:10px}
+.btn{border:1px solid var(--line);background:var(--surface);border-radius:9px;padding:8px 14px;cursor:pointer;font-weight:500}
+.btn:hover{border-color:#b9c9d4}.btn.pri{background:var(--primary);border-color:var(--primary);color:#fff}.btn.pri:hover{background:#0c4060}
+.who{font-size:13px;color:var(--muted);text-align:right;line-height:1.2}.who b{display:block;color:var(--ink);font-weight:600}
+.role{display:inline-block;font-size:11px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;border-radius:4px;padding:1px 6px;background:var(--soft);color:#0e6f6a}
+/* hero */
+.hero{background:linear-gradient(160deg,var(--ink) 0%,var(--primary) 65%,#13707a 100%);color:#fff;padding:44px 0 72px}
+.hero h1{font-size:34px;line-height:1.15;margin:0 0 10px;font-weight:700;letter-spacing:-.01em;max-width:720px}
+.hero p{margin:0;color:#cfe5ee;max-width:640px;font-size:16px}
+.stats{display:flex;gap:28px;margin-top:22px;flex-wrap:wrap}.stats div{font-size:13px;color:#a9cddb}.stats b{display:block;font-size:24px;color:#fff}
+.searchbar{margin-top:-30px;position:relative;z-index:2}
+.searchbox{background:var(--surface);border-radius:14px;box-shadow:0 8px 30px rgba(12,47,69,.16);padding:14px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.searchbox input{flex:1 1 280px;border:1px solid var(--line);border-radius:10px;padding:11px 14px;font-size:15px;outline:none}
+.searchbox input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(31,167,160,.15)}
+.searchbox select{border:1px solid var(--line);border-radius:10px;padding:10px 12px;background:#fff}
+/* filters */
+.filters{display:flex;gap:8px;flex-wrap:wrap;margin:18px 0 6px;align-items:center}
+.chip{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:6px 12px;cursor:pointer;font-size:13.5px}
+.chip.on{background:var(--ink);border-color:var(--ink);color:#fff}
+.chip.locked{color:var(--lock);border-style:dashed;cursor:help}
+.fgroup{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-right:8px}
+.fgroup>small{color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.05em;margin-right:2px}
+.count{color:var(--muted);font-size:13.5px;margin:10px 0 14px}
+/* cards */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px;padding-bottom:48px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:18px;box-shadow:var(--shadow);cursor:pointer;display:flex;flex-direction:column;gap:10px;transition:transform .12s,box-shadow .12s;text-align:left}
+.card:hover{transform:translateY(-2px);box-shadow:0 2px 4px rgba(12,47,69,.06),0 10px 24px rgba(12,47,69,.1)}
+.card .h{display:flex;gap:12px;align-items:center}
+.av{width:44px;height:44px;border-radius:11px;display:grid;place-items:center;color:#fff;font-weight:700;font-size:15px;flex:none}
+.av.p{border-radius:50%}
+.card .nm{font-weight:650;font-size:16px;line-height:1.2}.card .sub{font-size:13px;color:var(--muted)}
+.card .ab{font-size:14px;color:#2f4a5a;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:auto}
+.tag{font-size:12px;border-radius:6px;padding:2px 8px;background:#eef3f6;color:#3d5868}
+.tag.sec{background:var(--soft);color:#0e6f6a}.tag.raise{background:#fff3df;color:#8a5a14;font-weight:600}
+.tag.book{background:#e9eef9;color:#1f3c78}.tag.feat{background:#0c2f45;color:#fff}
+.tag.mine{background:#e8f6ea;color:#25693a;font-weight:600}
+.empty{text-align:center;color:var(--muted);padding:60px 0}
+/* drawer */
+.scrim{position:fixed;inset:0;background:rgba(8,26,38,.45);z-index:40;opacity:0;pointer-events:none;transition:opacity .15s}
+.scrim.on{opacity:1;pointer-events:auto}
+.drawer{position:fixed;top:0;right:0;bottom:0;width:min(560px,100%);background:var(--surface);z-index:41;transform:translateX(100%);transition:transform .2s;overflow:auto;box-shadow:-10px 0 30px rgba(0,0,0,.12)}
+.drawer.on{transform:none}
+.dh{padding:22px 24px 18px;border-bottom:1px solid var(--line);position:sticky;top:0;background:var(--surface);z-index:1}
+.dh .x{position:absolute;right:16px;top:16px;border:0;background:#eef3f6;border-radius:8px;width:32px;height:32px;cursor:pointer;font-size:18px;line-height:1}
+.dh h2{margin:0;font-size:22px;line-height:1.2}.dh .sub{color:var(--muted);font-size:14px;margin-top:2px}
+.db{padding:20px 24px 40px}
+.db h3{font-size:12px;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin:24px 0 10px;font-weight:600}
+.db h3:first-child{margin-top:0}
+dl.facts{display:grid;grid-template-columns:170px 1fr;gap:9px 14px;margin:0;font-size:14px}
+dl.facts dt{color:var(--muted)}dl.facts dd{margin:0}
+.locked{color:var(--lock)}.locked .l{font-size:12.5px}
+.sample{font-size:10.5px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--warn);border:1px solid #ecd2a8;border-radius:4px;padding:0 5px;margin-left:6px;vertical-align:1px}
+.vis{font-size:10.5px;color:var(--muted);margin-left:6px}
+.people{display:flex;flex-direction:column;gap:8px}
+.person{display:flex;gap:10px;align-items:center;border:1px solid var(--line);border-radius:10px;padding:9px 12px;background:#fff;cursor:pointer;text-align:left}
+.person:hover{border-color:#b9c9d4}.person .av{width:34px;height:34px;font-size:12.5px}
+.person .r{font-size:12.5px;color:var(--muted)}
+.bookbox{border:1px solid #cdd8ef;background:linear-gradient(180deg,#f4f7fd,#fff);border-radius:12px;padding:14px 16px}
+.bookbox .t{font-weight:600;display:flex;gap:8px;align-items:center}
+.bookbox .t i{font-style:normal;width:22px;height:22px;border-radius:5px;background:#12264d;color:#fff;display:grid;place-items:center;font-size:11px;font-weight:700}
+.bookbox ul{margin:10px 0 0;padding:0;list-style:none;font-size:13.5px;display:flex;flex-direction:column;gap:5px}
+.bookbox li span{color:var(--muted)}
+.bookbox p{margin:8px 0 0;font-size:13.5px;color:#3a4f63}
+.share{border:1px solid var(--line);border-radius:12px;padding:14px 16px;background:#fbfdfe}
+.switch{display:flex;gap:12px;align-items:flex-start;cursor:pointer}
+.switch input{appearance:none;width:42px;height:24px;border-radius:999px;background:#c8d4dc;position:relative;flex:none;cursor:pointer;transition:background .15s;margin-top:1px}
+.switch input:after{content:"";position:absolute;width:18px;height:18px;border-radius:50%;background:#fff;top:3px;left:3px;transition:left .15s;box-shadow:0 1px 2px rgba(0,0,0,.2)}
+.switch input:checked{background:var(--accent)}.switch input:checked:after{left:21px}
+.switch .tx b{display:block}.switch .tx small{color:var(--muted);font-size:13px;display:block;margin-top:2px}
+.edit{display:flex;flex-direction:column;gap:10px;font-size:14px}
+.edit label{display:flex;gap:8px;align-items:center}
+.ok{color:#25693a;font-size:13px;margin-top:8px}
+.note{font-size:13px;color:var(--muted)}
+.cta{border:1px dashed #b9c9d4;border-radius:12px;padding:14px 16px;font-size:14px;color:#3a4f63;background:#fbfdfe}
+/* sign-in */
+.modal{position:fixed;inset:0;display:none;place-items:center;z-index:60;background:rgba(8,26,38,.5);padding:16px}
+.modal.on{display:grid}
+.mbox{background:#fff;border-radius:14px;padding:24px;width:min(420px,100%);box-shadow:0 20px 50px rgba(0,0,0,.25)}
+.mbox h2{margin:0 0 4px;font-size:20px}.mbox p{margin:0 0 14px;color:var(--muted);font-size:14px}
+.mbox label{display:block;font-size:13px;color:var(--muted);margin-bottom:10px}
+.mbox input{width:100%;border:1px solid var(--line);border-radius:9px;padding:10px 12px;margin-top:4px}
+.mbox .acts{display:flex;gap:8px;margin-top:6px}
+.err{color:#a3332b;font-size:13px;min-height:18px}
+/* how it works */
+.how{background:var(--surface);border-top:1px solid var(--line);padding:36px 0}
+.how h2{margin:0 0 16px;font-size:20px}
+.how .cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:18px}
+.how .c{border:1px solid var(--line);border-radius:12px;padding:16px;background:#fbfdfe}
+.how .c b{display:block;margin-bottom:4px}.how .c p{margin:0;font-size:14px;color:#3a4f63}
+footer{padding:22px 0 40px;color:var(--muted);font-size:13px}
+footer .wrap{display:flex;gap:14px;flex-wrap:wrap;align-items:center}
+.pb{display:inline-flex;align-items:center;gap:8px;color:#12264d;text-decoration:none;font-weight:600;margin-left:auto}
+.pb i{font-style:normal;width:22px;height:22px;border-radius:5px;background:#12264d;color:#fff;display:grid;place-items:center;font-size:11px}
+@media (max-width:720px){nav.tabs{margin-left:0}.brand .p{display:none}.hero h1{font-size:26px}dl.facts{grid-template-columns:1fr}dl.facts dt{margin-top:6px}.who{display:none}header.top .wrap{gap:8px}}
+</style>
+</head>
+<body>
+<div class="demo"><div class="wrap"><b>DEMO</b><span>White-label directory on The Dark Blue Book's sandbox. Sample values are tagged.</span>
+  <div class="views"><span>View as:</span>
+    <button data-as="">Public</button><button data-as="yv-founder@example.com">Founder</button><button data-as="yv-investor@example.com">Investor</button><button data-as="yv-admin@example.com">YV team</button>
+  </div></div></div>
+
+<header class="top"><div class="wrap">
+  <a class="brand" href="#" data-home="1"><div class="mark">YV</div><div><div class="n" id="wm">Yachting Ventures</div><div class="p" id="prod">Startup Directory</div></div></a>
+  <nav class="tabs"><button data-tab="startup" class="on">Startups</button><button data-tab="person">People</button></nav>
+  <div class="acct" id="acct"></div>
+</div></header>
+
+<section class="hero"><div class="wrap">
+  <h1 id="tagline">Discover the startups and scaleups building the future of leisure marine.</h1>
+  <p id="about"></p>
+  <div class="stats" id="stats"></div>
+</div></section>
+
+<main class="wrap">
+  <div class="searchbar"><div class="searchbox">
+    <input id="q" type="search" placeholder="Search startups, founders, technology…" autocomplete="off">
+    <select id="country"><option value="">All countries</option></select>
+  </div></div>
+  <div class="filters" id="filters"></div>
+  <div class="count" id="count"></div>
+  <div class="grid" id="grid"></div>
+</main>
+
+<section class="how"><div class="wrap">
+  <h2>How this directory works</h2>
+  <div class="cols">
+    <div class="c"><b>Public profiles</b><p>Investors, customers and partners can browse every member startup: what they do, where they're based and who founded them.</p></div>
+    <div class="c"><b>Members see more</b><p>Signed-in members unlock stage, funding history and what each startup is looking for. Investors also see who's raising now.</p></div>
+    <div class="c"><b>Founders control their profile</b><p>Founders edit their own entry and choose whether to share it with The Dark Blue Book. Nothing is shared unless they opt in.</p></div>
+    <div class="c"><b>One record, many hats</b><p>People and companies already in The Dark Blue Book are linked, not copied, so their wider roles across the industry show here too.</p></div>
+  </div>
+</div></section>
+
+<footer><div class="wrap"><span id="foot">© Yachting Ventures</span><a class="pb" href="/" title="The Dark Blue Book (sandbox)"><i>DB</i>Powered by The Dark Blue Book</a></div></footer>
+
+<div class="scrim" id="scrim"></div>
+<aside class="drawer" id="drawer" aria-hidden="true"></aside>
+
+<div class="modal" id="modal"><form class="mbox" id="signin">
+  <h2>Member sign in</h2><p>Demo accounts use the password <b>yv-demo-2026</b>.</p>
+  <label>Email<input id="em" type="email" autocomplete="username" required value="yv-investor@example.com"></label>
+  <label>Password<input id="pw" type="password" autocomplete="current-password" required value="yv-demo-2026"></label>
+  <div class="err" id="err"></div>
+  <div class="acts"><button class="btn pri">Sign in</button><button class="btn" type="button" data-close="1">Cancel</button></div>
+</form></div>
+
+<script>
+/* Yachting Ventures Startup Directory, demo (27 Nov 2026).
+   Reads the 'yv' community from The Dark Blue Book's sandbox database through security-definer functions:
+   community_directory (everything this viewer may see), community_book_hats (roles in the book),
+   community_set_share (opt in or out of the book), community_save_value (founders edit their own fields).
+   What a viewer sees is decided by the database, not this page: signed out, the private fields never arrive. */
+const SB='https://kttiojuuynaznqrcwbyy.supabase.co',KEY='sb_publishable_x3NTVTSCTWkt3aaYtsncwA__-Xd-tt2',C='yv',DEMO_PW='yv-demo-2026',BOOK=location.origin+'/';
+const COUNTRIES={NZL:['New Zealand','NZ'],DEU:['Germany','DE'],NOR:['Norway','NO'],SVN:['Slovenia','SI'],GBR:['United Kingdom','GB'],AUS:['Australia','AU'],CAN:['Canada','CA'],AND:['Andorra','AD'],NLD:['Netherlands','NL'],ESP:['Spain','ES'],USA:['United States','US'],FRA:['France','FR'],ITA:['Italy','IT'],MCO:['Monaco','MC'],ARE:['United Arab Emirates','AE']};
+const flag=c=>{const x=COUNTRIES[c];return x?String.fromCodePoint(...[...x[1]].map(ch=>127397+ch.charCodeAt(0))):''};
+const cname=c=>(COUNTRIES[c]||[c])[0];
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const $=id=>document.getElementById(id);
+const PAL=['#0f4c6e','#1fa7a0','#2d6a9f','#7b5ea7','#c0633b','#2f8f5b','#a8436b','#3b7f8f','#8a6d1f','#4a5fc1'];
+const hue=s=>PAL[[...s].reduce((a,c)=>a+c.charCodeAt(0),0)%PAL.length];
+const ini=n=>n.replace(/[^A-Za-zÀ-ž ]/g,' ').trim().split(/\s+/).slice(0,2).map(w=>w[0]).join('').toUpperCase();
+const VIS={public:'Public',members:'Members',investors:'Investors',admins:'YV team'};
+const ROLE_LABEL={public:'Public',member:'Member',investor:'Investor',admin:'YV team'};
+
+let auth=null,D=null,tab='startup',F={sector:'',stage:'',looking:'',raising:false},sel=null,saved='';
+try{auth=JSON.parse(sessionStorage.getItem('yv-auth')||'null')}catch(e){}
+
+async function rpc(fn,args){
+  const h={'apikey':KEY,'Content-Type':'application/json'};if(auth)h.Authorization='Bearer '+auth.access_token;
+  const r=await fetch(SB+'/rest/v1/rpc/'+fn,{method:'POST',headers:h,body:JSON.stringify(args)});
+  if(r.status===401&&auth){setAuth(null);return rpc(fn,args)}
+  if(!r.ok)throw new Error((await r.text()).slice(0,200));
+  const t=await r.text();return t?JSON.parse(t):null}
+function setAuth(a){auth=a;try{a?sessionStorage.setItem('yv-auth',JSON.stringify(a)):sessionStorage.removeItem('yv-auth')}catch(e){}}
+async function signIn(email,pw){
+  const r=await fetch(SB+'/auth/v1/token?grant_type=password',{method:'POST',headers:{apikey:KEY,'Content-Type':'application/json'},body:JSON.stringify({email,password:pw})});
+  if(!r.ok)throw new Error('Wrong email or password.');const j=await r.json();setAuth({access_token:j.access_token,email});}
+async function load(){D=await rpc('community_directory',{p:C});paintChrome();render();if(sel)openProfile(sel,true)}
+
+function E(id){return D.entries.find(e=>e.id===id)}
+function field(k){return D.fields.find(f=>f.key===k)}
+function v(e,k){return e.values[k]}
+
+function paintChrome(){
+  const c=D.community,b=c.brand||{};
+  for(const [k,val] of Object.entries(b))if(/^#/.test(val))document.documentElement.style.setProperty('--'+k,val);
+  $('wm').textContent=b.wordmark||c.name;$('prod').textContent=c.product;$('tagline').textContent=c.tagline;$('about').textContent=c.about;
+  $('foot').textContent='© '+c.name+' · Directory demo';
+  const st=D.entries.filter(e=>e.kind==='startup'),ppl=D.entries.filter(e=>e.kind==='person');
+  const countries=new Set(st.map(e=>e.country).filter(Boolean)),sectors=new Set(st.map(e=>v(e,'sector')).filter(Boolean));
+  $('stats').innerHTML=`<div><b>${st.length}</b>startups</div><div><b>${ppl.length}</b>founders and team</div><div><b>${countries.size}</b>countries</div><div><b>${sectors.size}</b>sectors</div>`;
+  const cs=$('country'),cur=cs.value;cs.innerHTML='<option value="">All countries</option>'+[...countries].sort((a,b)=>cname(a).localeCompare(cname(b))).map(x=>`<option value="${x}">${flag(x)} ${esc(cname(x))}</option>`).join('');cs.value=cur;
+  const role=D.viewer.role;
+  $('acct').innerHTML=role==='public'?`<button class="btn" data-signin="1">Member sign in</button><a class="btn pri" href="${esc(c.join_url)}" target="_blank" rel="noopener">Join ${esc(c.name)}</a>`
+    :`<div class="who"><b>${esc(D.viewer.label||auth&&auth.email)}</b><span class="role">${ROLE_LABEL[role]}</span></div><button class="btn" data-signout="1">Sign out</button>`;
+  document.querySelectorAll('.demo [data-as]').forEach(b=>b.classList.toggle('on',(b.dataset.as||'')===(auth?auth.email:'')));
+  document.querySelectorAll('nav.tabs button').forEach(b=>b.classList.toggle('on',b.dataset.tab===tab));
+}
+
+function filtersHtml(){
+  if(tab!=='startup')return '';
+  const sec=field('sector'),stage=field('stage'),lf=field('looking_for'),rz=field('raising');
+  const chips=(f,key,val,label)=>`<button class="chip${F[key]===val?' on':''}" data-f="${key}" data-v="${esc(val)}">${esc(label)}</button>`;
+  const lock=(f)=>`<span class="chip locked" title="${VIS[f.visibility]} only: sign in to filter by ${esc(f.label.toLowerCase())}">🔒 ${esc(f.label)}</span>`;
+  let h=`<div class="fgroup"><small>Sector</small>${chips(sec,'sector','','All')}${sec.options.map(o=>chips(sec,'sector',o,o)).join('')}</div>`;
+  h+=`<div class="fgroup">${stage.open?`<small>Stage</small>${chips(stage,'stage','','Any')}${stage.options.map(o=>chips(stage,'stage',o,o)).join('')}`:lock(stage)}</div>`;
+  h+=`<div class="fgroup">${lf.open?`<small>Looking for</small>${chips(lf,'looking','','Any')}${lf.options.map(o=>chips(lf,'looking',o,o)).join('')}`:lock(lf)}</div>`;
+  h+=`<div class="fgroup">${rz.open?`<button class="chip${F.raising?' on':''}" data-raising="1">💷 Raising now</button>`:lock(rz)}</div>`;
+  return h}
+
+function match(e,q){
+  if(!q)return true;
+  const hay=[e.name,e.about,v(e,'sector'),v(e,'hq'),cname(e.country),...(e.people||[]).map(p=>p.name+' '+p.role),...(e.orgs||[]).map(o=>o.name+' '+o.role)].join(' ').toLowerCase();
+  return q.split(/\s+/).every(w=>hay.includes(w))}
+
+function render(){
+  $('filters').innerHTML=filtersHtml();
+  const q=$('q').value.trim().toLowerCase(),cty=$('country').value;
+  let list=D.entries.filter(e=>e.kind===tab&&match(e,q)&&(!cty||e.country===cty));
+  if(tab==='startup')list=list.filter(e=>(!F.sector||v(e,'sector')===F.sector)&&(!F.stage||v(e,'stage')===F.stage)&&(!F.looking||(v(e,'looking_for')||[]).includes(F.looking))&&(!F.raising||v(e,'raising')===true));
+  list.sort((a,b)=>(b.mine-a.mine)||(b.featured-a.featured)||a.name.localeCompare(b.name));
+  $('count').textContent=list.length+' '+(tab==='startup'?(list.length===1?'startup':'startups'):(list.length===1?'person':'people'));
+  $('grid').innerHTML=list.length?list.map(card).join(''):`<div class="empty">Nothing matches that search.</div>`;
+}
+
+function card(e){
+  if(e.kind==='person'){
+    const orgs=(e.orgs||[]).map(o=>o.role+', '+o.name).join(' · ')||v(e,'person_role')||'';
+    return `<button class="card" data-open="${e.id}"><div class="h"><div class="av p" style="background:${hue(e.name)}">${ini(e.name)}</div><div><div class="nm">${esc(e.name)}</div><div class="sub">${esc(orgs)}</div></div></div>
+      <div class="tags">${e.country?`<span class="tag">${flag(e.country)} ${esc(cname(e.country))}</span>`:''}${e.in_book&&e.shared?'<span class="tag book">Also in The Dark Blue Book</span>':''}</div></button>`}
+  const sec=v(e,'sector'),hq=v(e,'hq')||cname(e.country);
+  return `<button class="card" data-open="${e.id}"><div class="h"><div class="av" style="background:${hue(e.name)}">${ini(e.name)}</div><div><div class="nm">${esc(e.name)}</div><div class="sub">${flag(e.country)} ${esc(hq)}</div></div></div>
+    <div class="ab">${esc(e.about)}</div>
+    <div class="tags">${e.mine?'<span class="tag mine">Your company</span>':''}${e.featured?'<span class="tag feat">Featured</span>':''}${sec?`<span class="tag sec">${esc(sec)}</span>`:''}${v(e,'stage')?`<span class="tag">${esc(v(e,'stage'))}</span>`:''}${v(e,'raising')===true?'<span class="tag raise">Raising</span>':''}${e.in_book&&e.shared?'<span class="tag book">In The Dark Blue Book</span>':''}</div></button>`}
+
+function fmt(f,val){
+  if(f.type==='bool')return val?'Yes':'No';
+  if(f.type==='multi')return (val||[]).map(x=>`<span class="tag">${esc(x)}</span>`).join(' ');
+  if(f.type==='url')return `<a href="${esc(val)}" target="_blank" rel="noopener">Open</a>`;
+  return esc(val)}
+
+function factsHtml(e){
+  const rows=D.fields.filter(f=>f.applies_to===e.kind);
+  return `<dl class="facts">${rows.map(f=>{
+    const has=Object.prototype.hasOwnProperty.call(e.values,f.key),open=f.open||e.mine;
+    if(!open)return `<dt>${esc(f.label)}</dt><dd class="locked"><span class="l">🔒 ${VIS[f.visibility]} only</span></dd>`;
+    if(!has)return '';
+    return `<dt>${esc(f.label)}${f.visibility!=='public'?`<span class="vis">· ${VIS[f.visibility]}</span>`:''}</dt><dd>${fmt(f,e.values[f.key])}${f.sample?'<span class="sample">sample</span>':''}</dd>`}).join('')}</dl>`}
+
+async function openProfile(id,keep){
+  const e=E(id);if(!e)return closeDrawer();sel=id;
+  if(!keep)saved='';
+  const dr=$('drawer'),role=D.viewer.role,canEdit=e.mine||role==='admin';
+  const locked=D.fields.filter(f=>f.applies_to===e.kind&&!f.open&&!e.mine).length;
+  const sub=e.kind==='startup'?`${flag(e.country)} ${esc(v(e,'hq')||cname(e.country))}${v(e,'sector')?' · '+esc(v(e,'sector')):''}`:esc((e.orgs||[]).map(o=>o.role+', '+o.name).join(' · ')||v(e,'person_role')||'');
+  let h=`<div class="dh"><button class="x" data-close-drawer="1" aria-label="Close">×</button><div style="display:flex;gap:14px;align-items:center"><div class="av${e.kind==='person'?' p':''}" style="background:${hue(e.name)};width:52px;height:52px;font-size:17px">${ini(e.name)}</div><div><h2>${esc(e.name)}</h2><div class="sub">${sub}</div></div></div></div><div class="db">`;
+  if(e.about)h+=`<h3>About</h3><p style="margin:0">${esc(e.about)}</p>${e.website?`<p style="margin:10px 0 0"><a href="${esc(e.website)}" target="_blank" rel="noopener">${esc(e.website.replace(/^https?:\/\/(www\.)?/,''))} ↗</a></p>`:''}`;
+  h+=`<h3>Details</h3>${factsHtml(e)}`;
+  if(locked&&role==='public')h+=`<div class="cta" style="margin-top:14px">${locked} more details are for ${esc(D.community.name)} members and investors. <button class="btn" data-signin="1" style="margin-left:6px;padding:5px 10px">Sign in</button></div>`;
+  if(e.kind==='startup'&&e.people.length)h+=`<h3>Founders and team</h3><div class="people">${e.people.map(p=>`<button class="person" data-open="${p.id}"><div class="av p" style="background:${hue(p.name)}">${ini(p.name)}</div><div><div>${esc(p.name)}</div><div class="r">${esc(p.role)}</div></div></button>`).join('')}</div>`;
+  if(e.kind==='person'&&e.orgs.length)h+=`<h3>In the directory</h3><div class="people">${e.orgs.map(o=>`<button class="person" data-open="${o.id}"><div class="av" style="background:${hue(o.name)}">${ini(o.name)}</div><div><div>${esc(o.name)}</div><div class="r">${esc(o.role)}</div></div></button>`).join('')}</div>`;
+  h+=`<div id="hats"></div>`;
+  if(canEdit&&e.kind==='startup')h+=editHtml(e);
+  if(canEdit)h+=shareHtml(e);
+  h+='</div>';
+  dr.innerHTML=h;dr.classList.add('on');dr.setAttribute('aria-hidden','false');$('scrim').classList.add('on');
+  if(!keep)dr.scrollTop=0;
+  try{history.replaceState(null,'','#'+id)}catch(err){}
+  if(e.in_book&&e.shared){
+    const hats=await rpc('community_book_hats',{p:C,p_entity:id}).catch(()=>[]);
+    if(sel!==id)return;
+    const show=hats.slice(0,10);
+    $('hats').innerHTML=`<h3>Across the industry</h3><div class="bookbox"><div class="t"><i>DB</i>Also in The Dark Blue Book</div>
+      <ul>${show.map(x=>`<li>${x.dir==='out'?`${esc(x.role)} <span>·</span> ${esc(x.other)}`:`${esc(x.other)} <span>· ${esc(x.role)}</span>`}</li>`).join('')}</ul>
+      ${hats.length>show.length?`<p>and ${hats.length-show.length} more.</p>`:''}<p><a href="${BOOK}#${encodeURIComponent(id)}" target="_blank" rel="noopener">See ${esc(e.name)} on the map ↗</a></p></div>`}
+}
+
+function editHtml(e){
+  const lf=field('looking_for'),cur=v(e,'looking_for')||[];
+  return `<h3>Edit your listing</h3><div class="share edit">
+    <label><input type="checkbox" data-edit-raising="${e.id}" ${v(e,'raising')===true?'checked':''}> Raising now <span class="note">(investors only)</span></label>
+    <div><div class="note" style="margin-bottom:6px">Looking for (members)</div><div style="display:flex;gap:10px;flex-wrap:wrap">${lf.options.map(o=>`<label><input type="checkbox" data-edit-lf="${e.id}" value="${esc(o)}" ${cur.includes(o)?'checked':''}> ${esc(o)}</label>`).join('')}</div></div>
+    ${saved==='edit'?'<div class="ok">Saved.</div>':''}</div>`}
+
+function shareHtml(e){
+  const already=e.in_book&&!e.book_draft;
+  const status=e.shared?(already?`Shared. ${esc(e.name)} is in The Dark Blue Book, so its wider industry roles show on this profile.`:`Shared. The Dark Blue Book's editors will review the entry before it appears on their map.`)
+    :`Not shared. This profile stays inside the ${esc(D.community.name)} directory.`;
+  return `<h3>The Dark Blue Book</h3><div class="share"><label class="switch"><input type="checkbox" data-share="${e.id}" ${e.shared?'checked':''} ${already&&e.shared?'':''}><span class="tx"><b>Share this profile with The Dark Blue Book</b><small>The Dark Blue Book maps who's who across the marine and sailing business. Sharing adds ${e.kind==='startup'?'your company':'this person'} there too, linked to ${esc(D.community.name)}. You can stop sharing at any time.</small></span></label>
+    <p class="note" style="margin:10px 0 0">${status}</p>${saved==='share'?'<div class="ok">Updated.</div>':''}</div>`}
+
+function closeDrawer(){sel=null;$('drawer').classList.remove('on');$('drawer').setAttribute('aria-hidden','true');$('scrim').classList.remove('on');try{history.replaceState(null,'',location.pathname)}catch(e){}}
+
+document.addEventListener('click',async ev=>{
+  const t=ev.target.closest('button,a,[data-close],#scrim');if(!t)return;
+  if(t.id==='scrim'||t.dataset.closeDrawer)return closeDrawer();
+  if(t.dataset.home){ev.preventDefault();closeDrawer();window.scrollTo({top:0,behavior:'smooth'});return}
+  if(t.dataset.tab){tab=t.dataset.tab;paintChrome();render();return}
+  if(t.dataset.open)return openProfile(t.dataset.open);
+  if(t.dataset.f){F[t.dataset.f]=t.dataset.v;render();return}
+  if(t.dataset.raising){F.raising=!F.raising;render();return}
+  if(t.dataset.signin){$('err').textContent='';$('modal').classList.add('on');return}
+  if(t.dataset.close){$('modal').classList.remove('on');return}
+  if(t.dataset.signout){setAuth(null);await load();return}
+  if(t.dataset.as!==undefined){
+    t.disabled=true;
+    try{if(t.dataset.as){await signIn(t.dataset.as,DEMO_PW)}else setAuth(null);await load()}catch(e){alertBox(e.message)}
+    t.disabled=false;return}
+});
+document.addEventListener('change',async ev=>{
+  const t=ev.target;
+  try{
+    if(t.dataset.share){await rpc('community_set_share',{p:C,p_entity:t.dataset.share,p_share:t.checked});saved='share';await load();return}
+    if(t.dataset.editRaising){await rpc('community_save_value',{p:C,p_entity:t.dataset.editRaising,p_key:'raising',p_value:t.checked});saved='edit';await load();return}
+    if(t.dataset.editLf){const id=t.dataset.editLf,vals=[...document.querySelectorAll(`[data-edit-lf="${id}"]:checked`)].map(x=>x.value);
+      await rpc('community_save_value',{p:C,p_entity:id,p_key:'looking_for',p_value:vals.length?vals:null});saved='edit';await load();return}
+  }catch(e){alertBox('Couldn’t save: '+e.message)}
+  if(t.id==='country')render();
+});
+$('q').addEventListener('input',render);
+$('signin').addEventListener('submit',async ev=>{ev.preventDefault();$('err').textContent='';
+  try{await signIn($('em').value.trim(),$('pw').value);$('modal').classList.remove('on');await load()}catch(e){$('err').textContent=e.message}});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){$('modal').classList.remove('on');closeDrawer()}});
+function alertBox(m){const d=document.createElement('div');d.textContent=m;d.style.cssText='position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#0c2f45;color:#fff;padding:10px 16px;border-radius:10px;z-index:99;font-size:14px';document.body.appendChild(d);setTimeout(()=>d.remove(),4000)}
+
+sel=decodeURIComponent(location.hash.slice(1))||null;
+load().catch(e=>{$('grid').innerHTML=`<div class="empty">The directory couldn’t load just now (${esc(e.message)}).</div>`});
+</script>
+</body>
+</html>
