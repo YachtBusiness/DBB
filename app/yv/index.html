@@ -359,6 +359,7 @@ $('signin').addEventListener('submit',async ev=>{ev.preventDefault();$('err').te
 document.addEventListener('keydown',e=>{if(e.key==='Escape'){$('modal').classList.remove('on');closeDrawer()}});
 function alertBox(m){const d=document.createElement('div');d.textContent=m;d.style.cssText='position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#0c2f45;color:#fff;padding:10px 16px;border-radius:10px;z-index:99;font-size:14px';document.body.appendChild(d);setTimeout(()=>d.remove(),4000)}
 
+window.addEventListener('hashchange',()=>{const h=decodeURIComponent(location.hash.slice(1));if(h&&h!==sel&&D)openProfile(h)});
 sel=decodeURIComponent(location.hash.slice(1))||null;
 load().catch(e=>{$('grid').innerHTML=`<div class="empty">The directory couldn’t load just now (${esc(e.message)}).</div>`});
 </script>
