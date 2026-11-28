@@ -44,6 +44,12 @@ button,input,select,textarea{font:inherit;color:inherit}
 .dgrid{display:grid;grid-template-columns:1fr;gap:14px}
 main.dash aside>*{max-width:none}main.dash aside>div:first-child,main.dash aside>.msg{max-width:720px}
 @media (min-width:861px){main.dash{grid-template-columns:1fr}main.dash .chart{display:none}.dgrid{grid-template-columns:repeat(auto-fill,minmax(330px,1fr));align-items:start}}
+main.wide aside>*{max-width:none}main.wide aside>div:first-child,main.wide aside>.mfilter{max-width:720px}main.wide .chart{display:none}
+@media (min-width:861px){main.wide{grid-template-columns:1fr}}@media (max-width:860px){main.wide aside{display:flex}}
+ul.mgrid{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:1fr;gap:12px}@media (min-width:861px){ul.mgrid{grid-template-columns:repeat(auto-fill,minmax(320px,1fr));align-items:start}}
+.mcard{border:1px solid var(--line);border-radius:8px;padding:12px 14px;background:var(--surface);display:flex;flex-direction:column;gap:8px}.mcard .meta{flex-wrap:wrap}
+ol.mlist{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}ol.mlist li{display:flex;flex-direction:column;font-size:13.5px;line-height:1.35}ol.mlist a{color:var(--ink);font-weight:600;overflow-wrap:anywhere}ol.mlist span{font-size:12px;color:var(--muted)}.mquiet{margin:0;font-size:12.5px;color:var(--muted)}
+main.wide aside>.mriver{max-width:860px}.mriver .snip,.nitem .snip{grid-column:1;margin:2px 0 0;font-size:13px;color:var(--muted);line-height:1.4}.mriver.short ul.rel li:nth-child(n+16){display:none}.mmore{margin-top:10px}
 .mfilter{max-width:420px}.mtag{display:inline-block;margin-left:6px;font-size:11px;padding:1px 7px;border-radius:999px;background:var(--wash);color:var(--muted);vertical-align:middle}
 .mchips{display:flex;flex-wrap:wrap;gap:6px}.mchip{font:inherit;font-size:13px;padding:4px 10px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer}.mchip span{color:var(--muted)}.mchip[aria-pressed="true"]{background:var(--navy);border-color:var(--navy);color:#fff}.mchip[aria-pressed="true"] span{color:inherit;opacity:.75}
 aside h3.mhead{background:none;border:0;padding:0;font-family:Georgia,'Times New Roman',serif;font-size:22px;font-weight:600;letter-spacing:0;text-transform:none;color:var(--ink);margin:14px 0 -4px}.msec .meta{flex-wrap:wrap}.msec .meta>span{display:inline-flex;gap:4px;align-items:baseline}
@@ -307,12 +313,12 @@ label.btn{display:inline-block;flex-direction:row;color:#0e1d3a;font-size:14px}
 <noscript><p style="padding:12px 20px;margin:0;background:#fff3cd;color:#12264d">The map needs JavaScript. You can still read the <a href="/news">yacht racing news</a> or the <a href="/privacy">privacy notice</a>.</p></noscript>
 <div class="offbar" id="offbar" hidden role="status"></div>
 <header class="top">
-  <div class="brand"><h1><a href="./" class="home" id="home" title="Back to the overview">The Dark Blue Book</a></h1><span>The who's who of yacht racing <a href="#update" id="ver" data-updates="1" title="What’s new" style="opacity:.6;margin-left:6px;color:inherit;font-size:smaller">v0.3.42</a></span></div>
+  <div class="brand"><h1><a href="./" class="home" id="home" title="Back to the overview">The Dark Blue Book</a></h1><span>The who's who of yacht racing <a href="#update" id="ver" data-updates="1" title="What’s new" style="opacity:.6;margin-left:6px;color:inherit;font-size:smaller">v0.3.45</a></span></div>
   <nav class="topnav" aria-label="Sections"><button type="button" data-cal="1">Calendar</button><button type="button" data-allnews="1">News</button><button type="button" data-jobs="1">Jobs</button><button type="button" data-media="1">Media</button><button type="button" data-dashboard="1" hidden>Dashboard</button></nav>
   <div class="join"><button type="button" class="apply" data-join="1">Join</button><button type="button" class="acct" data-acct="1" aria-haspopup="true" aria-expanded="false">Sign in</button><span class="offlab" id="offlab" hidden>Offline</span>
     <nav class="menu umenu" id="umenu" hidden aria-label="Your account"><small class="uwho" id="uwho"></small><button type="button" class="acct" data-uprofile="1">Your profile</button><button type="button" class="acct" data-upoints="1" hidden>Points <span class="n"></span></button><button type="button" class="acct" data-invite="1" hidden>Invite people</button><button type="button" class="acct" data-usignout="1">Sign out</button></nav></div>
   <button type="button" class="menu-btn" id="menuBtn" aria-label="Menu" aria-expanded="false" aria-controls="menu"><svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="M2 4h14M2 9h14M2 14h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
-  <nav class="menu" id="menu" hidden aria-label="Menu"><button type="button" class="acct mo" data-cal="1">Calendar</button><button type="button" class="acct mo" data-allnews="1">News</button><button type="button" class="acct mo" data-jobs="1">Jobs</button><button type="button" class="acct mo" data-media="1">Media</button><button type="button" class="acct mo" data-dashboard="1" hidden>Dashboard</button><button type="button" class="acct" data-updates="1">What’s new</button><button type="button" class="acct" data-fb="1">Send feedback</button><button type="button" class="acct" id="installBtn" hidden>Install app</button><a href="privacy.html">Privacy</a><details class="sub"><summary>Contact us</summary><a href="https://wa.me/61439790410" target="_blank" rel="noopener">WhatsApp</a><a href="https://www.linkedin.com/groups/2023604/" target="_blank" rel="noopener">LinkedIn</a><a href="https://www.facebook.com/darkbluebook" target="_blank" rel="noopener">Facebook</a><a href="mailto:editor@darkbluebook.com">Email</a></details><small>© The Dark Blue Book · v0.3.42</small></nav>
+  <nav class="menu" id="menu" hidden aria-label="Menu"><button type="button" class="acct mo" data-cal="1">Calendar</button><button type="button" class="acct mo" data-allnews="1">News</button><button type="button" class="acct mo" data-jobs="1">Jobs</button><button type="button" class="acct mo" data-media="1">Media</button><button type="button" class="acct mo" data-dashboard="1" hidden>Dashboard</button><button type="button" class="acct" data-updates="1">What’s new</button><button type="button" class="acct" data-fb="1">Send feedback</button><button type="button" class="acct" id="installBtn" hidden>Install app</button><a href="privacy.html">Privacy</a><details class="sub"><summary>Contact us</summary><a href="https://wa.me/61439790410" target="_blank" rel="noopener">WhatsApp</a><a href="https://www.linkedin.com/groups/2023604/" target="_blank" rel="noopener">LinkedIn</a><a href="https://www.facebook.com/darkbluebook" target="_blank" rel="noopener">Facebook</a><a href="mailto:editor@darkbluebook.com">Email</a></details><small>© The Dark Blue Book · v0.3.45</small></nav>
   <button type="button" class="filters-btn" id="filtersBtn" aria-expanded="false" aria-controls="filters">Filters</button>
   <div class="filters" id="filters">
   <div class="lens" role="group" aria-label="What to show">
@@ -368,6 +374,10 @@ const ROLES=['owner','co-owner','majority owner','minority owner','investor','ba
 const LENS={all:null,money:['own','spon'],people:['ppl'],media:'media'};
 /* 0.3.29: the Media lens shows only links that touch a media title (media sector ticked): its people and partnerships */
 const mediaEnd=id=>{const e=E.get(id);return!!e&&(e.type==='org'||e.type==='person')&&e.sectors.includes('media')};
+let MEDIA_ITEMS=null,MEDIA_LOADING=null,MEDIA_FEEDS=null,FEED_TEST=null,feedBusy=false,mediaMore=false; /* 0.3.45 media feeds, see below */
+const ITEM_KIND={article:'Article',episode:'Episode',video:'Video',gallery:'Gallery'};
+const durLabel=s=>!s?'':s>=3600?`${Math.floor(s/3600)} h ${Math.round(s%3600/60)} min`:`${Math.max(1,Math.round(s/60))} min`;
+const agoLabel=d=>d?new Date(d).toLocaleString('en-GB',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}):'';
 let E=new Map(),L=[],sel=null,lens='all',mode='view',editing=null,canEdit=false,db=null,loaded={e:false,l:false},msg='',zk=1;
 let AUDIT=[],auditAll=false;
 let rkind='error',rlink='',REPORTS=[],openReports=0,showDone=false,uid='';
@@ -491,7 +501,7 @@ function reveal(id){if(!E.has(id))return false;if(nodes.some(n=>n.id===id))retur
   if(scope){scope='';scEl.value=''}needFit=true;build();
   if(!nodes.some(n=>n.id===id)){allTime=true;syncWhen();needFit=true;build()}return true}
 function fromHash(){let id='';try{id=decodeURIComponent(location.hash.slice(1))}catch(e){}
-  if(id==='yacht-racing-media'){mediaQ='';pick('media',true);if(typeof showPanel==='function')showPanel();return}
+  if(id==='yacht-racing-media'){mediaQ='';loadMediaItems();pick('media',true);if(typeof showPanel==='function')showPanel();return}
   if(id==='dashboard'){sel=null;editing=null;msg='';if(typeof showPanel==='function')showPanel();openDashboard();return}
   if(id==='invite'){sel=null;editing=null;msg='';mode='invite';paint();render();if(typeof showPanel==='function')showPanel();return}
   if(id.startsWith('confirm=')){try{history.replaceState(null,'',location.pathname+location.search)}catch(e){}sel=null;editing=null;msg='';mode='confirmed';CONFIRM={state:'working'};paint();render();if(typeof showPanel==='function')showPanel();confirmToken(id.slice(8));return}
@@ -524,6 +534,8 @@ function timeline(mine,me){const d=mine.filter(l=>yr(l.start)!=null||yr(l.end)!=
 function render(){navMark();
   /* phones: forms and tasks get the whole screen; the map comes back for entries and the overview */
   const mainEl=document.querySelector('main');if(mainEl)mainEl.classList.toggle('task',mode!=='view');if(mainEl)mainEl.classList.toggle('dash',mode==='dashboard');
+  /* 0.3.45: the Media page uses the full width, with no map (See media on the map opens the Media lens) */
+  if(mainEl)mainEl.classList.toggle('wide',mode==='view'&&!!sel&&!!E.get(sel)&&E.get(sel).type==='group');
   if(mode==='entity')return formEntity();
   if(mode==='link')return formLink();
   if(mode==='signin')return formSignin();
@@ -547,6 +559,7 @@ function render(){navMark();
   if(mode==='dashboard')return listDashboard();
   if(mode==='news')return formNews();
   if(mode==='latest')return formLatest();
+  if(mode==='feedadd')return formFeed();
   if(mode==='orgpeople')return formPeople();
   if(mode==='claims')return listClaims();
   if(mode==='claimrev')return formClaimReview();
@@ -1814,11 +1827,14 @@ function listMedia(){
   const outlets=[...E.values()].filter(isMediaOrg).sort((a,b)=>a.name.localeCompare(b.name));
   const go=e=>`<button type="button" class="ent" data-go="${esc(e.id)}">${esc(e.name)}</button>`;
   const people=new Map();const add=(p,role,at)=>{if(!people.has(p.id))people.set(p.id,{p,roles:[]});people.get(p.id).roles.push({role,at})};
+  /* 0.3.45: each title is a card with its newest 3 pieces (from its feed, or the latest piece set by hand), and the cards are
+     ordered by most recent piece, so active titles rise and quiet ones sink without anyone judging them */
   const outletRow=o=>{const mine=cur.filter(l=>l.from===o.id||l.to===o.id),ppl=mine.filter(l=>other(l,o.id).type==='person'),rest=mine.filter(l=>!['person','group'].includes(other(l,o.id).type));
     ppl.forEach(l=>add(other(l,o.id),l.role,o));
-    const tags=o.mediaTags||[];const q=[o.name,...tags.map(t=>MEDIA_TAGS[t]||t),...ppl.map(l=>other(l,o.id).name+' '+l.role),...rest.map(l=>other(l,o.id).name+' '+l.role)].join(' ').toLowerCase();
-    const lt=o.latestUrl?`<div class="meta"><span><span class="role">${esc(latestLabel(o))}:</span> <a href="${esc(o.latestUrl)}" target="_blank" rel="noopener">${esc(o.latestTitle||newsHost(o.latestUrl))} ↗</a></span></div>`:'';
-    return`<li data-q="${esc(q)}" data-tags="${esc(tags.join('|'))}"><div class="rl">${go(o)}${tags.map(t=>`<span class="mtag">${esc(MEDIA_TAGS[t]||t)}</span>`).join('')}</div>${lt}
+    const pcs=piecesOf(o).slice(0,3);
+    const tags=o.mediaTags||[];const q=[o.name,...tags.map(t=>MEDIA_TAGS[t]||t),...pcs.map(p=>p.title),...ppl.map(l=>other(l,o.id).name+' '+l.role),...rest.map(l=>other(l,o.id).name+' '+l.role)].join(' ').toLowerCase();
+    const lt=pcs.length?`<ol class="mlist">${pcs.map(p=>`<li><a href="${esc(p.url)}" target="_blank" rel="noopener">${esc(p.title)} ↗</a><span>${[p.date?newsDay(p.date):'',ITEM_KIND[p.kind]||''].filter(Boolean).map(esc).join(' · ')}</span></li>`).join('')}</ol>`:'<p class="mquiet">Nothing recent listed.</p>';
+    return`<li class="mcard" data-q="${esc(q)}" data-tags="${esc(tags.join('|'))}"><div class="rl">${go(o)}${tags.map(t=>`<span class="mtag">${esc(MEDIA_TAGS[t]||t)}</span>`).join('')}</div>${lt}
       ${ppl.length?`<div class="meta">${ppl.map(l=>`<span>${go(other(l,o.id))} <span class="role">${esc(l.role)}</span></span>`).join('')}</div>`:''}
       ${rest.length?`<div class="meta">${rest.map(l=>`<span>${go(other(l,o.id))} <span class="role">${esc(l.role)}</span></span>`).join('')}</div>`:''}</li>`};
   const sec=(title,rows,note)=>rows.length?`<section class="msec"><h3>${esc(title)} <span class="cnt">${rows.length}</span></h3>${note?`<p class="note">${esc(note)}</p>`:''}<ul class="rel">${rows.join('')}</ul></section>`:'';
@@ -1829,7 +1845,14 @@ function listMedia(){
   free.forEach(p=>add(p,'freelance photographer',null));
   const freeRows=free.map(p=>{const clients=cur.filter(l=>(l.from===p.id||l.to===p.id)&&other(l,p.id).type!=='group').map(l=>({l,o:other(l,p.id)}));
     return`<li data-q="${esc((p.name+' photographer freelance '+clients.map(c=>c.o.name+' '+c.l.role).join(' ')).toLowerCase())}" data-tags="photographer"><div class="rl">${go(p)}<span class="mtag">Photographer</span></div>${clients.length?`<div class="meta">${clients.map(c=>`<span>${go(c.o)} <span class="role">${esc(c.l.role)}</span></span>`).join('')}</div>`:''}</li>`});
-  const outletHtml=sec('Titles',outlets.map(outletRow));
+  if(MEDIA_ITEMS===null)loadMediaItems().then(()=>{if(mode==='view'&&sel===MEDIA_ID)render()});
+  const lastOf=o=>(piecesOf(o)[0]||{}).ts||'';
+  const byRecent=outlets.slice().sort((a,b)=>lastOf(b).localeCompare(lastOf(a))||a.name.localeCompare(b.name));
+  const outletHtml=byRecent.length?`<section class="msec"><h3>Titles <span class="cnt">${byRecent.length}</span></h3><p class="note">Most recently active first.</p><ul class="mgrid">${byRecent.map(outletRow).join('')}</ul></section>`:'';
+  // everything new, all titles together, newest first
+  const river=outlets.flatMap(o=>piecesOf(o).map(p=>({...p,o}))).sort((a,b)=>(b.ts||'').localeCompare(a.ts||'')).slice(0,60);
+  const riverRows=river.map(p=>`<li data-q="${esc((p.o.name+' '+p.title+' '+(p.snippet||'')).toLowerCase())}"><div class="rl"><a class="nhead" href="${esc(p.url)}" target="_blank" rel="noopener">${esc(p.title)} ↗</a></div>${p.snippet?`<p class="snip">${esc(p.snippet)}</p>`:''}<div class="meta">${go(p.o)}${ITEM_KIND[p.kind]?`<span class="role">${esc(ITEM_KIND[p.kind])}</span>`:''}${p.date?`<span>${esc(newsDay(p.date))}</span>`:''}${p.dur?`<span>${esc(durLabel(p.dur))}</span>`:''}</div></li>`);
+  const riverHtml=riverRows.length?`<h3 class="mhead">Latest from the media</h3><section class="msec mriver${mediaMore?'':' short'}"><h3>Newest first <span class="cnt">${riverRows.length}</span></h3><ul class="rel">${riverRows.join('')}</ul>${riverRows.length>15?`<div class="acts mmore"><button type="button" class="btn" data-mmore="1">${mediaMore?'Show fewer':'Show more'}</button></div>`:''}</section>`:(MEDIA_ITEMS===null?'<p class="note">Loading the latest from the media…</p>':'');
   const tagCount=t=>outlets.filter(o=>(o.mediaTags||[]).includes(t)).length+(t==='photographer'?free.length:0);
   const used=Object.keys(MEDIA_TAGS).filter(t=>tagCount(t)>0);
   const chips=used.length?`<div class="mchips" role="group" aria-label="Filter titles by tag"><button type="button" class="mchip" data-mtag=""${mediaTag?'':' aria-pressed="true"'}>All</button>${used.map(t=>`<button type="button" class="mchip" data-mtag="${esc(t)}"${mediaTag===t?' aria-pressed="true"':''}>${esc(MEDIA_TAGS[t])} <span>${tagCount(t)}</span></button>`).join('')}</div>`:'';
@@ -1837,10 +1860,10 @@ function listMedia(){
   const index=[...people.values()].sort((a,b)=>a.p.name.localeCompare(b.p.name)).map(({p,roles})=>`<li data-q="${esc((p.name+' '+roles.map(r=>r.role+' '+(r.at?r.at.name:'freelance')).join(' ')).toLowerCase())}"><div class="rl">${go(p)}</div><div class="meta">${roles.map(r=>`<span><span class="role">${esc(r.role)}</span> ${r.at?go(r.at):'<span class="role">freelance</span>'}</span>`).join('')}</div></li>`);
   panel.innerHTML=`<div><div class="kind"><i style="background:var(--t-media,var(--t-org))"></i>Cohort</div><h2>Media</h2>
     <p class="note">The magazines, websites, channels and podcasts covering yacht racing, and the people behind them: ${outlets.length} titles and ${people.size} people.</p>
-    ${canEdit?'<p class="note"><span class="role">Editors:</span> only entries with the media sector ticked count, plus the people linked to them. Press and comms staff of teams, events and agencies only appear if they also belong to a title. Mark freelance photographers on their own entry (Edit, then Freelance photographer).</p>':''}</div>
-    <label class="mfilter">Filter<input id="media-q" type="search" placeholder="A name, title or role" value="${esc(mediaQ)}"></label>
-    ${(()=>{const lat=outlets.filter(o=>o.latestUrl).sort((a,b)=>(b.latestDate||'').localeCompare(a.latestDate||'')).slice(0,10);
-      return lat.length?`<h3 class="mhead">Latest from the media</h3>${sec('Newest first',lat.map(o=>`<li data-q="${esc((o.name+' '+(o.latestTitle||'')).toLowerCase())}"><div class="rl"><a class="nhead" href="${esc(o.latestUrl)}" target="_blank" rel="noopener">${esc(o.latestTitle||newsHost(o.latestUrl))} ↗</a></div><div class="meta">${go(o)}<span class="role">${esc(latestLabel(o).replace('Latest ',''))}</span>${o.latestDate?`<span>${esc(newsDay(o.latestDate))}</span>`:''}</div></li>`))}`:''})()}
+    ${canEdit?`<p class="note"><span class="role">Editors:</span> only entries with the media sector ticked count, plus the people linked to them. Press and comms staff of teams, events and agencies only appear if they also belong to a title. Mark freelance photographers on their own entry (Edit, then Freelance photographer). Add a title’s feeds on its entry (Feeds, then Add a feed); they’re read every hour.${MEDIA_FEEDS?` ${MEDIA_FEEDS.length} feeds on ${new Set(MEDIA_FEEDS.map(f=>f.entity_id)).size} titles${MEDIA_FEEDS.filter(f=>f.error).length?`, <b>${MEDIA_FEEDS.filter(f=>f.error).length} not working</b>: ${MEDIA_FEEDS.filter(f=>f.error).map(f=>E.get(f.entity_id)?go(E.get(f.entity_id)):'').join(', ')}`:''}.`:''}</p>`:''}
+    <div class="acts"><button type="button" class="btn" data-medialens="1">See media on the map</button><button type="button" class="btn" data-mediacopy="1">Copy link</button></div></div>
+    <label class="mfilter">Filter<input id="media-q" type="search" placeholder="A name, title, headline or role" value="${esc(mediaQ)}"></label>
+    ${riverHtml}
     <h3 class="mhead">Titles</h3>
     ${chips}
     ${outletHtml||'<p class="note">No media titles yet.</p>'}
@@ -1848,16 +1871,78 @@ function listMedia(){
     <h3 class="mhead">People, A to Z</h3>
     ${sec('Everyone',index)}
     <p class="note" id="media-none" hidden>Nothing matches that filter.</p>
-    <div class="acts"><button type="button" class="btn" data-mediacopy="1">Copy link</button><button type="button" class="btn" data-cancel="1">Back to the map</button></div>`;
+    <div class="acts"><button type="button" class="btn" data-medialens="1">See media on the map</button><button type="button" class="btn" data-mediacopy="1">Copy link</button></div>`;
+  if(canEdit&&MEDIA_FEEDS===null)loadMediaFeeds().then(()=>{if(mode==='view'&&sel===MEDIA_ID)render()});
   mediaFilter()}
 function mediaFilter(){const q=mediaQ.trim().toLowerCase();let any=false;
+  const rv=document.querySelector('.mriver');if(rv)rv.classList.toggle('short',!q&&!mediaMore);
   document.querySelectorAll('.msec').forEach(s=>{let n=0;s.querySelectorAll('li[data-q]').forEach(li=>{const ok=(!q||li.dataset.q.includes(q))&&(!mediaTag||li.dataset.tags===undefined||li.dataset.tags.split('|').includes(mediaTag));li.hidden=!ok;if(ok)n++});s.hidden=!n;if(n)any=true});
   const none=document.getElementById('media-none');if(none)none.hidden=any}
 panel.addEventListener('input',e=>{if(e.target.id!=='media-q')return;mediaQ=e.target.value;mediaFilter()});
 panel.addEventListener('click',e=>{const b=e.target.closest('[data-mtag]');if(!b)return;mediaTag=b.dataset.mtag;document.querySelectorAll('.mchip').forEach(x=>x===b?x.setAttribute('aria-pressed','true'):x.removeAttribute('aria-pressed'));mediaFilter()});
 panel.addEventListener('click',e=>{const b=e.target.closest('[data-mediacopy]');if(!b)return;const u=location.href.split('#')[0].split('?')[0]+'#'+MEDIA_HASH;
   try{navigator.clipboard.writeText(u).then(()=>{b.textContent='Link copied'},()=>{b.textContent=u})}catch(x){b.textContent=u}});
-document.addEventListener('click',e=>{const b=e.target.closest('[data-media]');if(!b)return;e.preventDefault();const m=document.getElementById('menu');if(m)m.hidden=true;mediaQ='';mediaTag='';pick(MEDIA_ID);showPanel()});
+document.addEventListener('click',e=>{const b=e.target.closest('[data-media]');if(!b)return;e.preventDefault();const m=document.getElementById('menu');if(m)m.hidden=true;mediaQ='';mediaTag='';mediaMore=false;loadMediaItems();pick(MEDIA_ID);showPanel()});
+
+/* ---------- media feeds (0.3.45) ---------- */
+/* Outlets' RSS and Atom feeds (website, Substack, podcast, YouTube channel) are read every hour by the feeds Edge Function,
+   which keeps each feed's newest 10 items: headline, link, date, a short snippet, and whether it's an article, episode or video.
+   Never the full piece: readers click through to the outlet. Loaded only when the Media page or a media outlet's entry opens,
+   so the map's own load is unchanged. Editors add feeds on the outlet's entry (up to 3); the latest piece set by hand still
+   shows when a title has no feed, or isn't in its feed. */
+function loadMediaItems(force){if(MEDIA_ITEMS&&!force)return Promise.resolve(MEDIA_ITEMS);if(MEDIA_LOADING)return MEDIA_LOADING;
+  MEDIA_LOADING=fetch(`${SB_URL}/rest/v1/media_items?select=entity_id,url,title,snippet,published_at,kind,duration_s&order=published_at.desc&limit=500`,{headers:{apikey:SB_KEY}})
+    .then(r=>r.ok?r.json():[]).catch(()=>[]).then(rows=>{MEDIA_ITEMS=Array.isArray(rows)?rows:[];MEDIA_LOADING=null;return MEDIA_ITEMS});
+  return MEDIA_LOADING}
+async function loadMediaFeeds(){try{const t=await token();if(!t)return(MEDIA_FEEDS=[]);
+  const r=await fetch(`${SB_URL}/rest/v1/media_feeds?select=id,entity_id,url,title,checked_at,ok_at,error,fails&order=id`,{headers:{apikey:SB_KEY,Authorization:'Bearer '+t}});
+  MEDIA_FEEDS=r.ok?await r.json():[]}catch(x){MEDIA_FEEDS=[]}return MEDIA_FEEDS}
+// an outlet's pieces, newest first: its feed items, plus the latest piece set by hand when the feeds don't already have it
+function piecesOf(o){const its=(MEDIA_ITEMS||[]).filter(i=>i.entity_id===o.id).map(i=>({url:i.url,title:i.title,snippet:i.snippet||'',date:(i.published_at||'').slice(0,10),ts:i.published_at||'',kind:i.kind,dur:i.duration_s}));
+  if(o.latestUrl&&!its.some(i=>i.url===o.latestUrl))its.push({url:o.latestUrl,title:o.latestTitle||newsHost(o.latestUrl),snippet:'',date:o.latestDate||'',ts:o.latestDate||'',kind:o.latestKind,dur:null});
+  return its.sort((a,b)=>(b.ts||'').localeCompare(a.ts||''))}
+async function feedsFn(body){const t=await token();if(!t)throw new Error('not_signed_in');
+  const r=await fetch(`${SB_URL}/functions/v1/feeds`,{method:'POST',headers:{apikey:SB_KEY,Authorization:'Bearer '+t,'Content-Type':'application/json'},body:JSON.stringify(body)});
+  const j=await r.json().catch(()=>({}));if(!r.ok&&!j.error)j.error='http_'+r.status;return j}
+const FEED_ERR={no_feed:'No feed found there. Try the site’s home page, its /feed address, or the YouTube channel’s page.',not_a_feed:'That address doesn’t look like a feed.',too_big:'That feed is too large to read.',no_url:'Paste an address first.',not_editor:'Only editors can add feeds for now.',not_signed_in:'Sign in again, then try once more.'};
+const feedErr=e=>FEED_ERR[e]||(/^http_(\d+)/.test(e)?`The site answered with an error (${e.slice(5)}).`:/timeout|abort/i.test(e)?'The site took too long to answer.':'Couldn’t read it: '+e);
+function feedBlock(e){const fs=(MEDIA_FEEDS||[]).filter(f=>f.entity_id===e.id);
+  return`<section class="news feeds"><h3>Feeds</h3>${fs.length?`<ul class="rel">${fs.map(f=>`<li><div class="rl"><a href="${esc(f.url)}" target="_blank" rel="noopener">${esc(f.title||newsHost(f.url))}</a></div><button type="button" class="mini" data-feedrm="${f.id}">Remove</button><div class="meta"><span>${esc(f.url)}</span><span>${f.error?`<b>Not working</b>: ${esc(feedErr(f.error))}`:f.ok_at?'Read '+esc(agoLabel(f.ok_at)):'Not read yet'}</span></div></li>`).join('')}</ul>`:'<p class="note">No feeds yet. Add the title’s website, Substack, podcast or YouTube channel and its newest pieces show here and on the Media page, read every hour.</p>'}
+    <p class="note">Editors only.</p><div class="acts">${fs.length<3?`<button type="button" class="btn" data-feedadd="${esc(e.id)}">Add a feed</button>`:''}${fs.length?`<button type="button" class="btn" data-feedcheck="${esc(e.id)}">Check now</button>`:''}</div></section>`}
+function formFeed(){const e=E.get(editing);if(!e||!canEdit){mode='view';editing=null;return render()}const t=FEED_TEST;
+  panel.innerHTML=`<form id="ffd" novalidate><div><h2>Add a feed: ${esc(e.name)}</h2>
+    <p class="note">Paste the title’s feed address, or just its website, Substack, podcast page or YouTube channel and the feed is found from there. Only headlines, dates and a short snippet are kept, each linking back to ${esc(e.name)}.</p></div>
+    ${msg?`<div class="msg">${esc(msg)}</div>`:''}
+    <label>Address<input id="fd-url" type="url" maxlength="500" placeholder="https://…" value="${esc(t?t.input:'')}"></label>
+    <div class="acts"><button class="btn${t&&t.url?'':' go'}"${feedBusy?' disabled':''}>${feedBusy&&!(t&&t.url)?'Looking…':'Find the feed'}</button><button type="button" class="btn" data-feedcancel="1">Cancel</button></div>
+    ${t&&t.url?`<section class="news"><h3>Found: ${esc(t.title||newsHost(t.url))}</h3><p class="note">${esc(t.url)} · ${t.count} ${t.count===1?'item':'items'} in the feed. The newest:</p>
+      ${(t.items||[]).map(i=>`<div class="nitem"><a href="${esc(i.url)}" target="_blank" rel="noopener">${esc(i.title)} ↗</a><p class="who">${[newsDay(String(i.published_at).slice(0,10)),ITEM_KIND[i.kind],durLabel(i.duration_s)].filter(Boolean).map(esc).join(' · ')}</p>${i.snippet?`<p class="snip">${esc(i.snippet)}</p>`:''}</div>`).join('')||'<p class="note">The feed is empty for now.</p>'}
+      <div class="acts"><button type="button" class="btn go" data-feedsave="1"${feedBusy?' disabled':''}>${feedBusy?'Adding…':'Add this feed'}</button></div></section>`:''}</form>`}
+async function findFeed(){const input=val('fd-url');if(!input){msg='Paste an address first.';return render()}
+  feedBusy=true;msg='';FEED_TEST={input};render();
+  try{const j=await feedsFn({action:'test',url:input});if(j.error){msg=feedErr(j.error);FEED_TEST={input}}else FEED_TEST={input,...j}}catch(x){msg=feedErr(String(x.message||x))}
+  feedBusy=false;render()}
+async function saveFeed(){const e=E.get(editing),t=FEED_TEST;if(!e||!t||!t.url)return;feedBusy=true;render();
+  try{await rpc('media_feed_add',{p_entity:e.id,p_url:t.url,p_title:t.title||''});
+    await feedsFn({action:'check',entity:e.id}).catch(()=>{});
+    await Promise.all([loadMediaItems(true),loadMediaFeeds()]);
+    feedBusy=false;FEED_TEST=null;sel=e.id;editing=null;mode='view';msg='Feed added. Its newest pieces show below and on the Media page.';render();panel.scrollTop=0}
+  catch(x){feedBusy=false;const m=String(x.message||'');msg=/too_many_feeds/.test(m)?'A title can have up to 3 feeds.':/not_media/.test(m)?'Only media outlets can have feeds.':/not_editor/.test(m)?'Only editors can add feeds for now.':'Not saved. '+m.slice(0,140);render()}}
+panel.addEventListener('submit',e=>{if(e.target.id==='ffd'){e.preventDefault();e.stopImmediatePropagation();if(!feedBusy)findFeed()}},true);
+panel.addEventListener('click',async e=>{const b=e.target.closest('button');if(!b)return;const d=b.dataset;
+  if(d.feedadd){e.stopImmediatePropagation();editing=d.feedadd;FEED_TEST=null;msg='';mode='feedadd';render();panel.scrollTop=0;return}
+  if(d.feedcancel){e.stopImmediatePropagation();sel=editing;editing=null;FEED_TEST=null;mode='view';msg='';return render()}
+  if(d.feedsave){e.stopImmediatePropagation();if(!feedBusy)saveFeed();return}
+  if(d.feedrm){e.stopImmediatePropagation();if(!b.dataset.sure){b.dataset.sure='1';b.textContent='Remove? Click again';return}
+    try{await rpc('media_feed_remove',{p_id:Number(d.feedrm)});await Promise.all([loadMediaItems(true),loadMediaFeeds()]);msg='Feed removed, with its pieces.'}catch(x){msg='Not removed. '+String(x.message||'').slice(0,140)}
+    return render()}
+  if(d.feedcheck){e.stopImmediatePropagation();b.disabled=true;b.textContent='Checking…';
+    const j=await feedsFn({action:'check',entity:d.feedcheck}).catch(x=>({error:String(x.message||x)}));
+    await Promise.all([loadMediaItems(true),loadMediaFeeds()]);const r=j.results||[];
+    msg=j.error?feedErr(j.error):r.some(x=>x.error)?`Checked: ${r.filter(x=>x.error).length} of ${r.length} not working.`:`Checked: ${r.length===1?'the feed was':'all '+r.length+' feeds were'} read.`;
+    return render()}
+  if(d.medialens){e.stopImmediatePropagation();pick(null);requestAnimationFrame(()=>{const lb=document.querySelector('.lens [data-lens="media"]');if(lb&&lens!=='media')lb.click()});return}
+  if(d.mmore){e.stopImmediatePropagation();mediaMore=!mediaMore;return render()}});
 
 /* ---------- latest piece (0.3.27) ---------- */
 /* A media outlet's newest video, episode or article, set by its owners and managers (registered media) or editors.
@@ -1865,6 +1950,15 @@ document.addEventListener('click',e=>{const b=e.target.closest('[data-media]');i
 const LATEST_KINDS={video:'Latest video',episode:'Latest episode',article:'Latest article',gallery:'Latest gallery',other:'Latest',' ':'Latest'};
 const latestLabel=e=>LATEST_KINDS[e.latestKind]||'Latest';
 function latestBlock(e){if(!isMediaOrg(e))return'';const can=canEditOrg(e.id);
+  /* 0.3.45: a title with a feed shows its newest 3 pieces; editors see its feeds */
+  if(MEDIA_ITEMS===null)loadMediaItems().then(()=>{if(mode==='view'&&sel===e.id)render()});
+  if(canEdit&&MEDIA_FEEDS===null)loadMediaFeeds().then(()=>{if(mode==='view'&&sel===e.id)render()});
+  const fb=canEdit?feedBlock(e):'',its=(MEDIA_ITEMS||[]).filter(i=>i.entity_id===e.id).slice(0,3);
+  if(its.length)return`<section class="news latest"><h3>Latest from ${esc(e.name)}</h3>${its.map(i=>`<div class="nitem"><a href="${esc(i.url)}" target="_blank" rel="noopener">${esc(i.title)} ↗</a>
+    <p class="who">${[newsHost(i.url),newsDay((i.published_at||'').slice(0,10)),ITEM_KIND[i.kind],durLabel(i.duration_s)].filter(Boolean).map(esc).join(' · ')}</p></div>`).join('')}
+    <div class="acts"><button type="button" class="btn" data-media="1">More on the Media page</button></div></section>${fb}`;
+  return latestManual(e,can)+fb}
+function latestManual(e,can){
   if(!e.latestUrl)return can?`<div class="acts"><button type="button" class="btn" data-latest="${esc(e.id)}">Add your latest piece</button></div>`:'';
   const h=newsHost(e.latestUrl),d=newsDay(e.latestDate||'');
   return`<section class="news latest"><h3>${esc(latestLabel(e))}</h3><div class="nitem"><a href="${esc(e.latestUrl)}" target="_blank" rel="noopener">${esc(e.latestTitle||h||'Watch or read')} ↗</a>
@@ -2038,6 +2132,7 @@ panel.addEventListener('click',e=>{const b=e.target.closest('[data-dashmore]');i
    "editors" lines show only to signed-in editors. CHANGELOG.md keeps the technical detail. */
 const UPD_HASH='update';
 const UPDATES=[
+ {v:'0.3.45',d:'2026-11-28',t:'The Media page reworked',i:['The Media page now pulls in the newest articles, episodes and videos straight from the outlets’ own feeds, updated every hour: the headline, date and a short snippet, each linking through to the outlet.','Everything new from every title in one list, newest first, and a card for each title with its latest three pieces. The most recently active titles come first.','The page uses the full width. See media on the map opens the map’s Media view.']},
  {v:'0.3.44',d:'2026-11-18',t:'Faster sign-in on slow connections',i:['The app checks whether you’re signed in at the same time as it loads the map, instead of afterwards, so your account and what you can see appear sooner. On a device you’ve used before, your name shows in the top bar straight away.']},
  {v:'0.3.43',d:'2026-11-18',t:'Jobs from teams and clubs',i:['Teams and clubs can now list jobs too, not just organisations. Members see a team’s or club’s open jobs on its entry.']},
  {v:'0.3.42',d:'2026-11-18',x:1,t:'Accept on phones',i:['Accept and Decline now also sit at the top of an application, and the bottom of the panel has room so phone toolbars can’t cover the buttons.']},

@@ -2,6 +2,17 @@
 
 Version plan: 0.1 public map live · 0.2 editing moves to Supabase · 0.3 sign-in, applications and claims · 0.4 paid features (contact details for paid members, extra profile links, job board, organisation editing, verified roles), switched on by editors before payments · 0.5 payments (Stripe, tiers, prices) · 1.0 membership network opens · 1.x events and intros. Small fixes in between are 0.x.1, 0.x.2 and so on.
 
+## 0.3.45 (28 November 2026, on preview)
+
+The Media page reworked (D, 28 Nov 2026: the map matters less on this page; go "upstream" and pull in the outlets' own feeds).
+- Media feeds: editors add up to 3 RSS or Atom feeds per media title (website, Substack, podcast, YouTube channel) on the title's entry (Feeds, Add a feed). Pasting the site, Substack, podcast page or YouTube channel is enough: the feed is found from the page. A preview of the newest 5 items shows before it's saved.
+- The new feeds Edge Function reads every feed hourly (pg_cron, media_feeds_check at :37) and keeps each feed's newest 10 items in media_items: headline, link, date, a snippet of about 220 characters with no HTML, article/episode/video and running time. Never the full piece or the audio. Polite fetching (If-None-Match / If-Modified-Since); a feed failing 6 times in a row is tried once a day until it works again. Editors see "Not working" on the entry and a count on the Media page, and can Check now.
+- Media page: full width, no map (See media on the map opens the Media lens); "Latest from the media" merges every title's pieces newest first (15, Show more to 60) with snippets; titles are cards with their newest 3 pieces, most recently active first. The latest piece set by hand still shows when a title has no feed or it isn't in the feed. The filter also searches headlines.
+- Media titles' entries show "Latest from <title>" (newest 3) when they have a feed.
+- Feed items load only when the Media page or a media title opens, so the map's own load is unchanged.
+- Migration 20261128000001_media_feeds.sql (media_feeds, media_items; public reads items only, editors read feeds; no direct writes). Function supabase/functions/feeds. Vault secrets feeds_secret and feeds_url, and the cron job, are set up once per project (see the end of the migration).
+- Still to decide (roadmap, 13 Nov 2026): feed pick-up was planned as a paid feature. For now editors set feeds for any title; the paid part could be titles' own owners and managers setting their feed.
+
 ## Unreleased: welcome email (19 November 2026)
 
 - The welcome email (welcome Edge Function, redeployed 19 Nov 2026) now invites new members to The Dark Blue Book's WhatsApp community: optional, for news and announcements from the editors only for now. The link (https://chat.whatsapp.com/KqLpMwiny6O0f6Sr7qNgvC) can be changed with the WHATSAPP_INVITE secret without a code change. The app's fallback (send from the editor's own inbox) carries the same line.
