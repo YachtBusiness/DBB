@@ -2,7 +2,7 @@
 
 Version plan: 0.1 public map live · 0.2 editing moves to Supabase · 0.3 sign-in, applications and claims · 0.4 paid features (contact details for paid members, extra profile links, job board, organisation editing, verified roles), switched on by editors before payments · 0.5 payments (Stripe, tiers, prices) · 1.0 membership network opens · 1.x events and intros. Small fixes in between are 0.x.1, 0.x.2 and so on.
 
-## 0.3.45 (28 November 2026, on preview)
+## 0.3.45 (28 November 2026)
 
 The Media page reworked (D, 28 Nov 2026: the map matters less on this page; go "upstream" and pull in the outlets' own feeds).
 - Media feeds: editors add up to 3 RSS or Atom feeds per media title (website, Substack, podcast, YouTube channel) on the title's entry (Feeds, Add a feed). Pasting the site, Substack, podcast page or YouTube channel is enough: the feed is found from the page. A preview of the newest 5 items shows before it's saved.
@@ -13,6 +13,8 @@ The Media page reworked (D, 28 Nov 2026: the map matters less on this page; go "
 - First feeds (28 Nov 2026): Yacht Business, Yacht Racing Life (podcast and site), Rule 69, Yachting World, Scuttlebutt, Sailing Anarchy, Live Sail Die, yachtracing.biz. Then PlanetSail and The Foil from their YouTube channels. Seahorse has no feed (its /feed answers 404).
 - YouTube Shorts are left out (D, 28 Nov 2026): a channel's feed becomes its long-form uploads playlist (playlist_id=UULF…, no Shorts), done automatically when an editor adds a channel; titles tagged #shorts are skipped too.
 - Pictures (D, 28 Nov 2026): each piece shows its share picture, from the feed (media:thumbnail, media:content, an image enclosure, the first picture in the content) or else the page's Open Graph og:image / twitter:image, a WordPress featured image (wp-post-image, then the site's /wp-json API), or schema.org structured data, looked for once per piece (media_items.image_url: null not looked, '' none found). Linked from the outlet, not copied; no referrer sent; lazy-loaded; a picture that fails is dropped. No picture: the title's logo if it has one, else a navy tile with its name. Thumbnails in the combined list and on entries, a picture grid in the featured title, a banner on each title card.
+- Privacy notice: a Media page pictures section (pictures load from the outlets' sites, which see the visitor's IP; no referrer sent).
+- Feeds at launch: Yacht Business (featured), Yacht Racing Life (podcast and site), Rule 69, Yachting World, Scuttlebutt, Sailing Anarchy, Live Sail Die, PlanetSail and The Foil (YouTube), The Sailing Podcast (Shirley Robertson, YouTube). yachtracing.biz's feed removed (archived site).
 - Media titles' entries show "Latest from <title>" (newest 3) when they have a feed.
 - Feed items load only when the Media page or a media title opens, so the map's own load is unchanged.
 - Migration 20261128000001_media_feeds.sql (media_feeds, media_items; public reads items only, editors read feeds; no direct writes). Function supabase/functions/feeds. Vault secrets feeds_secret and feeds_url, and the cron job, are set up once per project (see the end of the migration).
