@@ -44,6 +44,15 @@ button,input,select,textarea{font:inherit;color:inherit}
 .dgrid{display:grid;grid-template-columns:1fr;gap:14px}
 main.dash aside>*{max-width:none}main.dash aside>div:first-child,main.dash aside>.msg{max-width:720px}
 @media (min-width:861px){main.dash{grid-template-columns:1fr}main.dash .chart{display:none}.dgrid{grid-template-columns:repeat(auto-fill,minmax(330px,1fr));align-items:start}}
+.mthumb{flex:none;position:relative;display:block;width:168px;aspect-ratio:16/9;border-radius:6px;overflow:hidden;background:linear-gradient(135deg,var(--navy),color-mix(in srgb,var(--navy) 70%,#2a6bb0));text-decoration:none}
+.mthumb img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;z-index:1}
+.mthumb span{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:6px;text-align:center;color:#fff;font-family:Georgia,'Times New Roman',serif;font-size:14px;font-weight:600;line-height:1.2}
+.mthumb.haslogo{background:#fff;border:1px solid var(--line)}.mthumb i{position:absolute;inset:14%;background:center/contain no-repeat}
+.mthumb.sm{width:112px}.mthumb.big,.mthumb.banner{width:100%}.mthumb.big span{font-size:20px}
+.mcard .mthumb.banner{margin:-12px -14px 4px;width:calc(100% + 28px);border-radius:7px 7px 0 0}
+ul.rel li.mrow,.nitem.mrow{display:flex;gap:14px;align-items:flex-start}.mrow .mtext{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}.mrow .mtext .rl{margin:0}
+ul.mspotgrid{list-style:none;margin:4px 0 0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:16px}ul.mspotgrid li{display:flex;flex-direction:column;gap:6px;min-width:0}ul.mspotgrid .snip{margin:0}
+@media (max-width:860px){.mthumb{width:104px}.mthumb span{font-size:11.5px}.mthumb.sm{width:88px}ul.mspotgrid{grid-template-columns:1fr 1fr;gap:12px}ul.mspotgrid .snip{display:none}}
 .mspot{border:2px solid var(--navy);border-radius:10px;padding:16px 18px;background:var(--surface);display:flex;flex-direction:column;gap:8px}.mspot h3{margin:0;background:none;border:0;padding:0;font-family:Georgia,'Times New Roman',serif;font-size:24px;letter-spacing:0;text-transform:none}.mspot h3 .ent{font:inherit;font-weight:600}.mspot .note{margin:0}.mspot ul.rel{margin-top:4px}.mcard.spot{border:2px solid var(--navy)}
 main.wide aside>*{max-width:none}main.wide aside>.mfilter{max-width:720px}main.wide .chart{display:none}
 @media (min-width:861px){main.wide{grid-template-columns:1fr}}@media (max-width:860px){main.wide aside{display:flex}}
@@ -378,6 +387,9 @@ const mediaEnd=id=>{const e=E.get(id);return!!e&&(e.type==='org'||e.type==='pers
 let MEDIA_ITEMS=null,MEDIA_LOADING=null,MEDIA_FEEDS=null,FEED_TEST=null,feedBusy=false,mediaMore=false; /* 0.3.45 media feeds, see below */
 const ITEM_KIND={article:'Article',episode:'Episode',video:'Video',gallery:'Gallery'};
 const durLabel=s=>!s?'':s>=3600?`${Math.floor(s/3600)} h ${Math.round(s%3600/60)} min`:`${Math.max(1,Math.round(s/60))} min`;
+/* 0.3.45: each piece's share picture (its feed's, or the page's Open Graph og:image), linked from the outlet, not copied.
+   No referrer is sent; a picture that fails to load is simply removed. Pieces without one get the title's logo, or a plain tile with its name. */
+const mthumb=(p,o,cls='')=>{const lg=o&&o.logo?logoUrl(o.logo):'';return`<a class="mthumb ${cls}${lg?' haslogo':''}" href="${esc(p.url)}" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true">${p.img?`<img src="${esc(p.img)}" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.remove()">`:''}${lg?`<i style="background-image:url('${esc(lg)}')"></i>`:`<span>${esc(o?o.name:'')}</span>`}</a>`};
 const agoLabel=d=>d?new Date(d).toLocaleString('en-GB',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}):'';
 let E=new Map(),L=[],sel=null,lens='all',mode='view',editing=null,canEdit=false,db=null,loaded={e:false,l:false},msg='',zk=1;
 let AUDIT=[],auditAll=false;
@@ -1835,7 +1847,8 @@ function listMedia(){
     const pcs=piecesOf(o).slice(0,3);
     const tags=o.mediaTags||[];const q=[o.name,...tags.map(t=>MEDIA_TAGS[t]||t),...pcs.map(p=>p.title),...ppl.map(l=>other(l,o.id).name+' '+l.role),...rest.map(l=>other(l,o.id).name+' '+l.role)].join(' ').toLowerCase();
     const lt=pcs.length?`<ol class="mlist">${pcs.map(p=>`<li><a href="${esc(p.url)}" target="_blank" rel="noopener">${esc(p.title)} ↗</a><span>${[p.date?newsDay(p.date):'',ITEM_KIND[p.kind]||''].filter(Boolean).map(esc).join(' · ')}</span></li>`).join('')}</ol>`:'<p class="mquiet">Nothing recent listed.</p>';
-    return`<li class="mcard${o===spot?' spot':''}" data-q="${esc(q)}" data-tags="${esc(tags.join('|'))}"><div class="rl">${go(o)}${tags.map(t=>`<span class="mtag">${esc(MEDIA_TAGS[t]||t)}</span>`).join('')}</div>${lt}
+    const pic=pcs.find(p=>p.img)||(o.logo?pcs[0]:null);
+    return`<li class="mcard${o===spot?' spot':''}" data-q="${esc(q)}" data-tags="${esc(tags.join('|'))}">${pic?mthumb(pic,o,'banner'):''}<div class="rl">${go(o)}${tags.map(t=>`<span class="mtag">${esc(MEDIA_TAGS[t]||t)}</span>`).join('')}</div>${lt}
       ${ppl.length?`<div class="meta">${ppl.map(l=>`<span>${go(other(l,o.id))} <span class="role">${esc(l.role)}</span></span>`).join('')}</div>`:''}
       ${rest.length?`<div class="meta">${rest.map(l=>`<span>${go(other(l,o.id))} <span class="role">${esc(l.role)}</span></span>`).join('')}</div>`:''}</li>`};
   const sec=(title,rows,note)=>rows.length?`<section class="msec"><h3>${esc(title)} <span class="cnt">${rows.length}</span></h3>${note?`<p class="note">${esc(note)}</p>`:''}<ul class="rel">${rows.join('')}</ul></section>`:'';
@@ -1854,12 +1867,12 @@ function listMedia(){
   const spotHtml=spot?(()=>{const pcs=piecesOf(spot).slice(0,4),tags=spot.mediaTags||[],blurb=spot.about||spot.note||'';
     return`<section class="mspot" aria-label="Featured title"><div class="kind"><i style="background:var(--t-media,var(--t-org))"></i>Featured title</div>
       <div class="rl"><h3>${go(spot)}</h3>${tags.map(t=>`<span class="mtag">${esc(MEDIA_TAGS[t]||t)}</span>`).join('')}</div>${blurb?`<p class="note">${esc(blurb)}</p>`:''}
-      ${pcs.length?`<ul class="rel">${pcs.map(p=>`<li><div class="rl"><a class="nhead" href="${esc(p.url)}" target="_blank" rel="noopener">${esc(p.title)} ↗</a></div>${p.snippet?`<p class="snip">${esc(p.snippet)}</p>`:''}<div class="meta">${ITEM_KIND[p.kind]?`<span class="role">${esc(ITEM_KIND[p.kind])}</span>`:''}${p.date?`<span>${esc(newsDay(p.date))}</span>`:''}${p.dur?`<span>${esc(durLabel(p.dur))}</span>`:''}</div></li>`).join('')}</ul>`:''}
+      ${pcs.length?`<ul class="mspotgrid">${pcs.map(p=>`<li>${mthumb(p,spot,'big')}<a class="nhead" href="${esc(p.url)}" target="_blank" rel="noopener">${esc(p.title)} ↗</a>${p.snippet?`<p class="snip">${esc(p.snippet)}</p>`:''}<div class="meta">${ITEM_KIND[p.kind]?`<span class="role">${esc(ITEM_KIND[p.kind])}</span>`:''}${p.date?`<span>${esc(newsDay(p.date))}</span>`:''}${p.dur?`<span>${esc(durLabel(p.dur))}</span>`:''}</div></li>`).join('')}</ul>`:''}
       ${spot.website?`<div class="acts"><a class="btn go" href="${esc(spot.website)}" target="_blank" rel="noopener">Visit ${esc(newsHost(spot.website)||spot.name)} ↗</a></div>`:''}</section>`})():'';
   const outletHtml=byRecent.length?`<section class="msec"><h3>Titles <span class="cnt">${byRecent.length}</span></h3><p class="note">Most recently active first.</p><ul class="mgrid">${byRecent.map(outletRow).join('')}</ul></section>`:'';
   // everything new, all titles together, newest first
   const river=outlets.flatMap(o=>piecesOf(o).slice(0,3).map(p=>({...p,o}))) // at most 3 a title, so a busy day at one doesn't fill the list.sort((a,b)=>(b.ts||'').localeCompare(a.ts||'')).slice(0,60);
-  const riverRows=river.map(p=>`<li data-q="${esc((p.o.name+' '+p.title+' '+(p.snippet||'')).toLowerCase())}"><div class="rl"><a class="nhead" href="${esc(p.url)}" target="_blank" rel="noopener">${esc(p.title)} ↗</a></div>${p.snippet?`<p class="snip">${esc(p.snippet)}</p>`:''}<div class="meta">${go(p.o)}${ITEM_KIND[p.kind]?`<span class="role">${esc(ITEM_KIND[p.kind])}</span>`:''}${p.date?`<span>${esc(newsDay(p.date))}</span>`:''}${p.dur?`<span>${esc(durLabel(p.dur))}</span>`:''}</div></li>`);
+  const riverRows=river.map(p=>`<li class="mrow" data-q="${esc((p.o.name+' '+p.title+' '+(p.snippet||'')).toLowerCase())}">${mthumb(p,p.o)}<div class="mtext"><div class="rl"><a class="nhead" href="${esc(p.url)}" target="_blank" rel="noopener">${esc(p.title)} ↗</a></div>${p.snippet?`<p class="snip">${esc(p.snippet)}</p>`:''}<div class="meta">${go(p.o)}${ITEM_KIND[p.kind]?`<span class="role">${esc(ITEM_KIND[p.kind])}</span>`:''}${p.date?`<span>${esc(newsDay(p.date))}</span>`:''}${p.dur?`<span>${esc(durLabel(p.dur))}</span>`:''}</div></div></li>`);
   const riverHtml=riverRows.length?`<h3 class="mhead">Latest from the media</h3><section class="msec mriver${mediaMore?'':' short'}"><h3>Newest first <span class="cnt">${riverRows.length}</span></h3><ul class="rel">${riverRows.join('')}</ul>${riverRows.length>15?`<div class="acts mmore"><button type="button" class="btn" data-mmore="1">${mediaMore?'Show fewer':'Show more'}</button></div>`:''}</section>`:(MEDIA_ITEMS===null?'<p class="note">Loading the latest from the media…</p>':'');
   const tagCount=t=>outlets.filter(o=>(o.mediaTags||[]).includes(t)).length+(t==='photographer'?free.length:0);
   const used=Object.keys(MEDIA_TAGS).filter(t=>tagCount(t)>0);
@@ -1900,7 +1913,7 @@ document.addEventListener('click',e=>{const b=e.target.closest('[data-media]');i
    so the map's own load is unchanged. Editors add feeds on the outlet's entry (up to 3); the latest piece set by hand still
    shows when a title has no feed, or isn't in its feed. */
 function loadMediaItems(force){if(MEDIA_ITEMS&&!force)return Promise.resolve(MEDIA_ITEMS);if(MEDIA_LOADING)return MEDIA_LOADING;
-  MEDIA_LOADING=Promise.resolve().then(()=>fetch(`${SB_URL}/rest/v1/media_items?select=entity_id,url,title,snippet,published_at,kind,duration_s&order=published_at.desc&limit=500`,{headers:{apikey:SB_KEY}}))
+  MEDIA_LOADING=Promise.resolve().then(()=>fetch(`${SB_URL}/rest/v1/media_items?select=entity_id,url,title,snippet,published_at,kind,duration_s,image_url&order=published_at.desc&limit=500`,{headers:{apikey:SB_KEY}}))
     .then(r=>r.ok?r.json():[]).catch(()=>[]).then(rows=>{MEDIA_ITEMS=Array.isArray(rows)?rows:[];MEDIA_LOADING=null;return MEDIA_ITEMS});
   return MEDIA_LOADING}
 async function loadMediaFeeds(){try{const t=await token();if(!t)return(MEDIA_FEEDS=[]);
@@ -1911,10 +1924,10 @@ async function loadMediaFeeds(){try{const t=await token();if(!t)return(MEDIA_FEE
 const urlKey=u=>{const y=String(u||'').match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?(?:.*&)?v=|shorts\/))([\w-]{6,})/);return y?'yt:'+y[1]:urlKey0(u)};
 const urlKey0=u=>String(u||'').replace(/[?#].*$/,'').replace(/\/+$/,'').replace(/^https?:\/\/(www\.)?/,'').toLowerCase();
 function piecesOf(o){const seen=new Map();
-  (MEDIA_ITEMS||[]).filter(i=>i.entity_id===o.id).forEach(i=>{const k=urlKey(i.url),p={url:i.url,title:i.title,snippet:i.snippet||'',date:(i.published_at||'').slice(0,10),ts:i.published_at||'',kind:i.kind,dur:i.duration_s};
+  (MEDIA_ITEMS||[]).filter(i=>i.entity_id===o.id).forEach(i=>{const k=urlKey(i.url),p={url:i.url,title:i.title,snippet:i.snippet||'',date:(i.published_at||'').slice(0,10),ts:i.published_at||'',kind:i.kind,dur:i.duration_s,img:i.image_url||''};
     const had=seen.get(k);if(!had)return seen.set(k,p);
     // a podcast feed and the site's own feed: the episode's running time from one, the site's standfirst from the other
-    seen.set(k,{...had,kind:had.kind==='episode'||p.kind==='episode'?'episode':had.kind,dur:had.dur||p.dur,snippet:(had.dur?p.snippet:had.snippet)||had.snippet||p.snippet})});
+    seen.set(k,{...had,img:had.img||p.img,kind:had.kind==='episode'||p.kind==='episode'?'episode':had.kind,dur:had.dur||p.dur,snippet:(had.dur?p.snippet:had.snippet)||had.snippet||p.snippet})});
   const its=[...seen.values()];
   if(o.latestUrl&&!its.some(i=>urlKey(i.url)===urlKey(o.latestUrl)))its.push({url:o.latestUrl,title:o.latestTitle||newsHost(o.latestUrl),snippet:'',date:o.latestDate||'',ts:o.latestDate||'',kind:o.latestKind,dur:null});
   return its.sort((a,b)=>(b.ts||'').localeCompare(a.ts||''))}
@@ -1971,8 +1984,8 @@ function latestBlock(e){if(!isMediaOrg(e))return'';const can=canEditOrg(e.id);
   if(MEDIA_ITEMS===null)loadMediaItems().then(()=>{if(mode==='view'&&sel===e.id)render()});
   if(canEdit&&MEDIA_FEEDS===null)loadMediaFeeds().then(()=>{if(mode==='view'&&sel===e.id)render()});
   const fb=canEdit?feedBlock(e):'',its=(MEDIA_ITEMS||[]).filter(i=>i.entity_id===e.id).slice(0,3);
-  if(its.length)return`<section class="news latest"><h3>Latest from ${esc(e.name)}</h3>${its.map(i=>`<div class="nitem"><a href="${esc(i.url)}" target="_blank" rel="noopener">${esc(i.title)} ↗</a>
-    <p class="who">${[newsHost(i.url),newsDay((i.published_at||'').slice(0,10)),ITEM_KIND[i.kind],durLabel(i.duration_s)].filter(Boolean).map(esc).join(' · ')}</p></div>`).join('')}
+  if(its.length)return`<section class="news latest"><h3>Latest from ${esc(e.name)}</h3>${its.map(i=>`<div class="nitem mrow">${mthumb({url:i.url,img:i.image_url||''},e,'sm')}<div class="mtext"><a href="${esc(i.url)}" target="_blank" rel="noopener">${esc(i.title)} ↗</a>
+    <p class="who">${[newsHost(i.url),newsDay((i.published_at||'').slice(0,10)),ITEM_KIND[i.kind],durLabel(i.duration_s)].filter(Boolean).map(esc).join(' · ')}</p></div></div>`).join('')}
     <div class="acts"><button type="button" class="btn" data-media="1">More on the Media page</button></div></section>${fb}`;
   return latestManual(e,can)+fb}
 function latestManual(e,can){

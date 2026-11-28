@@ -84,7 +84,24 @@ function duration(v: unknown): number | null {
 }
 
 // ---------- parsing ----------
-type Item = { guid: string; url: string; title: string; snippet: string; published_at: string; kind: string; duration_s: number | null };
+type Item = { guid: string; url: string; title: string; snippet: string; published_at: string; kind: string; duration_s: number | null; image_url: string | null };
+// the piece's picture, linked not copied: https only (the app is https); a plain http address is tried as https
+const img = (u: unknown): string | null => {
+  let s = decode(String(u || "").trim());
+  if (!s) return null;
+  if (s.startsWith("//")) s = "https:" + s;
+  s = s.replace(/^http:\/\//i, "https://");
+  return /^https:\/\/[^\s"'<>]+$/i.test(s) && s.length <= 1000 ? s : null;
+};
+const attr = (v: unknown, a: string) => arr(v as any).map((x: any) => x?.[a]).find(Boolean);
+const firstImg = (html: string) => { const m = String(html || "").match(/<img\b[^>]*\bsrc=["']([^"']+)["']/i); return m ? m[1] : ""; };
+function feedImage(it: any): string | null {
+  const mc = arr(it["media:content"]).find((m: any) => m?.["@_medium"] === "image" || /^image\//.test(m?.["@_type"] || "") || /\.(jpe?g|png|webp|gif)(\?|$)/i.test(m?.["@_url"] || ""));
+  const enc = arr(it.enclosure).find((e: any) => /^image\//.test(String(e?.["@_type"] || "")));
+  return img(attr(it["media:thumbnail"], "@_url")) || img((mc as any)?.["@_url"]) || img((enc as any)?.["@_url"])
+    || img(attr(it["media:group"]?.["media:thumbnail"], "@_url")) || img(attr(it["itunes:image"], "@_href"))
+    || img(firstImg(text(it["content:encoded"]) || text(it.description)));
+}
 type Parsed = { title: string; items: Item[] };
 const parser = new XMLParser({ ignoreAttributes: false, attributeNamePrefix: "@_", textNodeName: "#text", processEntities: true, htmlEntities: true, trimValues: true });
 
@@ -111,6 +128,7 @@ function parseFeed(xml: string, base: string): Parsed | null {
         published_at,
         kind: enc ? (String(enc["@_type"]).startsWith("video") ? "video" : "episode") : isYT ? "video" : "article",
         duration_s: enc || isYT ? duration(it["itunes:duration"]) : null,
+        image_url: feedImage(it),
       });
     }
     const site = domain(text(ch.link));
@@ -129,7 +147,7 @@ function parseFeed(xml: string, base: string): Parsed | null {
       if (isYT && (/#shorts\b/i.test(title) || /\/shorts\//.test(url))) continue;
       const desc = text(e["media:group"]?.["media:description"]) || text(e.summary) || text(e.content);
       out.push({ guid: cut(text(e.id) || url, 500), url, title, snippet: cut(plain(desc), 220), published_at,
-        kind: isYT ? "video" : "article", duration_s: null });
+        kind: isYT ? "video" : "article", duration_s: null, image_url: feedImage(e) });
     }
     return { title: cut(plain(text(f.title)), 200), items: out };
   }
@@ -182,6 +200,26 @@ async function discover(input: string): Promise<{ url: string; parsed: Parsed }>
   return { url: link, parsed: p2 };
 }
 
+// the page's own share picture (Open Graph og:image, or twitter:image), for pieces whose feed has none
+async function ogImage(page: string): Promise<string> {
+  try {
+    const r = await fetch(page, { headers: { "User-Agent": UA, Accept: "text/html" }, redirect: "follow", signal: AbortSignal.timeout(8000) });
+    if (!r.ok || !/html/i.test(r.headers.get("content-type") || "")) return "";
+    const html = (await r.text()).slice(0, 400_000);
+    for (const key of ["og:image:secure_url", "og:image", "og:image:url", "twitter:image", "twitter:image:src"]) {
+      for (const m of html.matchAll(/<meta\b[^>]*>/gi)) {
+        const t = m[0];
+        const k = t.match(/\b(?:property|name)=["']([^"']+)["']/i);
+        if (!k || k[1].toLowerCase() !== key) continue;
+        const c = t.match(/\bcontent=["']([^"']+)["']/i);
+        const u = c ? img(new URL(decode(c[1]), r.url || page).href) : null;
+        if (u) return u;
+      }
+    }
+  } catch { /* no picture */ }
+  return "";
+}
+
 type Feed = { id: number; entity_id: string; url: string; etag: string; last_modified: string; fails: number; checked_at: string | null };
 async function checkFeed(f: Feed) {
   const patch: Record<string, unknown> = { checked_at: new Date().toISOString() };
@@ -201,6 +239,12 @@ async function checkFeed(f: Feed) {
         .map((i) => ({ ...i, feed_id: f.id, entity_id: f.entity_id, fetched_at: patch.checked_at }));
       // the same guid twice in one feed would break the upsert
       const seen = new Set<string>(); const uniq = items.filter((i) => !seen.has(i.guid) && seen.add(i.guid));
+      // pictures: the feed's, else what was found before, else the page's share picture (looked for once per piece)
+      const old = await svc(`/rest/v1/media_items?select=guid,image_url&feed_id=eq.${f.id}`);
+      const had = new Map<string, string | null>((old.ok ? await old.json() : []).map((x: any) => [x.guid, x.image_url]));
+      const need = uniq.filter((i) => !i.image_url && (had.get(i.guid) == null));
+      for (const i of uniq) if (!i.image_url && had.get(i.guid) != null) i.image_url = had.get(i.guid)!;
+      for (let k = 0; k < need.length; k += 4) await Promise.all(need.slice(k, k + 4).map(async (i) => { i.image_url = await ogImage(i.url); }));
       if (uniq.length) {
         const w = await svc(`/rest/v1/media_items?on_conflict=feed_id,guid`, {
           method: "POST", headers: { Prefer: "resolution=merge-duplicates,return=minimal" }, body: JSON.stringify(uniq) });

@@ -125,3 +125,8 @@ revoke all on function public.media_feeds_check() from public, anon, authenticat
 alter table public.features drop constraint if exists features_slot_check;
 alter table public.features add constraint features_slot_check check (slot in ('featured','news','media'));
 insert into public.features (slot, position, entity_id) values ('media', 1, 'yb') on conflict (slot, position) do update set entity_id = excluded.entity_id;
+
+-- Each piece's share image (D, 28 Nov 2026): from the feed (media:thumbnail, media:content, an image enclosure, the
+-- first picture in the content) or else the page's Open Graph og:image / twitter:image. Linked, not copied.
+-- null = not looked for yet; '' = looked, none found.
+alter table public.media_items add column if not exists image_url text check (image_url is null or image_url = '' or (image_url ~* '^https://' and char_length(image_url) <= 1000));
