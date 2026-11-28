@@ -216,6 +216,34 @@ async function ogImage(page: string): Promise<string> {
         if (u) return u;
       }
     }
+    // no Open Graph tags (WordPress without an SEO plugin): the post's featured image, as the theme shows it
+    const base = r.url || page;
+    const wp = html.match(/<img\b[^>]*\bclass=["'][^"']*\bwp-post-image\b[^>]*>/i);
+    if (wp) {
+      const src = wp[0].match(/\bsrc=["']([^"']+)["']/i);
+      const u = src ? img(new URL(decode(src[1]), base).href) : null;
+      if (u) return u;
+    }
+    // structured data (schema.org "image"), which many sites carry even without Open Graph
+    for (const m of html.matchAll(/<script[^>]+application\/ld\+json[^>]*>([\s\S]*?)<\/script>/gi)) {
+      const j = m[1].match(/"(?:image|thumbnailUrl)"\s*:\s*(?:\{[^}]*?"url"\s*:\s*)?\[?\s*"([^"]+)"/);
+      const u = j ? img(new URL(j[1].replace(/\\\//g, "/"), base).href) : null;
+      if (u) return u;
+    }
+    // WordPress: ask its own API for the post's featured image
+    if (/wp-content|wp-json|wordpress/i.test(html)) {
+      const slug = new URL(base).pathname.split("/").filter(Boolean).pop();
+      if (slug) {
+        const a = await fetch(new URL(`/wp-json/wp/v2/posts?slug=${encodeURIComponent(slug)}&_embed=wp:featuredmedia`, base).href,
+          { headers: { "User-Agent": UA, Accept: "application/json" }, signal: AbortSignal.timeout(8000) });
+        if (a.ok) {
+          const posts = await a.json().catch(() => []);
+          const fm = posts?.[0]?._embedded?.["wp:featuredmedia"]?.[0];
+          const u = img(fm?.media_details?.sizes?.large?.source_url || fm?.media_details?.sizes?.medium_large?.source_url || fm?.source_url);
+          if (u) return u;
+        }
+      }
+    }
   } catch { /* no picture */ }
   return "";
 }
