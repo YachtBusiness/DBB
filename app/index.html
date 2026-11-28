@@ -44,12 +44,13 @@ button,input,select,textarea{font:inherit;color:inherit}
 .dgrid{display:grid;grid-template-columns:1fr;gap:14px}
 main.dash aside>*{max-width:none}main.dash aside>div:first-child,main.dash aside>.msg{max-width:720px}
 @media (min-width:861px){main.dash{grid-template-columns:1fr}main.dash .chart{display:none}.dgrid{grid-template-columns:repeat(auto-fill,minmax(330px,1fr));align-items:start}}
+.mspot{border:2px solid var(--navy);border-radius:10px;padding:16px 18px;background:var(--surface);display:flex;flex-direction:column;gap:8px}.mspot h3{margin:0;background:none;border:0;padding:0;font-family:Georgia,'Times New Roman',serif;font-size:24px;letter-spacing:0;text-transform:none}.mspot h3 .ent{font:inherit;font-weight:600}.mspot .note{margin:0}.mspot ul.rel{margin-top:4px}main.wide aside>.mspot{max-width:860px}.mcard.spot{border:2px solid var(--navy)}
 main.wide aside>*{max-width:none}main.wide aside>div:first-child,main.wide aside>.mfilter{max-width:720px}main.wide .chart{display:none}
 @media (min-width:861px){main.wide{grid-template-columns:1fr}}@media (max-width:860px){main.wide aside{display:flex}}
 ul.mgrid{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:1fr;gap:12px}@media (min-width:861px){ul.mgrid{grid-template-columns:repeat(auto-fill,minmax(320px,1fr));align-items:start}}
 .mcard{border:1px solid var(--line);border-radius:8px;padding:12px 14px;background:var(--surface);display:flex;flex-direction:column;gap:8px}.mcard .meta{flex-wrap:wrap}
 ol.mlist{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}ol.mlist li{display:flex;flex-direction:column;font-size:13.5px;line-height:1.35}ol.mlist a{color:var(--ink);font-weight:600;overflow-wrap:anywhere}ol.mlist span{font-size:12px;color:var(--muted)}.mquiet{margin:0;font-size:12.5px;color:var(--muted)}
-main.wide aside>.mriver{max-width:860px}.mriver .snip,.nitem .snip{grid-column:1;margin:2px 0 0;font-size:13px;color:var(--muted);line-height:1.4}.mriver.short ul.rel li:nth-child(n+16){display:none}.mmore{margin-top:10px}
+main.wide aside>.mriver{max-width:860px}ul.rel li .snip,.nitem .snip{grid-column:1;margin:2px 0 0;font-size:13px;color:var(--muted);line-height:1.4}.mriver.short ul.rel li:nth-child(n+16){display:none}.mmore{margin-top:10px}
 .mfilter{max-width:420px}.mtag{display:inline-block;margin-left:6px;font-size:11px;padding:1px 7px;border-radius:999px;background:var(--wash);color:var(--muted);vertical-align:middle}
 .mchips{display:flex;flex-wrap:wrap;gap:6px}.mchip{font:inherit;font-size:13px;padding:4px 10px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer}.mchip span{color:var(--muted)}.mchip[aria-pressed="true"]{background:var(--navy);border-color:var(--navy);color:#fff}.mchip[aria-pressed="true"] span{color:inherit;opacity:.75}
 aside h3.mhead{background:none;border:0;padding:0;font-family:Georgia,'Times New Roman',serif;font-size:22px;font-weight:600;letter-spacing:0;text-transform:none;color:var(--ink);margin:14px 0 -4px}.msec .meta{flex-wrap:wrap}.msec .meta>span{display:inline-flex;gap:4px;align-items:baseline}
@@ -1834,7 +1835,7 @@ function listMedia(){
     const pcs=piecesOf(o).slice(0,3);
     const tags=o.mediaTags||[];const q=[o.name,...tags.map(t=>MEDIA_TAGS[t]||t),...pcs.map(p=>p.title),...ppl.map(l=>other(l,o.id).name+' '+l.role),...rest.map(l=>other(l,o.id).name+' '+l.role)].join(' ').toLowerCase();
     const lt=pcs.length?`<ol class="mlist">${pcs.map(p=>`<li><a href="${esc(p.url)}" target="_blank" rel="noopener">${esc(p.title)} ↗</a><span>${[p.date?newsDay(p.date):'',ITEM_KIND[p.kind]||''].filter(Boolean).map(esc).join(' · ')}</span></li>`).join('')}</ol>`:'<p class="mquiet">Nothing recent listed.</p>';
-    return`<li class="mcard" data-q="${esc(q)}" data-tags="${esc(tags.join('|'))}"><div class="rl">${go(o)}${tags.map(t=>`<span class="mtag">${esc(MEDIA_TAGS[t]||t)}</span>`).join('')}</div>${lt}
+    return`<li class="mcard${o===spot?' spot':''}" data-q="${esc(q)}" data-tags="${esc(tags.join('|'))}"><div class="rl">${go(o)}${tags.map(t=>`<span class="mtag">${esc(MEDIA_TAGS[t]||t)}</span>`).join('')}</div>${lt}
       ${ppl.length?`<div class="meta">${ppl.map(l=>`<span>${go(other(l,o.id))} <span class="role">${esc(l.role)}</span></span>`).join('')}</div>`:''}
       ${rest.length?`<div class="meta">${rest.map(l=>`<span>${go(other(l,o.id))} <span class="role">${esc(l.role)}</span></span>`).join('')}</div>`:''}</li>`};
   const sec=(title,rows,note)=>rows.length?`<section class="msec"><h3>${esc(title)} <span class="cnt">${rows.length}</span></h3>${note?`<p class="note">${esc(note)}</p>`:''}<ul class="rel">${rows.join('')}</ul></section>`:'';
@@ -1847,10 +1848,17 @@ function listMedia(){
     return`<li data-q="${esc((p.name+' photographer freelance '+clients.map(c=>c.o.name+' '+c.l.role).join(' ')).toLowerCase())}" data-tags="photographer"><div class="rl">${go(p)}<span class="mtag">Photographer</span></div>${clients.length?`<div class="meta">${clients.map(c=>`<span>${go(c.o)} <span class="role">${esc(c.l.role)}</span></span>`).join('')}</div>`:''}</li>`});
   if(MEDIA_ITEMS===null)loadMediaItems().then(()=>{if(mode==='view'&&sel===MEDIA_ID)render()});
   const lastOf=o=>(piecesOf(o)[0]||{}).ts||'';
-  const byRecent=outlets.slice().sort((a,b)=>lastOf(b).localeCompare(lastOf(a))||a.name.localeCompare(b.name));
+  /* the spotlit title (features slot 'media'; D, 28 Nov 2026: Yacht Business, front and centre) leads the page and the titles */
+  const sf=FEAT.find(x=>x.slot==='media'&&isMediaOrg(E.get(x.entity_id))),spot=sf?E.get(sf.entity_id):null;
+  const byRecent=outlets.slice().sort((a,b)=>(b===spot)-(a===spot)||lastOf(b).localeCompare(lastOf(a))||a.name.localeCompare(b.name));
+  const spotHtml=spot?(()=>{const pcs=piecesOf(spot).slice(0,4),tags=spot.mediaTags||[],blurb=spot.about||spot.note||'';
+    return`<section class="mspot" aria-label="Featured title"><div class="kind"><i style="background:var(--t-media,var(--t-org))"></i>Featured title</div>
+      <div class="rl"><h3>${go(spot)}</h3>${tags.map(t=>`<span class="mtag">${esc(MEDIA_TAGS[t]||t)}</span>`).join('')}</div>${blurb?`<p class="note">${esc(blurb)}</p>`:''}
+      ${pcs.length?`<ul class="rel">${pcs.map(p=>`<li><div class="rl"><a class="nhead" href="${esc(p.url)}" target="_blank" rel="noopener">${esc(p.title)} ↗</a></div>${p.snippet?`<p class="snip">${esc(p.snippet)}</p>`:''}<div class="meta">${ITEM_KIND[p.kind]?`<span class="role">${esc(ITEM_KIND[p.kind])}</span>`:''}${p.date?`<span>${esc(newsDay(p.date))}</span>`:''}${p.dur?`<span>${esc(durLabel(p.dur))}</span>`:''}</div></li>`).join('')}</ul>`:''}
+      ${spot.website?`<div class="acts"><a class="btn go" href="${esc(spot.website)}" target="_blank" rel="noopener">Visit ${esc(newsHost(spot.website)||spot.name)} ↗</a></div>`:''}</section>`})():'';
   const outletHtml=byRecent.length?`<section class="msec"><h3>Titles <span class="cnt">${byRecent.length}</span></h3><p class="note">Most recently active first.</p><ul class="mgrid">${byRecent.map(outletRow).join('')}</ul></section>`:'';
   // everything new, all titles together, newest first
-  const river=outlets.flatMap(o=>piecesOf(o).map(p=>({...p,o}))).sort((a,b)=>(b.ts||'').localeCompare(a.ts||'')).slice(0,60);
+  const river=outlets.flatMap(o=>piecesOf(o).slice(0,3).map(p=>({...p,o}))) // at most 3 a title, so a busy day at one doesn't fill the list.sort((a,b)=>(b.ts||'').localeCompare(a.ts||'')).slice(0,60);
   const riverRows=river.map(p=>`<li data-q="${esc((p.o.name+' '+p.title+' '+(p.snippet||'')).toLowerCase())}"><div class="rl"><a class="nhead" href="${esc(p.url)}" target="_blank" rel="noopener">${esc(p.title)} ↗</a></div>${p.snippet?`<p class="snip">${esc(p.snippet)}</p>`:''}<div class="meta">${go(p.o)}${ITEM_KIND[p.kind]?`<span class="role">${esc(ITEM_KIND[p.kind])}</span>`:''}${p.date?`<span>${esc(newsDay(p.date))}</span>`:''}${p.dur?`<span>${esc(durLabel(p.dur))}</span>`:''}</div></li>`);
   const riverHtml=riverRows.length?`<h3 class="mhead">Latest from the media</h3><section class="msec mriver${mediaMore?'':' short'}"><h3>Newest first <span class="cnt">${riverRows.length}</span></h3><ul class="rel">${riverRows.join('')}</ul>${riverRows.length>15?`<div class="acts mmore"><button type="button" class="btn" data-mmore="1">${mediaMore?'Show fewer':'Show more'}</button></div>`:''}</section>`:(MEDIA_ITEMS===null?'<p class="note">Loading the latest from the media…</p>':'');
   const tagCount=t=>outlets.filter(o=>(o.mediaTags||[]).includes(t)).length+(t==='photographer'?free.length:0);
@@ -1863,6 +1871,7 @@ function listMedia(){
     ${canEdit?`<p class="note"><span class="role">Editors:</span> only entries with the media sector ticked count, plus the people linked to them. Press and comms staff of teams, events and agencies only appear if they also belong to a title. Mark freelance photographers on their own entry (Edit, then Freelance photographer). Add a title’s feeds on its entry (Feeds, then Add a feed); they’re read every hour.${MEDIA_FEEDS?` ${MEDIA_FEEDS.length} feeds on ${new Set(MEDIA_FEEDS.map(f=>f.entity_id)).size} titles${MEDIA_FEEDS.filter(f=>f.error).length?`, <b>${MEDIA_FEEDS.filter(f=>f.error).length} not working</b>: ${MEDIA_FEEDS.filter(f=>f.error).map(f=>E.get(f.entity_id)?go(E.get(f.entity_id)):'').join(', ')}`:''}.`:''}</p>`:''}
     <div class="acts"><button type="button" class="btn" data-medialens="1">See media on the map</button><button type="button" class="btn" data-mediacopy="1">Copy link</button></div></div>
     <label class="mfilter">Filter<input id="media-q" type="search" placeholder="A name, title, headline or role" value="${esc(mediaQ)}"></label>
+    ${spotHtml}
     ${riverHtml}
     <h3 class="mhead">Titles</h3>
     ${chips}
@@ -1891,15 +1900,22 @@ document.addEventListener('click',e=>{const b=e.target.closest('[data-media]');i
    so the map's own load is unchanged. Editors add feeds on the outlet's entry (up to 3); the latest piece set by hand still
    shows when a title has no feed, or isn't in its feed. */
 function loadMediaItems(force){if(MEDIA_ITEMS&&!force)return Promise.resolve(MEDIA_ITEMS);if(MEDIA_LOADING)return MEDIA_LOADING;
-  MEDIA_LOADING=fetch(`${SB_URL}/rest/v1/media_items?select=entity_id,url,title,snippet,published_at,kind,duration_s&order=published_at.desc&limit=500`,{headers:{apikey:SB_KEY}})
+  MEDIA_LOADING=Promise.resolve().then(()=>fetch(`${SB_URL}/rest/v1/media_items?select=entity_id,url,title,snippet,published_at,kind,duration_s&order=published_at.desc&limit=500`,{headers:{apikey:SB_KEY}}))
     .then(r=>r.ok?r.json():[]).catch(()=>[]).then(rows=>{MEDIA_ITEMS=Array.isArray(rows)?rows:[];MEDIA_LOADING=null;return MEDIA_ITEMS});
   return MEDIA_LOADING}
 async function loadMediaFeeds(){try{const t=await token();if(!t)return(MEDIA_FEEDS=[]);
   const r=await fetch(`${SB_URL}/rest/v1/media_feeds?select=id,entity_id,url,title,checked_at,ok_at,error,fails&order=id`,{headers:{apikey:SB_KEY,Authorization:'Bearer '+t}});
   MEDIA_FEEDS=r.ok?await r.json():[]}catch(x){MEDIA_FEEDS=[]}return MEDIA_FEEDS}
 // an outlet's pieces, newest first: its feed items, plus the latest piece set by hand when the feeds don't already have it
-function piecesOf(o){const its=(MEDIA_ITEMS||[]).filter(i=>i.entity_id===o.id).map(i=>({url:i.url,title:i.title,snippet:i.snippet||'',date:(i.published_at||'').slice(0,10),ts:i.published_at||'',kind:i.kind,dur:i.duration_s}));
-  if(o.latestUrl&&!its.some(i=>i.url===o.latestUrl))its.push({url:o.latestUrl,title:o.latestTitle||newsHost(o.latestUrl),snippet:'',date:o.latestDate||'',ts:o.latestDate||'',kind:o.latestKind,dur:null});
+// (one piece can be in two of a title's feeds, e.g. a Substack's podcast feed and its main feed: kept once, the episode if either is)
+const urlKey=u=>String(u||'').replace(/[?#].*$/,'').replace(/\/+$/,'').replace(/^https?:\/\/(www\.)?/,'').toLowerCase();
+function piecesOf(o){const seen=new Map();
+  (MEDIA_ITEMS||[]).filter(i=>i.entity_id===o.id).forEach(i=>{const k=urlKey(i.url),p={url:i.url,title:i.title,snippet:i.snippet||'',date:(i.published_at||'').slice(0,10),ts:i.published_at||'',kind:i.kind,dur:i.duration_s};
+    const had=seen.get(k);if(!had)return seen.set(k,p);
+    // a podcast feed and the site's own feed: the episode's running time from one, the site's standfirst from the other
+    seen.set(k,{...had,kind:had.kind==='episode'||p.kind==='episode'?'episode':had.kind,dur:had.dur||p.dur,snippet:(had.dur?p.snippet:had.snippet)||had.snippet||p.snippet})});
+  const its=[...seen.values()];
+  if(o.latestUrl&&!its.some(i=>urlKey(i.url)===urlKey(o.latestUrl)))its.push({url:o.latestUrl,title:o.latestTitle||newsHost(o.latestUrl),snippet:'',date:o.latestDate||'',ts:o.latestDate||'',kind:o.latestKind,dur:null});
   return its.sort((a,b)=>(b.ts||'').localeCompare(a.ts||''))}
 async function feedsFn(body){const t=await token();if(!t)throw new Error('not_signed_in');
   const r=await fetch(`${SB_URL}/functions/v1/feeds`,{method:'POST',headers:{apikey:SB_KEY,Authorization:'Bearer '+t,'Content-Type':'application/json'},body:JSON.stringify(body)});

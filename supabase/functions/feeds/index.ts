@@ -54,6 +54,13 @@ const plain = (html: string) => decode(String(html || "")
   .replace(/<br\s*\/?>|<\/(p|div|li|h\d)>/gi, " ")
   .replace(/<[^>]+>/g, " "))
   .replace(/\s+/g, " ").trim();
+// Substack's standard lines say nothing about the piece
+const boiler = (s: string) => ((t: string) => t.charAt(0).toUpperCase() + t.slice(1))(s
+  .replace(/^.{0,80}? is a reader-supported publication\. To receive new posts and support my work, consider becoming a free or paid subscriber\.\s*/i, "")
+  .replace(/^This is a free preview of a paid episode\. To hear more, visit \S+\s*/i, "")
+  .replace(/^(In this episode|During our conversation[^:]*|Covered in this episode)\s*:\s*\*\s*/i, ""));
+// one feed can carry another outlet's pieces (Sailing Anarchy's carries Seahorse's): only the feed's own site is kept
+const domain = (u: string) => { try { return new URL(u).hostname.replace(/^www\./, "").split(".").slice(-2).join("."); } catch { return ""; } };
 const cut = (s: string, n: number) => {
   if (s.length <= n) return s;
   const c = s.slice(0, n + 1), sp = c.lastIndexOf(" ");
@@ -100,13 +107,14 @@ function parseFeed(xml: string, base: string): Parsed | null {
       const isYT = /youtube\.com|youtu\.be/.test(url);
       out.push({
         guid: cut(text(it.guid) || url, 500), url, title,
-        snippet: cut(plain(text(it.description) || text(it["itunes:summary"]) || text(it["content:encoded"])), 220),
+        snippet: cut(boiler(plain(text(it.description) || text(it["itunes:summary"]) || text(it["content:encoded"]))), 220),
         published_at,
         kind: enc ? (String(enc["@_type"]).startsWith("video") ? "video" : "episode") : isYT ? "video" : "article",
         duration_s: enc || isYT ? duration(it["itunes:duration"]) : null,
       });
     }
-    return { title: cut(plain(text(ch.title)), 200), items: out };
+    const site = domain(text(ch.link));
+    return { title: cut(plain(text(ch.title)), 200), items: site ? out.filter((i) => domain(i.url) === site) : out };
   }
   if (doc.feed) {
     const f = doc.feed;

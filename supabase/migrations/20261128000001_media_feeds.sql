@@ -119,3 +119,9 @@ revoke all on function public.media_feeds_check() from public, anon, authenticat
 --   select vault.create_secret('<random 48+ characters>', 'feeds_secret');
 --   select vault.create_secret('https://<project>.supabase.co/functions/v1/feeds', 'feeds_url');
 --   select cron.schedule('media-feeds', '37 * * * *', 'select public.media_feeds_check()');
+
+-- The spotlit title at the top of the Media page (D, 28 Nov 2026: Yacht Business, front and centre): a features row
+-- in a new 'media' slot, changed like Featured (the dark-blue-book-featured skill).
+alter table public.features drop constraint if exists features_slot_check;
+alter table public.features add constraint features_slot_check check (slot in ('featured','news','media'));
+insert into public.features (slot, position, entity_id) values ('media', 1, 'yb') on conflict (slot, position) do update set entity_id = excluded.entity_id;
