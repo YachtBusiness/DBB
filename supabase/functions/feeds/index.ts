@@ -126,6 +126,7 @@ function parseFeed(xml: string, base: string): Parsed | null {
       const published_at = when(text(e.published) || text(e.updated));
       if (!url || !title || !published_at) continue;
       const isYT = /youtube\.com|youtu\.be/.test(url) || !!e["yt:videoId"];
+      if (isYT && (/#shorts\b/i.test(title) || /\/shorts\//.test(url))) continue;
       const desc = text(e["media:group"]?.["media:description"]) || text(e.summary) || text(e.content);
       out.push({ guid: cut(text(e.id) || url, 500), url, title, snippet: cut(plain(desc), 220), published_at,
         kind: isYT ? "video" : "article", duration_s: null });
@@ -160,15 +161,19 @@ async function get(url: string, extra: Record<string, string> = {}) {
   return { status: r.status, body: new TextDecoder().decode(buf), finalUrl: r.url || url, headers: r.headers };
 }
 
+// YouTube Shorts are left out (D, 28 Nov 2026): a channel's feed (channel_id=UC...) becomes its long-form uploads
+// playlist (playlist_id=UULF...), which has no Shorts; titles tagged #shorts are skipped too
+const noShorts = (u: string) => u.replace(/(youtube\.com\/feeds\/videos\.xml\?)channel_id=UC([\w-]{22})/i, "$1playlist_id=UULF$2");
+
 // find and read a feed from what an editor pasted
 async function discover(input: string): Promise<{ url: string; parsed: Parsed }> {
-  let u = input.trim();
+  let u = noShorts(input.trim());
   if (!/^https?:\/\//i.test(u)) u = "https://" + u;
   const r = await get(u);
   if (r.status >= 400) throw new Error(`http_${r.status}`);
   const p = parseFeed(r.body, r.finalUrl);
   if (p) return { url: r.finalUrl, parsed: p };
-  const link = findFeedLink(r.body, r.finalUrl);
+  const link = noShorts(findFeedLink(r.body, r.finalUrl));
   if (!link) throw new Error("no_feed");
   const r2 = await get(link);
   if (r2.status >= 400) throw new Error(`http_${r2.status}`);
