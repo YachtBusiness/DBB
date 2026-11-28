@@ -1908,7 +1908,8 @@ async function loadMediaFeeds(){try{const t=await token();if(!t)return(MEDIA_FEE
   MEDIA_FEEDS=r.ok?await r.json():[]}catch(x){MEDIA_FEEDS=[]}return MEDIA_FEEDS}
 // an outlet's pieces, newest first: its feed items, plus the latest piece set by hand when the feeds don't already have it
 // (one piece can be in two of a title's feeds, e.g. a Substack's podcast feed and its main feed: kept once, the episode if either is)
-const urlKey=u=>String(u||'').replace(/[?#].*$/,'').replace(/\/+$/,'').replace(/^https?:\/\/(www\.)?/,'').toLowerCase();
+const urlKey=u=>{const y=String(u||'').match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?(?:.*&)?v=|shorts\/))([\w-]{6,})/);return y?'yt:'+y[1]:urlKey0(u)};
+const urlKey0=u=>String(u||'').replace(/[?#].*$/,'').replace(/\/+$/,'').replace(/^https?:\/\/(www\.)?/,'').toLowerCase();
 function piecesOf(o){const seen=new Map();
   (MEDIA_ITEMS||[]).filter(i=>i.entity_id===o.id).forEach(i=>{const k=urlKey(i.url),p={url:i.url,title:i.title,snippet:i.snippet||'',date:(i.published_at||'').slice(0,10),ts:i.published_at||'',kind:i.kind,dur:i.duration_s};
     const had=seen.get(k);if(!had)return seen.set(k,p);
